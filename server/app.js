@@ -7,6 +7,7 @@ const xssClean = require("xss-clean");
 const rateLimit = require("express-rate-limit");
 const { errorResponse } = require("./controller/response.controller");
 const seedRouter = require("./routes/seed.routes");
+const userRouter = require("./routes/user.routes");
 const app = express();
 
 require("./config/db");
@@ -25,6 +26,7 @@ app.use(morgan("dev"));
 app.use(xssClean());
 app.use(limiter);
 
+app.use("/api/user", userRouter);
 app.use("/api/seeduser", seedRouter);
 
 // app.get("/", (req, res) => {

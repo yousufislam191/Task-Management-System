@@ -26,28 +26,4 @@ const connectDB = async () => {
     sequelize.close();
   }
 };
-
-// ============ for MySQL Connetion ============
-// Create a MySQL database connection
-// const db = mysql.createConnection({
-//   host: dbHost, // Your MySQL server host
-//   user: dbUserName,
-//   password: dbPass,
-//   database: dbName,
-// });
-
-// const connectDB = async () => {
-//   try {
-//     // Connect to the database
-//     await db.connect((err) => {
-//       if (err) {
-//         console.error("Database connection error:", err);
-//       } else {
-//         console.log("Connected to MySQL database");
-//       }
-//     });
-//   } catch (error) {
-//     console.error("Could not connect to Database: ", error.toString());
-//   }
-// };
 module.exports = { connectDB, sequelize };
