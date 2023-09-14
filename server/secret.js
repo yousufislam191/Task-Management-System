@@ -11,6 +11,9 @@ const jwtActivationKey =
 const expireJwtForActivateAccount =
   process.env.USER_ACCOUNT_JWT_EXPIRE_TIME || "5m";
 
+const jwtAccessKey = process.env.USER_LOGIN_KEY || "IUBT^*@#&%I@U&TEviq368rew";
+const expireJwtForLoginAccess = process.env.USER_LOGIN_JWT_EXPIRE_TIME || "15m";
+
 const clientURL = process.env.CLIENT_URL || "";
 const appName = process.env.APP_NAME || "Task Management System";
 
@@ -29,4 +32,6 @@ module.exports = {
   appName,
   smtpUserName,
   smtpPassword,
+  jwtAccessKey,
+  expireJwtForLoginAccess,
 };

@@ -8,6 +8,7 @@ const rateLimit = require("express-rate-limit");
 const { errorResponse } = require("./controller/response.controller");
 const seedRouter = require("./routes/seed.routes");
 const userRouter = require("./routes/user.routes");
+const authRouter = require("./routes/auth.routes");
 const app = express();
 
 require("./config/db");
@@ -27,6 +28,7 @@ app.use(xssClean());
 app.use(limiter);
 
 app.use("/api/user", userRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/seeduser", seedRouter);
 
 // app.get("/", (req, res) => {
