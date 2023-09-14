@@ -37,7 +37,7 @@ const signUpValidator = [
     .notEmpty()
     .withMessage("Password is missing")
     .isLength({ min: 8 })
-    .withMessage("password must have at least 8 characters")
+    .withMessage("Password must have at least 8 characters")
     .isStrongPassword()
     .withMessage(
       "Password is not a strong. Must be one uppercase, lowercase, number and special characters"
@@ -62,4 +62,39 @@ const signInValidator = [
     .withMessage("Invalid password"),
 ];
 
-module.exports = { signUpValidator, signInValidator };
+const passwordUpdateInValidator = [
+  check("oldPassword")
+    .trim()
+    .notEmpty()
+    .withMessage("Old password is missing")
+    .isLength({ min: 8 })
+    .withMessage("Old password must have at least 8 characters"),
+  check("newPassword")
+    .trim()
+    .notEmpty()
+    .withMessage("New password is missing")
+    .isLength({ min: 8 })
+    .withMessage("New password must have at least 8 characters")
+    .isStrongPassword()
+    .withMessage(
+      "New password is not a strong. Must be one uppercase, lowercase, number and special characters"
+    ),
+  check("confirmPassword")
+    .trim()
+    .notEmpty()
+    .withMessage("Confirm password is missing")
+    .isLength({ min: 8 })
+    .withMessage("Confirm password must have at least 8 characters")
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("Confirm password does not match with new password");
+      }
+      return true;
+    }),
+];
+
+module.exports = {
+  signUpValidator,
+  signInValidator,
+  passwordUpdateInValidator,
+};

@@ -1,6 +1,7 @@
 const createError = require("http-errors");
 const { Op } = require("sequelize");
 const JWT = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const User = require("../models/user.model");
 const { successResponse } = require("./response.controller");
 const {
@@ -204,6 +205,48 @@ const updateUserById = async (req, res, next) => {
   }
 };
 
+// Update user password
+const updateUserPassword = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (newPassword !== confirmPassword) {
+      throw createError(404, "New Password and Confirm Password do not match");
+    }
+
+    const user = await findWithId(User, userId);
+
+    const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordMatch) {
+      throw createError(400, "Old Password did not match");
+    }
+
+    const [rowsUpdated] = await User.update(
+      { password: newPassword },
+      {
+        where: { id: userId },
+        returning: true, // Return the updated user(s)
+        plain: true,
+      }
+    );
+    if (rowsUpdated === 0) {
+      throw createError(404, "User with this ID does not exist");
+    }
+
+    const attributes = { exclude: ["password"] };
+    const updatedUsers = await findWithId(User, userId, attributes);
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Password was updated successfully",
+      payload: { updatedUsers },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getUser,
   getUserById,
@@ -211,4 +254,5 @@ module.exports = {
   createNewUser,
   activateUserAccount,
   updateUserById,
+  updateUserPassword,
 };

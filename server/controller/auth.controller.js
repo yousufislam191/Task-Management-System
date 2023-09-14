@@ -37,10 +37,14 @@ const handleLogin = async (req, res, next) => {
         sameSite: "none",
       };
 
+    // Exclude 'password' from the user object before sending it in the response
+    const userWithoutPassword = { ...user.get() };
+    delete userWithoutPassword.password;
+
     return successResponse(res, {
       statusCode: 200,
       message: "User logged in successfully",
-      payload: { user },
+      payload: { userWithoutPassword },
     });
   } catch (error) {
     next(error);
@@ -50,7 +54,7 @@ const handleLogin = async (req, res, next) => {
 // FOR LOGOUT
 const handleLogout = async (req, res, next) => {
   try {
-    res.clearCookie("access_token");
+    res.clearCookie("accessToken");
 
     return successResponse(res, {
       statusCode: 200,
