@@ -11,6 +11,7 @@ const {
 } = require("../secret");
 const sendEmailWithNodamailer = require("../helper/email");
 const { createJWT } = require("../helper/createJWT");
+const { findWithId } = require("../helper/findWithId");
 
 // GET all user by admin
 const getUser = async (req, res, next) => {
@@ -35,6 +36,22 @@ const getUser = async (req, res, next) => {
       statusCode: 200,
       message: "Users were retured successfully",
       payload: { users },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET user by ID
+const getUserById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const attributes = { exclude: ["password"] };
+    const user = await findWithId(User, id, attributes);
+    return successResponse(res, {
+      statusCode: 200,
+      message: "User was retured successfully",
+      payload: { user },
     });
   } catch (error) {
     next(error);
@@ -122,8 +139,47 @@ const activateUserAccount = async (req, res, next) => {
   }
 };
 
+// Update user
+const updateUserById = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    let updates = {};
+
+    // === this field take value from request.body using loop, after that updated value will keep in the updates objects ===
+    for (let key in req.body) {
+      if (["name", "password"].includes(key)) {
+        updates[key] = req.body[key];
+      } else {
+        throw createError(404, "This info cannot be updated");
+      }
+    }
+
+    const [rowsUpdated] = await User.update(updates, {
+      where: { id: userId },
+      returning: true, // Return the updated user(s)
+      plain: true,
+    });
+    if (rowsUpdated === 0) {
+      throw createError(404, "User with this ID does not exist");
+    }
+
+    const attributes = { exclude: ["password"] };
+    const updatedUsers = await findWithId(User, userId, attributes);
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "User was updated successfully",
+      payload: updatedUsers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getUser,
+  getUserById,
   createNewUser,
   activateUserAccount,
+  updateUserById,
 };
