@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const { Op } = require("sequelize");
+const JWT = require("jsonwebtoken");
 const User = require("../models/user.model");
 const { successResponse } = require("./response.controller");
 const {
@@ -39,10 +40,6 @@ const getUser = async (req, res, next) => {
     next(error);
   }
 };
-
-// GET user by ID
-
-// DELETE user
 
 // for create new user and send email activation notification
 const createNewUser = async (req, res, next) => {
@@ -87,8 +84,46 @@ const createNewUser = async (req, res, next) => {
 };
 
 // for activate user account
+const activateUserAccount = async (req, res, next) => {
+  try {
+    const token = req.body.token;
+    if (!token) throw createError(404, "Token not found");
+
+    try {
+      const decodedToken = JWT.verify(token, jwtActivationKey);
+      if (!decodedToken)
+        throw createError(401, "Unable to verify user account");
+
+      const userExists = await User.findOne({
+        where: { email: decodedToken.email },
+      });
+      if (userExists) {
+        throw createError(409, "User already exists. Please sign in");
+      }
+
+      await User.create(decodedToken);
+
+      return successResponse(res, {
+        statusCode: 201,
+        message: "Your account has been activated successfully",
+        payload: { decodedToken },
+      });
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        throw createError(401, "Token has expired");
+      } else if (error.name === "JsonWebTokenError") {
+        throw createError(401, "Invalid JSON Web Token");
+      } else {
+        throw error;
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getUser,
   createNewUser,
+  activateUserAccount,
 };
