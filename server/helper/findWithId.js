@@ -8,7 +8,7 @@ const findWithId = async (Model, id, attributes = {}) => {
       throw createError(404, `${Model.modelName} does not exist with this id`);
     return item;
   } catch (error) {
-    if (error instanceof sequelize.Error) {
+    if (error instanceof sequelize.BaseError) {
       throw createError(400, `Invalid ${Model.name} Id`);
     }
     throw error;

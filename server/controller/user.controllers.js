@@ -58,6 +58,34 @@ const getUserById = async (req, res, next) => {
   }
 };
 
+// DELETE user
+const deleteUserById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const attributes = { exclude: ["password"] };
+    const user = await findWithId(User, id, attributes);
+
+    const deleteUser = await User.destroy({
+      where: {
+        [Op.and]: [{ id: user.id }, { isAdmin: { [Op.eq]: false } }],
+      },
+    });
+    if (!deleteUser)
+      throw createError(
+        404,
+        "This user will never be deleted. Before being deleted, you have to make another user an admin."
+      );
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "User was deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // for create new user and send email activation notification
 const createNewUser = async (req, res, next) => {
   try {
@@ -179,6 +207,7 @@ const updateUserById = async (req, res, next) => {
 module.exports = {
   getUser,
   getUserById,
+  deleteUserById,
   createNewUser,
   activateUserAccount,
   updateUserById,
