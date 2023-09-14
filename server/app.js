@@ -37,7 +37,7 @@ app.use("/api/seeduser", seedRouter);
 
 // client error handling
 app.use((req, res, next) => {
-  next(createError(404, "Page Not Found "));
+  next(createError(404, "Page Not Found"));
 });
 
 // server error handling --> all errors handeled finally

@@ -20,6 +20,9 @@ const appName = process.env.APP_NAME || "Task Management System";
 const smtpUserName = process.env.SMTP_USERNAME || "";
 const smtpPassword = process.env.SMTP_PASSWORD || "";
 
+const uuidRegex =
+  "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}";
+
 module.exports = {
   serverPort,
   dbHost,
@@ -34,4 +37,5 @@ module.exports = {
   smtpPassword,
   jwtAccessKey,
   expireJwtForLoginAccess,
+  uuidRegex,
 };
