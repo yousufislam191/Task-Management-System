@@ -11,6 +11,10 @@ const {
   refreshTokenExpireTime,
 } = require("../secret");
 const { findWithEmail } = require("../helper/findWithEmail");
+const {
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+} = require("../helper/cookie");
 
 // FOR LOGIN
 const handleLogin = async (req, res, next) => {
@@ -30,13 +34,7 @@ const handleLogin = async (req, res, next) => {
       jwtAccessKey,
       accessTokenExpireTime
     );
-    res.cookie("accessToken", accessToken),
-      {
-        maxAge: 5 * 60 * 1000, // 5 minutes
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      };
+    setAccessTokenCookie(res, accessToken);
 
     // create refresh token
     const refreshToken = createJWT(
@@ -44,13 +42,7 @@ const handleLogin = async (req, res, next) => {
       jwtRefreshTokenKey,
       refreshTokenExpireTime
     );
-    res.cookie("refreshToken", refreshToken),
-      {
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      };
+    setRefreshTokenCookie(res, refreshToken);
 
     // Exclude 'password' from the user object before sending it in the response
     const userWithoutPassword = { ...user.get() };
@@ -97,13 +89,7 @@ const handleRefreshToken = async (req, res, next) => {
       jwtAccessKey,
       accessTokenExpireTime
     );
-    res.cookie("accessToken", accessToken),
-      {
-        maxAge: 5 * 60 * 1000, // 5 minutes
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      };
+    setAccessTokenCookie(res, accessToken);
 
     return successResponse(res, {
       statusCode: 200,

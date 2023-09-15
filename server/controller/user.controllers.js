@@ -12,7 +12,6 @@ const {
   jwtPasswordResetKey,
   expireJwtForResetPassword,
 } = require("../secret");
-const sendEmailWithNodamailer = require("../helper/email");
 const { createJWT } = require("../helper/createJWT");
 const { findWithId } = require("../helper/findWithId");
 const { findWithEmail } = require("../helper/findWithEmail");
@@ -115,12 +114,7 @@ const createNewUser = async (req, res, next) => {
     };
 
     // send activation email
-    try {
-      await sendEmailWithNodamailer(emailData);
-    } catch (error) {
-      next(createError(500, "Failed to send verification email"));
-      return;
-    }
+    sendEmail(emailData);
 
     return successResponse(res, {
       statusCode: 200,
@@ -277,12 +271,7 @@ const forgetUserPassword = async (req, res, next) => {
     };
 
     // send activation email
-    try {
-      await sendEmailWithNodamailer(emailData);
-    } catch (error) {
-      next(createError(500, "Failed to send reset passowrd email"));
-      return;
-    }
+    sendEmail(emailData);
 
     return successResponse(res, {
       statusCode: 200,
