@@ -1,0 +1,22 @@
+.area{
+    text-align: center;
+    background-color: aliceblue;
+    height: 100vh;
+    padding: 3rem;
+}
+.h1Text {
+    font-family: "Arial Black", sans-serif;
+}
+@media screen and (max-width: 480px) {
+    .h1Text {
+        font-size: 100px;
+    }
+    .paragraph{
+        font-size: small;
+    }
+  }
+  @media screen and (min-width: 768px) {
+    .h1Text {
+        font-size: 200px;
+    }
+  }
