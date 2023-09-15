@@ -34,7 +34,7 @@ const getUser = async (req, res, next) => {
       attributes,
     });
 
-    if (!users) throw createError(404, "User not found");
+    if (!users || users.lenght === 0) throw createError(404, "User not found");
 
     return successResponse(res, {
       statusCode: 200,
@@ -125,7 +125,7 @@ const createNewUser = async (req, res, next) => {
     return successResponse(res, {
       statusCode: 200,
       message: `A verification email has been sent to this email ${email}. Please go to your email to complete your registration process.`,
-      payload: { token },
+      payload: {},
     });
   } catch (error) {
     next(error);
@@ -178,11 +178,12 @@ const updateUserById = async (req, res, next) => {
     let updates = {};
 
     // === this field take value from request.body using loop, after that updated value will keep in the updates objects ===
-    for (let key in req.body) {
-      if (["name", "password"].includes(key)) {
+    const allowedFields = ["name", "password"];
+    for (const key in req.body) {
+      if (allowedFields.includes(key)) {
         updates[key] = req.body[key];
-      } else {
-        throw createError(404, "This info cannot be updated");
+      } else if (key === "email") {
+        throw createError(404, "Email cannot be updated");
       }
     }
 
@@ -222,7 +223,7 @@ const updateUserPassword = async (req, res, next) => {
 
     const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordMatch) {
-      throw createError(400, "Old Password did not match");
+      throw createError(400, "Old Password is incorrect");
     }
 
     const [rowsUpdated] = await User.update(

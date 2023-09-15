@@ -12,7 +12,11 @@ const expireJwtForActivateAccount =
   process.env.USER_ACCOUNT_JWT_EXPIRE_TIME || "5m";
 
 const jwtAccessKey = process.env.USER_LOGIN_KEY || "IUBT^*@#&%I@U&TEviq368rew";
-const expireJwtForLoginAccess = process.env.USER_LOGIN_JWT_EXPIRE_TIME || "15m";
+const accessTokenExpireTime = process.env.USER_ACCESS_TOKEN_EXPIRE_TIME || "5m";
+const jwtRefreshTokenKey =
+  process.env.REFRESH_TOKEN_KEY || "&^uytr76^YR&^$UYGEu3&^123";
+const refreshTokenExpireTime =
+  process.env.USER_REFRESH_TOKEN_EXPIRE_TIME || "7d";
 
 const jwtPasswordResetKey =
   process.env.USER_PASSWORD_RESET_KEY || "iu%&^TUf7r7yut12i3g&";
@@ -41,8 +45,10 @@ module.exports = {
   smtpUserName,
   smtpPassword,
   jwtAccessKey,
-  expireJwtForLoginAccess,
+  accessTokenExpireTime,
   uuidRegex,
   jwtPasswordResetKey,
   expireJwtForResetPassword,
+  refreshTokenExpireTime,
+  jwtRefreshTokenKey,
 };

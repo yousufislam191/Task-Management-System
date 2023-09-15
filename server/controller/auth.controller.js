@@ -1,9 +1,15 @@
 const createError = require("http-errors");
 const bcrypt = require("bcryptjs");
+const JWT = require("jsonwebtoken");
 const User = require("../models/user.model");
 const { successResponse } = require("./response.controller");
 const { createJWT } = require("../helper/createJWT");
-const { jwtAccessKey, expireJwtForLoginAccess } = require("../secret");
+const {
+  jwtAccessKey,
+  jwtRefreshTokenKey,
+  accessTokenExpireTime,
+  refreshTokenExpireTime,
+} = require("../secret");
 const { findWithEmail } = require("../helper/findWithEmail");
 
 // FOR LOGIN
@@ -22,11 +28,25 @@ const handleLogin = async (req, res, next) => {
     const accessToken = createJWT(
       { user },
       jwtAccessKey,
-      expireJwtForLoginAccess
+      accessTokenExpireTime
     );
     res.cookie("accessToken", accessToken),
       {
-        maxAge: 15 * 60 * 1000, // 15 minutes
+        maxAge: 5 * 60 * 1000, // 5 minutes
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      };
+
+    // create refresh token
+    const refreshToken = createJWT(
+      { user },
+      jwtRefreshTokenKey,
+      refreshTokenExpireTime
+    );
+    res.cookie("refreshToken", refreshToken),
+      {
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -50,6 +70,7 @@ const handleLogin = async (req, res, next) => {
 const handleLogout = async (req, res, next) => {
   try {
     res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
 
     return successResponse(res, {
       statusCode: 200,
@@ -60,4 +81,61 @@ const handleLogout = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { handleLogin, handleLogout };
+
+// FOR REFRESH TOKEN
+const handleRefreshToken = async (req, res, next) => {
+  try {
+    const oldRefreshToken = req.cookies.refreshToken;
+    const decodedToken = JWT.verify(oldRefreshToken, jwtRefreshTokenKey);
+    if (!decodedToken) {
+      throw createError(401, "Invalid refresh token. Please login again");
+    }
+
+    // create access token
+    const accessToken = createJWT(
+      decodedToken.user,
+      jwtAccessKey,
+      accessTokenExpireTime
+    );
+    res.cookie("accessToken", accessToken),
+      {
+        maxAge: 5 * 60 * 1000, // 5 minutes
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      };
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "New access token generated successfully",
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// FOR PROTECTED ROUTE
+const handleProtectedRoute = async (req, res, next) => {
+  try {
+    const accessToken = req.cookies.accessToken;
+    const decodedToken = JWT.verify(accessToken, jwtAccessKey);
+    if (!decodedToken) {
+      throw createError(401, "Invalid access token. Please login again");
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Protected resourceses accessed successfully",
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = {
+  handleLogin,
+  handleLogout,
+  handleRefreshToken,
+  handleProtectedRoute,
+};
