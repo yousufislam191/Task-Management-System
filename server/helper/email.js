@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const { smtpUserName, smtpPassword } = require("../secret");
+const { smtpUserName, smtpPassword, appName } = require("../secret");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const sendEmailWithNodamailer = async (emailData) => {
   try {
     const mailOptions = {
-      from: `"Dine Drop "${smtpUserName}`, // sender email address
+      from: `${appName} ${smtpUserName}`, // sender email address
       to: emailData.email, // receiver email address
       subject: emailData.subject, // subject of email
       text: emailData.text, // text of email

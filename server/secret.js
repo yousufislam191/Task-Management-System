@@ -14,6 +14,11 @@ const expireJwtForActivateAccount =
 const jwtAccessKey = process.env.USER_LOGIN_KEY || "IUBT^*@#&%I@U&TEviq368rew";
 const expireJwtForLoginAccess = process.env.USER_LOGIN_JWT_EXPIRE_TIME || "15m";
 
+const jwtPasswordResetKey =
+  process.env.USER_PASSWORD_RESET_KEY || "iu%&^TUf7r7yut12i3g&";
+const expireJwtForResetPassword =
+  process.env.USER_PASSWORD_RESET_JWT_EXPIRE_TIME || "10m";
+
 const clientURL = process.env.CLIENT_URL || "";
 const appName = process.env.APP_NAME || "Task Management System";
 
@@ -38,4 +43,6 @@ module.exports = {
   jwtAccessKey,
   expireJwtForLoginAccess,
   uuidRegex,
+  jwtPasswordResetKey,
+  expireJwtForResetPassword,
 };

@@ -9,10 +9,13 @@ const {
   expireJwtForActivateAccount,
   appName,
   clientURL,
+  jwtPasswordResetKey,
+  expireJwtForResetPassword,
 } = require("../secret");
 const sendEmailWithNodamailer = require("../helper/email");
 const { createJWT } = require("../helper/createJWT");
 const { findWithId } = require("../helper/findWithId");
+const { findWithEmail } = require("../helper/findWithEmail");
 
 // GET all user by admin
 const getUser = async (req, res, next) => {
@@ -247,6 +250,79 @@ const updateUserPassword = async (req, res, next) => {
   }
 };
 
+// Forget user password
+const forgetUserPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const userData = await findWithEmail(User, email, next);
+
+    // create token
+    const token = createJWT(
+      { email },
+      jwtPasswordResetKey,
+      expireJwtForResetPassword
+    );
+
+    //prepare email
+    const emailData = {
+      email,
+      subject: `Reset your password`, // Subject line
+      text: "Reset your password", // plain text body
+      html: `
+    <h2>Hello ${userData.name}</h2>
+    <h3>Thanks for requesting to reset your password.</h3>
+    <h4>Please click here to <a href="${clientURL}/api/reset-password/${token}" target="_blank">reset your password</a>. The Link will be expire after ${expireJwtForResetPassword}.</h4>
+    `, // html body
+    };
+
+    // send activation email
+    try {
+      await sendEmailWithNodamailer(emailData);
+    } catch (error) {
+      next(createError(500, "Failed to send reset passowrd email"));
+      return;
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: `A reset password link has been sent to this email ${email}. Please go to your email to reset your password.`,
+      payload: { token },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Forget user password
+const resetUserPassword = async (req, res, next) => {
+  try {
+    const { token, password } = req.body;
+
+    const decoded = JWT.verify(token, jwtPasswordResetKey);
+    if (!decoded) throw createError(400, "Unable to verify user account");
+
+    const [rowsUpdated] = await User.update(
+      { password: password },
+      {
+        where: { email: decoded.email },
+        returning: true, // Return the updated user(s)
+        plain: true,
+      }
+    );
+    if (rowsUpdated === 0) {
+      throw createError(400, "Password reset failed. Please try again");
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Password reset successfully",
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getUser,
   getUserById,
@@ -255,4 +331,6 @@ module.exports = {
   activateUserAccount,
   updateUserById,
   updateUserPassword,
+  forgetUserPassword,
+  resetUserPassword,
 };

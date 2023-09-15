@@ -4,19 +4,14 @@ const User = require("../models/user.model");
 const { successResponse } = require("./response.controller");
 const { createJWT } = require("../helper/createJWT");
 const { jwtAccessKey, expireJwtForLoginAccess } = require("../secret");
+const { findWithEmail } = require("../helper/findWithEmail");
 
 // FOR LOGIN
 const handleLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email: email } });
-    if (!user) {
-      throw createError(
-        404,
-        "User doesn't exist with this email address. Please register first."
-      );
-    }
+    const user = await findWithEmail(User, email, next);
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {

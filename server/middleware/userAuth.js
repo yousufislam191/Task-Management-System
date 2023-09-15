@@ -93,8 +93,36 @@ const passwordUpdateInValidator = [
     }),
 ];
 
+const forgetPasswordValidator = [
+  check("email")
+    .trim()
+    .normalizeEmail()
+    .notEmpty()
+    .withMessage("Email is missing")
+    .isEmail()
+    .withMessage("Invalid email address")
+    .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .withMessage("Invalid email address"),
+];
+
+const resetPasswordValidator = [
+  check("token").trim().notEmpty().withMessage("Token is missing"),
+  check("password")
+    .trim()
+    .notEmpty()
+    .withMessage("Password is missing")
+    .isLength({ min: 8 })
+    .withMessage("Password must have at least 8 characters")
+    .isStrongPassword()
+    .withMessage(
+      "Password is not a strong. Must be one uppercase, lowercase, number and special characters"
+    ),
+];
+
 module.exports = {
   signUpValidator,
   signInValidator,
   passwordUpdateInValidator,
+  forgetPasswordValidator,
+  resetPasswordValidator,
 };

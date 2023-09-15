@@ -6,12 +6,16 @@ const {
   getUserById,
   deleteUserById,
   updateUserPassword,
+  forgetUserPassword,
+  resetUserPassword,
 } = require("../controller/user.controllers");
 const { validationHandler } = require("../middleware");
 const { isLoggedIn, isLoggedOut, isAdmin } = require("../middleware/auth");
 const {
   signUpValidator,
   passwordUpdateInValidator,
+  forgetPasswordValidator,
+  resetPasswordValidator,
 } = require("../middleware/userAuth");
 const { uuidRegex } = require("../secret");
 
@@ -35,6 +39,18 @@ userRouter.put(
   passwordUpdateInValidator,
   validationHandler,
   updateUserPassword
+);
+userRouter.post(
+  "/forgot-password",
+  forgetPasswordValidator,
+  validationHandler,
+  forgetUserPassword
+);
+userRouter.put(
+  "/reset-password",
+  resetPasswordValidator,
+  validationHandler,
+  resetUserPassword
 );
 
 module.exports = userRouter;
