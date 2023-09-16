@@ -11,6 +11,8 @@ import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
 
 const ForgotPassword = () => {
+  const [loading, setLoading] = useState(true);
+
   const userSchema = Yup.object({
     email: Yup.string()
       .required("Email address is required")

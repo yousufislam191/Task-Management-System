@@ -9,6 +9,7 @@ const { errorResponse } = require("./controller/response.controller");
 const seedRouter = require("./routes/seed.routes");
 const userRouter = require("./routes/user.routes");
 const authRouter = require("./routes/auth.routes");
+const { corsOrigin } = require("./secret");
 const app = express();
 
 require("./config/db");
@@ -19,7 +20,7 @@ const limiter = rateLimit({
   message: "Too many requests from this IP. Please try again later",
 });
 
-app.use(cors({ credentials: true, origin: "http://127.0.0.1:5173/" }));
+app.use(cors({ credentials: true, origin: corsOrigin }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());

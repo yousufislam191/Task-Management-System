@@ -25,6 +25,7 @@ const expireJwtForResetPassword =
 
 const clientURL = process.env.CLIENT_URL || "";
 const appName = process.env.APP_NAME || "Task Management System";
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost";
 
 const smtpUserName = process.env.SMTP_USERNAME || "";
 const smtpPassword = process.env.SMTP_PASSWORD || "";
@@ -42,6 +43,7 @@ module.exports = {
   expireJwtForActivateAccount,
   clientURL,
   appName,
+  corsOrigin,
   smtpUserName,
   smtpPassword,
   jwtAccessKey,

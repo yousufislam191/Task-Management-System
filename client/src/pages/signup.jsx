@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Link,
@@ -18,16 +18,16 @@ import axios from "axios";
 import * as Yup from "yup";
 import { ToastContainer } from "react-toastify";
 
-import Loading from "../components/Loading";
 import SideImage from "../components/SideImage";
 import showToast from "../components/showToast";
 import theme from "../layout/theme";
 import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
+import apiHostName from "../../secret";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -56,43 +56,30 @@ const SignUp = () => {
       password: "",
     },
     onSubmit: async (values, helpers) => {
-      console.log(values);
-      // const res = await axios
-      //   .post(`${apiHostName}/user/signin`, {
-      //     email: values.email,
-      //     password: values.password,
-      //   })
-      //   .catch((err) => {
-      //     notify(err.response.status, err.response.data.message);
-      //     // console.log(err);
-      //   });
-      // setLoading(true);
-      // if (res) {
-      //   // console.log(res.data.user);
-      //   localStorage.setItem("u_id", JSON.stringify(res.data.user._id));
-      //   const userInfo = res.data.user;
-      //   notify(res.status, res.data.message);
-      //   navigate("/dashboard", {
-      //     state: {
-      //       userInfo,
-      //     },
-      //   });
-      // }
+      setLoading(false);
+      const res = await axios
+        .post(`${apiHostName}/user/register`, {
+          name: values.name,
+          email: values.email,
+          password: values.password,
+        })
+        .catch((err) => {
+          notify(err.response.status, err.response.data.message);
+        });
+      if (res.data.success === true) {
+        setLoading(true);
+        notify(res.status, res.data.message);
+        setTimeout(() => {
+          navigate("/");
+        }, 5000);
+      }
     },
     validationSchema: userSchema,
   });
   const notify = (status, message) => showToast(status, message);
 
-  useEffect(() => {
-    setLoading(true);
-    const u_id = JSON.parse(localStorage.getItem("u_id"));
-    if (u_id) {
-      navigate("/dashboard");
-    }
-  }, []);
   return (
     <>
-      {loading ? null : <Loading />}
       <ToastContainer />
       <ThemeProvider theme={theme}>
         <Grid container component="main" sx={{ height: "100vh" }}>

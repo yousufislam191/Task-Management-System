@@ -27,7 +27,7 @@ import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -48,40 +48,40 @@ const SignIn = () => {
       password: "",
     },
     onSubmit: async (values, helpers) => {
-      setLoading(true);
-      console.log(values);
-      // const res = await axios
-      //   .post(`${apiHostName}/user/signin`, {
-      //     email: values.email,
-      //     password: values.password,
-      //   })
-      //   .catch((err) => {
-      //     notify(err.response.status, err.response.data.message);
-      //     // console.log(err);
-      //   });
       // setLoading(true);
-      // if (res) {
-      //   // console.log(res.data.user);
-      //   localStorage.setItem("u_id", JSON.stringify(res.data.user._id));
-      //   const userInfo = res.data.user;
-      //   notify(res.status, res.data.message);
-      //   navigate("/dashboard", {
-      //     state: {
-      //       userInfo,
-      //     },
-      //   });
-      // }
+      // console.log(values);
+      const res = await axios
+        .post(`${apiHostName}/user/signin`, {
+          email: values.email,
+          password: values.password,
+        })
+        .catch((err) => {
+          notify(err.response.status, err.response.data.message);
+          // console.log(err);
+        });
+      setLoading(true);
+      if (res) {
+        // console.log(res.data.user);
+        localStorage.setItem("u_id", JSON.stringify(res.data.user._id));
+        const userInfo = res.data.user;
+        notify(res.status, res.data.message);
+        navigate("/dashboard", {
+          state: {
+            userInfo,
+          },
+        });
+      }
     },
     validationSchema: userSchema,
   });
   const notify = (status, message) => showToast(status, message);
 
   useEffect(() => {
-    setLoading(true);
-    const u_id = JSON.parse(localStorage.getItem("u_id"));
-    if (u_id) {
-      navigate("/dashboard");
-    }
+    // setLoading(true);
+    // const u_id = JSON.parse(localStorage.getItem("u_id"));
+    // if (u_id) {
+    //   navigate("/dashboard");
+    // }
   }, []);
 
   return (

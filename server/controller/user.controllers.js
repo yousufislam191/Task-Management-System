@@ -15,6 +15,7 @@ const {
 const { createJWT } = require("../helper/createJWT");
 const { findWithId } = require("../helper/findWithId");
 const { findWithEmail } = require("../helper/findWithEmail");
+const sendEmail = require("../helper/sendEmail");
 
 // GET all user by admin
 const getUser = async (req, res, next) => {
