@@ -25,7 +25,7 @@ import theme from "../layout/theme";
 import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
 
-const SignIn = () => {
+const SignUp = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -34,21 +34,28 @@ const SignIn = () => {
   };
 
   const userSchema = Yup.object({
+    name: Yup.string()
+      .required("Name is required")
+      .min(3, "Name must be at least 3 characters"),
     email: Yup.string()
       .required("Email address is required")
       .email("Invalid email address"),
     password: Yup.string()
       .required("Password is required")
-      .min(8, "Password must be at least 8 characters"),
+      .min(8, "Password must be at least 8 characters")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+      ),
   });
 
   const formik = useFormik({
     initialValues: {
+      name: "",
       email: "",
       password: "",
     },
     onSubmit: async (values, helpers) => {
-      setLoading(true);
       console.log(values);
       // const res = await axios
       //   .post(`${apiHostName}/user/signin`, {
@@ -83,7 +90,6 @@ const SignIn = () => {
       navigate("/dashboard");
     }
   }, []);
-
   return (
     <>
       {loading ? null : <Loading />}
@@ -110,10 +116,23 @@ const SignIn = () => {
               }}
             >
               <Typography component="h1" variant="h3" align="left">
-                Sign In
+                Sign Up
               </Typography>
               <Box sx={{ mt: 2 }}>
                 <form onSubmit={formik.handleSubmit}>
+                  <TextField
+                    margin="normal"
+                    fullWidth
+                    id="name"
+                    label="Name"
+                    name="name"
+                    autoComplete="name"
+                    type="name"
+                    error={formik.errors.name}
+                    onChange={formik.handleChange}
+                    helperText={formik.errors.name}
+                    autoFocus
+                  />
                   <TextField
                     margin="normal"
                     fullWidth
@@ -156,23 +175,18 @@ const SignIn = () => {
                     }}
                   />
                   {loading ? (
-                    <FullWidthSubmitButton text={"Sign In"} />
+                    <FullWidthSubmitButton text={"Sign Up"} />
                   ) : (
                     <FullWidthLoadingButton />
                   )}
                 </form>
-                <div>
-                  <Typography variant="body2" align="left">
-                    <Link href="/forgot-password">Forgot Password?</Link>
+                <div className="flex justify-center text-center gap-3">
+                  <Typography variant="body2" align="center">
+                    Have an account?
                   </Typography>
-                  <div className="flex justify-center text-center gap-3">
-                    <Typography variant="body2" align="center">
-                      Don't have an account?
-                    </Typography>
-                    <Typography variant="body2" align="center">
-                      <Link href="/signup">Sign Up</Link>
-                    </Typography>
-                  </div>
+                  <Typography variant="body2" align="center">
+                    <Link href="/">Sign In</Link>
+                  </Typography>
                 </div>
               </Box>
             </Box>
@@ -183,4 +197,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
