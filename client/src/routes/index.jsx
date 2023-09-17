@@ -4,6 +4,7 @@ import SignIn from "../pages/signin";
 import NotFoundPage from "../pages/nofFound";
 import SignUp from "../pages/signup";
 import ForgotPassword from "../pages/forgotPassword";
+import EmailVerification from "../pages/emailVerification";
 
 const RouterPath = () => {
   return (
@@ -13,6 +14,11 @@ const RouterPath = () => {
           <Route exact path="/" element={<SignIn />} />
           <Route exact path="/signup" element={<SignUp />} />
           <Route exact path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            exact
+            path="/verify-email/:token"
+            element={<EmailVerification />}
+          />
           <Route exact path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

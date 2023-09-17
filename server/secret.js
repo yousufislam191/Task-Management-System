@@ -23,7 +23,7 @@ const jwtPasswordResetKey =
 const expireJwtForResetPassword =
   process.env.USER_PASSWORD_RESET_JWT_EXPIRE_TIME || "10m";
 
-const clientURL = process.env.CLIENT_URL || "";
+const clientURL = process.env.CLIENT_URL || "http://localhost";
 const appName = process.env.APP_NAME || "Task Management System";
 const corsOrigin = process.env.CORS_ORIGIN || "http://localhost";
 

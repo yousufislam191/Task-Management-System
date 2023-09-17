@@ -96,10 +96,12 @@ const createNewUser = async (req, res, next) => {
     const { name, email, password } = req.body;
 
     // create token
-    const token = createJWT(
-      { name, email, password },
-      jwtActivationKey,
-      expireJwtForActivateAccount
+    const token = btoa(
+      createJWT(
+        { name, email, password },
+        jwtActivationKey,
+        expireJwtForActivateAccount
+      )
     );
 
     //prepare email
@@ -110,7 +112,7 @@ const createNewUser = async (req, res, next) => {
       html: `
     <h2>Hello ${name}</h2>
     <h3>Thanks for registering ${appName} account</h3>
-    <h4>Please click here to <a href="${clientURL}/api/activate/${token}" target="_blank">activate your account</a>. The Link will be expire after ${expireJwtForActivateAccount}.</h4>
+    <h4>Please click here to <a href="${clientURL}/verify-email/${token}" target="_blank">activate your account</a>. The Link will be expire after ${expireJwtForActivateAccount}.</h4>
     `, // html body
     };
 
@@ -120,7 +122,7 @@ const createNewUser = async (req, res, next) => {
     return successResponse(res, {
       statusCode: 200,
       message: `A verification email has been sent to this email ${email}. Please go to your email to complete your registration process.`,
-      payload: {},
+      payload: { token },
     });
   } catch (error) {
     next(error);
@@ -134,7 +136,7 @@ const activateUserAccount = async (req, res, next) => {
     if (!token) throw createError(404, "Token not found");
 
     try {
-      const decodedToken = JWT.verify(token, jwtActivationKey);
+      const decodedToken = JWT.verify(atob(token), jwtActivationKey);
       if (!decodedToken)
         throw createError(401, "Unable to verify user account");
 
@@ -149,14 +151,14 @@ const activateUserAccount = async (req, res, next) => {
 
       return successResponse(res, {
         statusCode: 201,
-        message: "Your account has been activated successfully",
+        message: "Your account has been activated successfully. Please login",
         payload: { decodedToken },
       });
     } catch (error) {
       if (error.name === "TokenExpiredError") {
         throw createError(401, "Token has expired");
       } else if (error.name === "JsonWebTokenError") {
-        throw createError(401, "Invalid JSON Web Token");
+        throw createError(401, "Invalid Token");
       } else {
         throw error;
       }
@@ -253,10 +255,8 @@ const forgetUserPassword = async (req, res, next) => {
     const userData = await findWithEmail(User, email, next);
 
     // create token
-    const token = createJWT(
-      { email },
-      jwtPasswordResetKey,
-      expireJwtForResetPassword
+    const token = btoa(
+      createJWT({ email }, jwtPasswordResetKey, expireJwtForResetPassword)
     );
 
     //prepare email
@@ -289,7 +289,7 @@ const resetUserPassword = async (req, res, next) => {
   try {
     const { token, password } = req.body;
 
-    const decoded = JWT.verify(token, jwtPasswordResetKey);
+    const decoded = JWT.verify(atob(token), jwtPasswordResetKey);
     if (!decoded) throw createError(400, "Unable to verify user account");
 
     const [rowsUpdated] = await User.update(
