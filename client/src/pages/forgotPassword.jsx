@@ -55,6 +55,7 @@ const ForgotPassword = () => {
               component={Paper}
               elevation={6}
               square
+              borderRadius={5}
             >
               <Box sx={{ mx: 4, my: 4 }}>
                 <Typography component="h3" variant="h3" align="left">
