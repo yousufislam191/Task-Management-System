@@ -6,30 +6,36 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Button } from "@mui/material";
+import { useAppContext } from "../context/AppContext";
 
-const ListItems = ({ onItemClick }) => {
+const ListItems = () => {
+  const { setActiveComponent } = useAppContext();
+
+  const handleItemClick = (componentName) => {
+    setActiveComponent(componentName);
+  };
+
   return (
     <>
-      <ListItemButton onClick={() => onItemClick("Dashboard")}>
+      <ListItemButton onClick={() => handleItemClick("Dashboard")}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItemButton>
-      <ListItemButton onClick={() => onItemClick("Tasks")}>
+      <ListItemButton onClick={() => handleItemClick("Tasks")}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="Tasks" />
       </ListItemButton>
-      <ListItemButton onClick={() => onItemClick("Manage Users")}>
+      <ListItemButton onClick={() => handleItemClick("Manage Users")}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Manage Users" />
       </ListItemButton>
-      <ListItemButton onClick={() => onItemClick("Profile")}>
+      <ListItemButton onClick={() => handleItemClick("Profile")}>
         <ListItemIcon>
           <AccountCircleIcon />
         </ListItemIcon>

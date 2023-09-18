@@ -15,23 +15,21 @@ import apiHostName from "../../secret";
 import theme from "../layout/theme";
 import DashboardAppBar from "../components/DashboardAppBar";
 import SideNavBar from "../components/SideNavBar";
+import { useUserContext } from "../context/UserContext";
+import { useAppContext } from "../context/AppContext";
 
 axios.defaults.withCredentials = true;
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isToken, setIsToken] = useState(false);
-  const [user, setUser] = useState();
   const [open, setOpen] = useState(true);
-  const [activeComponent, setActiveComponent] = useState("Dashboard");
+  const { setUser } = useUserContext();
+  const { activeComponent } = useAppContext();
 
   const notify = (status, message) => showToast(status, message);
   const toggleDrawer = () => {
     setOpen(!open);
-  };
-
-  const handleItemClick = (componentName) => {
-    setActiveComponent(componentName);
   };
 
   const handleLogoutButtonClick = async () => {
@@ -76,12 +74,7 @@ const Dashboard = () => {
             onToggleDrawer={toggleDrawer}
             onLogoutButtonClick={handleLogoutButtonClick}
           />
-          <SideNavBar
-            user={user}
-            open={open}
-            onToggleDrawer={toggleDrawer}
-            onItemClick={handleItemClick}
-          />
+          <SideNavBar open={open} onToggleDrawer={toggleDrawer} />
           <Box
             component="main"
             sx={{

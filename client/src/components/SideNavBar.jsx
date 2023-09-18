@@ -4,6 +4,7 @@ import MuiDrawer from "@mui/material/Drawer";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ListItems from "./ListItems";
 import styled from "@emotion/styled";
+import { useUserContext } from "../context/UserContext";
 
 const drawerWidth = 200;
 
@@ -34,7 +35,8 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const SideNavBar = (props) => {
-  const { user, open, onToggleDrawer, onItemClick } = props;
+  const { open, onToggleDrawer } = props;
+  const { user } = useUserContext();
   return (
     <>
       <Drawer variant="permanent" open={open}>
@@ -53,7 +55,7 @@ const SideNavBar = (props) => {
         </Toolbar>
         <Divider />
         <List component="nav">
-          <ListItems onItemClick={onItemClick} />
+          <ListItems />
         </List>
       </Drawer>
     </>

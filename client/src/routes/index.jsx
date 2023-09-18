@@ -6,6 +6,8 @@ import SignUp from "../pages/signup";
 import ForgotPassword from "../pages/forgotPassword";
 import EmailVerification from "../pages/emailVerification";
 import Dashboard from "../pages/dashboard";
+import { UserProvider } from "../context/UserContext";
+import { AppProvider } from "../context/AppContext";
 
 const RouterPath = () => {
   return (
@@ -20,7 +22,17 @@ const RouterPath = () => {
             path="/verify-email/:token"
             element={<EmailVerification />}
           />
-          <Route exact path="/dashboard" element={<Dashboard />} />
+          <Route
+            exact
+            path="/dashboard"
+            element={
+              <UserProvider>
+                <AppProvider>
+                  <Dashboard />
+                </AppProvider>
+              </UserProvider>
+            }
+          />
           <Route exact path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
