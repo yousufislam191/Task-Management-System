@@ -5,6 +5,7 @@ import NotFoundPage from "../pages/nofFound";
 import SignUp from "../pages/signup";
 import ForgotPassword from "../pages/forgotPassword";
 import EmailVerification from "../pages/emailVerification";
+import Dashboard from "../pages/dashboard";
 
 const RouterPath = () => {
   return (
@@ -19,6 +20,7 @@ const RouterPath = () => {
             path="/verify-email/:token"
             element={<EmailVerification />}
           />
+          <Route exact path="/dashboard" element={<Dashboard />} />
           <Route exact path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

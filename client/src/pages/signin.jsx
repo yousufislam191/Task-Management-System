@@ -18,12 +18,14 @@ import axios from "axios";
 import * as Yup from "yup";
 import { ToastContainer } from "react-toastify";
 
-import Loading from "../components/Loading";
 import SideImage from "../components/SideImage";
 import showToast from "../components/showToast";
 import theme from "../layout/theme";
 import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
+import apiHostName from "../../secret";
+
+axios.defaults.withCredentials = true;
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -48,45 +50,49 @@ const SignIn = () => {
       password: "",
     },
     onSubmit: async (values, helpers) => {
-      // setLoading(true);
-      // console.log(values);
+      setLoading(false);
       const res = await axios
-        .post(`${apiHostName}/user/signin`, {
+        .post(`${apiHostName}/auth/login`, {
           email: values.email,
           password: values.password,
         })
         .catch((err) => {
+          setLoading(true);
           notify(err.response.status, err.response.data.message);
-          // console.log(err);
         });
-      setLoading(true);
-      if (res) {
-        // console.log(res.data.user);
-        localStorage.setItem("u_id", JSON.stringify(res.data.user._id));
-        const userInfo = res.data.user;
+      if (res.data.success === true) {
+        setLoading(true);
         notify(res.status, res.data.message);
-        navigate("/dashboard", {
-          state: {
-            userInfo,
-          },
-        });
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
       }
     },
     validationSchema: userSchema,
   });
   const notify = (status, message) => showToast(status, message);
 
+  const checkAccessToken = async () => {
+    try {
+      const res = await axios.get(`${apiHostName}/auth/refresh-token`, {
+        withCredentials: true,
+      });
+      if (res.data.success === true) {
+        setLoading(true);
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      console.log(err.response.data.message);
+    }
+  };
+
   useEffect(() => {
-    // setLoading(true);
-    // const u_id = JSON.parse(localStorage.getItem("u_id"));
-    // if (u_id) {
-    //   navigate("/dashboard");
-    // }
+    setLoading(true);
+    checkAccessToken();
   }, []);
 
-  return (
+  return loading ? (
     <>
-      {loading ? null : <Loading />}
       <ToastContainer />
       <ThemeProvider theme={theme}>
         <Grid container component="main" sx={{ height: "100vh" }}>
@@ -180,6 +186,8 @@ const SignIn = () => {
         </Grid>
       </ThemeProvider>
     </>
+  ) : (
+    <h1>Loading...</h1>
   );
 };
 
