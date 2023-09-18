@@ -1,0 +1,20 @@
+For Task model
+
+#dashboard
+--> Dashboard = pie chart
+--> Tasks
+--> Manage Users (Admin Only)
+--> Profile
+
+# for users Dashboard
+--> Task id
+--> Title
+--> Description
+--> Assigned Date
+--> Deadline
+--> Status (Assigned, In Progress, Done)  [edit by user]
+        >>> assign = 0, accept = 1, Progress = 2, done = 3
+--> Created By Task (means admin id)
+--> Created By User Tag
+--> Assigned To Task (means user id)
+--> Comments [edit by user]

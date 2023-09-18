@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(xssClean());
-app.use(limiter);
+// app.use(limiter);
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);

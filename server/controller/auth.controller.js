@@ -91,10 +91,14 @@ const handleRefreshToken = async (req, res, next) => {
     );
     setAccessTokenCookie(res, accessToken);
 
+    // Exclude 'password' from the user object before sending it in the response
+    const user = { ...decodedToken.user };
+    delete user.password;
+
     return successResponse(res, {
       statusCode: 200,
       message: "New access token generated successfully",
-      payload: {},
+      payload: user,
     });
   } catch (error) {
     next(error);

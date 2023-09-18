@@ -9,6 +9,7 @@ const FullWidthLoadingButton = () => {
       variant="contained"
       sx={{ mt: 3, mb: 2 }}
       disabled
+      style={{ textTransform: "capitalize" }}
     >
       Fetch Data
     </LoadingButton>

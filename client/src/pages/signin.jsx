@@ -30,6 +30,7 @@ axios.defaults.withCredentials = true;
 const SignIn = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [checkingkAccessToken, setCheckingkAccessToken] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -65,7 +66,7 @@ const SignIn = () => {
         notify(res.status, res.data.message);
         setTimeout(() => {
           navigate("/dashboard");
-        }, 2000);
+        }, 1500);
       }
     },
     validationSchema: userSchema,
@@ -78,7 +79,7 @@ const SignIn = () => {
         withCredentials: true,
       });
       if (res.data.success === true) {
-        setLoading(true);
+        setCheckingkAccessToken(true);
         navigate("/dashboard");
       }
     } catch (err) {
@@ -91,7 +92,7 @@ const SignIn = () => {
     checkAccessToken();
   }, []);
 
-  return loading ? (
+  return checkingkAccessToken ? (
     <>
       <ToastContainer />
       <ThemeProvider theme={theme}>
