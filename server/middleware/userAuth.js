@@ -7,7 +7,7 @@ const signUpValidator = [
     .trim()
     .notEmpty()
     .withMessage("Name is required")
-    .isLength({ min: 3 })
+    .isLength({ min: 3, max: 40 })
     .withMessage("Name should be between 3 and 40 characters")
     .isAlpha("en-US", { ignore: " -" })
     .withMessage("Name should only contain alphabet and space")

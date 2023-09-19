@@ -10,7 +10,7 @@ const {
   resetUserPassword,
 } = require("../controller/user.controllers");
 const { validationHandler } = require("../middleware");
-const { isLoggedIn, isLoggedOut, isAdmin } = require("../middleware/auth");
+const { isLoggedIn, isLoggedOut, checkIsAdmin } = require("../middleware/auth");
 const {
   signUpValidator,
   passwordUpdateInValidator,
@@ -21,7 +21,7 @@ const { uuidRegex } = require("../secret");
 
 const userRouter = require("express").Router();
 
-userRouter.get("/", isLoggedIn, isAdmin, getUser);
+userRouter.get("/", isLoggedIn, checkIsAdmin, getUser);
 userRouter.post(
   "/register",
   isLoggedOut,

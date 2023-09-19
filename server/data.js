@@ -60,27 +60,3 @@ const taskData = {
   ],
 };
 module.exports = { data, taskData };
-
-// comment: [
-//   [
-//     {
-//       userId: "34c48084-2b30-41b0-bf11-93831rz4j1bc9",
-//       message: "Lorem ipsum dolor sit amet, consectetur.",
-//     },
-//     {
-//       createdAt: "2023-09-17T19:08:53.000Z",
-//       updatedAt: "2023-09-17T19:08:53.000Z",
-//     },
-//   ],
-//   [
-//     {
-//       userId: "34c48084-2b30-41b0-bf11-93831rz4j1bc9",
-//       message:
-//         "Lorem ipsum dolor sit amet, consectetur. Lorem Ips but tristique sen",
-//     },
-//     {
-//       createdAt: "2023-09-17T19:08:53.000Z",
-//       updatedAt: "2023-09-17T19:08:53.000Z",
-//     },
-//   ],
-// ],

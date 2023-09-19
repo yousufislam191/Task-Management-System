@@ -12,6 +12,7 @@ const isLoggedIn = async (req, res, next) => {
     if (!decode) {
       throw createError(401, "Invalid access token. Please login again");
     }
+
     req.user = decode.user;
     next();
   } catch (error) {
@@ -31,7 +32,7 @@ const isLoggedOut = async (req, res, next) => {
   }
 };
 
-const isAdmin = async (req, res, next) => {
+const checkIsAdmin = async (req, res, next) => {
   try {
     if (req.user.isAdmin === false) {
       throw createError(403, "Forbidden... Cannot access to this page.");
@@ -41,4 +42,4 @@ const isAdmin = async (req, res, next) => {
     return next(error);
   }
 };
-module.exports = { isLoggedIn, isLoggedOut, isAdmin };
+module.exports = { isLoggedIn, isLoggedOut, checkIsAdmin };

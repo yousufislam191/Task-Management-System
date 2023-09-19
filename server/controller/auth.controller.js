@@ -28,9 +28,12 @@ const handleLogin = async (req, res, next) => {
       throw createError(401, "Email and password do not match");
     }
 
+    const userWithoutPassword = { ...user.get() };
+    delete userWithoutPassword.password;
+
     // create access token
     const accessToken = createJWT(
-      { user },
+      { user: userWithoutPassword },
       jwtAccessKey,
       accessTokenExpireTime
     );
@@ -38,15 +41,11 @@ const handleLogin = async (req, res, next) => {
 
     // create refresh token
     const refreshToken = createJWT(
-      { user },
+      { user: userWithoutPassword },
       jwtRefreshTokenKey,
       refreshTokenExpireTime
     );
     setRefreshTokenCookie(res, refreshToken);
-
-    // Exclude 'password' from the user object before sending it in the response
-    const userWithoutPassword = { ...user.get() };
-    delete userWithoutPassword.password;
 
     return successResponse(res, {
       statusCode: 200,
@@ -91,14 +90,10 @@ const handleRefreshToken = async (req, res, next) => {
     );
     setAccessTokenCookie(res, accessToken);
 
-    // Exclude 'password' from the user object before sending it in the response
-    const user = { ...decodedToken.user };
-    delete user.password;
-
     return successResponse(res, {
       statusCode: 200,
       message: "New access token generated successfully",
-      payload: user,
+      payload: decodedToken.user,
     });
   } catch (error) {
     next(error);

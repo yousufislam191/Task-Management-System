@@ -21,4 +21,44 @@ const getTask = async (req, res, next) => {
   }
 };
 
+// for create new Task
+const createNewTask = async (req, res, next) => {
+  try {
+    const createdByTask = req.user.id;
+    const { title, tag, description, deadline, createdToTask } = req.body;
+
+    if (createdByTask === createdToTask)
+      throw createError(
+        404,
+        "You are not allowed to create task for yourself."
+      );
+
+    const filter = {
+      [Op.and]: [{ createdToTask: createdToTask }, { title: title }],
+    };
+
+    const checkingExistingTask = await Task.findOne({ where: filter });
+    if (checkingExistingTask)
+      throw createError(409, "Same task already assigned for this user");
+
+    const newTask = {
+      title,
+      tag,
+      description,
+      deadline,
+      createdByTask,
+      createdToTask,
+    };
+    const task = await Task.create(newTask);
+
+    return successResponse(res, {
+      statusCode: 201,
+      message: "Task created successfully",
+      payload: { task },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = { createNewTask, getTask };
