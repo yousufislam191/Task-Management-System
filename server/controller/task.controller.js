@@ -69,4 +69,23 @@ const createNewTask = async (req, res, next) => {
   }
 };
 
-module.exports = { createNewTask, getTask };
+// for delete Task
+const deleteTaskById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const existingTask = await Task.findByPk(id);
+    if (!existingTask) throw createError(404, "Task is not available");
+
+    await Task.destroy({ where: { id: existingTask.id } });
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Task was deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { createNewTask, getTask, deleteTaskById };
