@@ -2,11 +2,19 @@ const createError = require("http-errors");
 const { Op } = require("sequelize");
 const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
+const User = require("../models/user.model");
 
 // GET all task by admin
 const getTask = async (req, res, next) => {
   try {
-    const tasks = await Task.findAll({});
+    const addAttributes = [
+      { model: User, as: "createdBy", attributes: ["name"] },
+      { model: User, as: "createdTo", attributes: ["name"] },
+    ];
+
+    const tasks = await Task.findAll({
+      include: addAttributes,
+    });
 
     if (!tasks || tasks.lenght === 0)
       throw createError(404, "Any tasks not available");
