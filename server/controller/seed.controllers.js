@@ -1,4 +1,5 @@
-const data = require("../data");
+const { data, taskData } = require("../data");
+const Task = require("../models/task.model");
 const User = require("../models/user.model");
 
 const seedUser = async (req, res, next) => {
@@ -15,4 +16,19 @@ const seedUser = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { seedUser };
+
+const seedTask = async (req, res, next) => {
+  try {
+    // deleting all existing tasks
+    await Task.destroy({ where: {} });
+
+    // inserting new taskss
+    const newTask = await Task.bulkCreate(taskData.tasks);
+
+    // successfull response
+    return res.status(201).json(newTask);
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = { seedUser, seedTask };

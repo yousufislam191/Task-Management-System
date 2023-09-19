@@ -17,6 +17,7 @@ import DashboardAppBar from "../components/DashboardAppBar";
 import SideNavBar from "../components/SideNavBar";
 import { useUserContext } from "../context/UserContext";
 import { useAppContext } from "../context/AppContext";
+import dateFormate from "../helper/dateFormate";
 
 axios.defaults.withCredentials = true;
 
@@ -24,7 +25,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [isToken, setIsToken] = useState(false);
   const [open, setOpen] = useState(true);
-  const { setUser } = useUserContext();
+  const { user, setUser } = useUserContext();
   const { activeComponent } = useAppContext();
 
   const notify = (status, message) => showToast(status, message);
@@ -88,9 +89,15 @@ const Dashboard = () => {
             }}
           >
             <Toolbar />
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Container
+              maxWidth="lg"
+              sx={{ mt: 4, mb: 4, backgroundColor: "orange" }}
+            >
               {activeComponent === "Dashboard" && (
-                <h1>Hello, this is the Dashboard component!</h1>
+                <h1>
+                  Hello, this is the Dashboard component!
+                  {dateFormate(user.createdAt)}
+                </h1>
               )}
               {activeComponent === "Tasks" && (
                 <h1>This is the Tasks component!</h1>

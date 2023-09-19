@@ -10,7 +10,7 @@ For Task model
 --> Task id
 --> Title
 --> Description
---> Assigned Date
+--> Assigned Date (createdAt -> timeStamp)
 --> Deadline
 --> Status (Assigned, In Progress, Done)  [edit by user]
         >>> assign = 0, accept = 1, Progress = 2, done = 3
