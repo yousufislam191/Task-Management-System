@@ -4,6 +4,7 @@ const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
 const User = require("../models/user.model");
 const { findTaskWithId } = require("../helper/findTaskWithId");
+const { sequelize } = require("../config/db");
 
 // GET all task by admin
 const getTask = async (req, res, next) => {
@@ -40,6 +41,36 @@ const getTaskById = async (req, res, next) => {
     return successResponse(res, {
       statusCode: 200,
       message: "Task was retured successfully",
+      payload: { task },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET All Task For Single User by User ID
+const getAllTaskForSingleUser = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const task = await Task.findAll({
+      where: { createdToTask: id },
+      attributes: [
+        "status",
+        [sequelize.fn("COUNT", sequelize.col("status")), "count"],
+      ],
+      group: ["status"],
+    });
+    if (!task)
+      throw createError(
+        404,
+        "Something went wrong for counting task status for this user"
+      );
+
+    return successResponse(res, {
+      statusCode: 200,
+      message:
+        "For this particular id task has been counted and it was retured successfully",
       payload: { task },
     });
   } catch (error) {
@@ -196,4 +227,5 @@ module.exports = {
   getTaskById,
   editTaskById,
   editTaskStatusById,
+  getAllTaskForSingleUser,
 };

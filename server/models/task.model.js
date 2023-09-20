@@ -56,7 +56,7 @@ const Task = sequelize.define("tasks", {
     defaultValue: 0,
     validate: {
       min: 0,
-      max: 3,
+      max: 2,
     },
   },
   createdByTask: {

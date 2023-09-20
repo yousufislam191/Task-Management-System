@@ -7,9 +7,11 @@ import PeopleIcon from "@mui/icons-material/People";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useAppContext } from "../context/AppContext";
+import { useUserContext } from "../context/UserContext";
 
 const ListItems = () => {
   const { setActiveComponent } = useAppContext();
+  const { user } = useUserContext();
 
   const handleItemClick = (componentName) => {
     setActiveComponent(componentName);
@@ -29,12 +31,14 @@ const ListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Tasks" />
       </ListItemButton>
-      <ListItemButton onClick={() => handleItemClick("Manage Users")}>
-        <ListItemIcon>
-          <PeopleIcon />
-        </ListItemIcon>
-        <ListItemText primary="Manage Users" />
-      </ListItemButton>
+      {user.isAdmin === true && (
+        <ListItemButton onClick={() => handleItemClick("Manage Users")}>
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Manage Users" />
+        </ListItemButton>
+      )}
       <ListItemButton onClick={() => handleItemClick("Profile")}>
         <ListItemIcon>
           <AccountCircleIcon />

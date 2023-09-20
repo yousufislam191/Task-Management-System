@@ -1,5 +1,4 @@
 const {
-  getUser,
   createNewUser,
   activateUserAccount,
   updateUserById,
@@ -8,6 +7,7 @@ const {
   updateUserPassword,
   forgetUserPassword,
   resetUserPassword,
+  getAllUsersWithTaskStatusCounts,
 } = require("../controller/user.controllers");
 const { validationHandler } = require("../middleware");
 const { isLoggedIn, isLoggedOut, checkIsAdmin } = require("../middleware/auth");
@@ -21,7 +21,7 @@ const { uuidRegex } = require("../secret");
 
 const userRouter = require("express").Router();
 
-userRouter.get("/", isLoggedIn, checkIsAdmin, getUser);
+userRouter.get("/", isLoggedIn, checkIsAdmin, getAllUsersWithTaskStatusCounts);
 userRouter.post(
   "/register",
   isLoggedOut,

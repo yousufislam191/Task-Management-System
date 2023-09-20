@@ -16,35 +16,7 @@ const { createJWT } = require("../helper/createJWT");
 const { findWithId } = require("../helper/findWithId");
 const { findWithEmail } = require("../helper/findWithEmail");
 const sendEmail = require("../helper/sendEmail");
-
-// GET all user by admin
-const getUser = async (req, res, next) => {
-  try {
-    const filter = {
-      isAdmin: {
-        [Op.eq]: false,
-      },
-    };
-
-    // Define the attributes to exclude
-    const attributes = { exclude: ["password"] };
-
-    const users = await User.findAll({
-      where: filter,
-      attributes,
-    });
-
-    if (!users || users.lenght === 0) throw createError(404, "User not found");
-
-    return successResponse(res, {
-      statusCode: 200,
-      message: "Users were retured successfully",
-      payload: { users },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+const Task = require("../models/task.model");
 
 // GET user by ID
 const getUserById = async (req, res, next) => {
@@ -314,6 +286,74 @@ const resetUserPassword = async (req, res, next) => {
   }
 };
 
+// GET All user with their task status count
+const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
+  try {
+    const currentUserId = req.user.id;
+
+    const users = await User.findAll({
+      where: {
+        id: {
+          [Op.not]: currentUserId,
+        },
+      },
+      exclude: ["password"],
+    });
+
+    if (!users || users.length === 0) {
+      throw createError(404, "User not found");
+    }
+
+    // Initialize an empty array to store the final response
+    const response = [];
+
+    // Loop through each user to retrieve their associated tasks and status counts
+    for (const user of users) {
+      // Perform a JOIN operation between User and Task tables on 'createdByTask' and 'createdToTask'
+      const tasks = await Task.findAll({
+        where: { createdToTask: user.id },
+        attributes: ["status"],
+      });
+
+      // Aggregate status counts
+      const statusCounts = tasks.reduce((acc, task) => {
+        const status = task.status;
+        if (!acc[status]) {
+          acc[status] = 1;
+        } else {
+          acc[status]++;
+        }
+        return acc;
+      }, {});
+
+      // Prepare user data with status counts
+      const userData = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        status: Object.keys(statusCounts).map((status) => ({
+          status: parseInt(status, 10),
+          count: statusCounts[status],
+        })),
+      };
+
+      // Add the user data to the response array
+      response.push(userData);
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Users with task status counts were retrieved successfully",
+      payload: response,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getUser,
   getUserById,
@@ -324,4 +364,5 @@ module.exports = {
   updateUserPassword,
   forgetUserPassword,
   resetUserPassword,
+  getAllUsersWithTaskStatusCounts,
 };

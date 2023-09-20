@@ -18,6 +18,10 @@ import SideNavBar from "../components/SideNavBar";
 import { useUserContext } from "../context/UserContext";
 import { useAppContext } from "../context/AppContext";
 import dateFormate from "../helper/dateFormate";
+import ManageUser from "../components/ManageUser";
+import Tasks from "../components/Tasks";
+import Profile from "../components/Profile";
+import Chart from "../components/Chart";
 
 axios.defaults.withCredentials = true;
 
@@ -89,25 +93,11 @@ const Dashboard = () => {
             }}
           >
             <Toolbar />
-            <Container
-              maxWidth="lg"
-              sx={{ mt: 4, mb: 4, backgroundColor: "orange" }}
-            >
-              {activeComponent === "Dashboard" && (
-                <h1>
-                  Hello, this is the Dashboard component!
-                  {dateFormate(user.createdAt)}
-                </h1>
-              )}
-              {activeComponent === "Tasks" && (
-                <h1>This is the Tasks component!</h1>
-              )}
-              {activeComponent === "Manage Users" && (
-                <h1>This is the Manage Users component!</h1>
-              )}
-              {activeComponent === "Profile" && (
-                <h1>This is the Profile component!</h1>
-              )}
+            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+              {activeComponent === "Dashboard" && <Chart />}
+              {activeComponent === "Tasks" && <Tasks />}
+              {activeComponent === "Manage Users" && <ManageUser />}
+              {activeComponent === "Profile" && <Profile />}
             </Container>
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}></Container>
           </Box>

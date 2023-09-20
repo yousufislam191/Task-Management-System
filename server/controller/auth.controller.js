@@ -81,6 +81,7 @@ const handleRefreshToken = async (req, res, next) => {
     if (!decodedToken) {
       throw createError(401, "Invalid refresh token. Please login again");
     }
+    delete decodedToken.user.password;
 
     // create access token
     const accessToken = createJWT(

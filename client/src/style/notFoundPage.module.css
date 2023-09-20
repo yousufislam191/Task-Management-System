@@ -20,3 +20,10 @@
         font-size: 200px;
     }
   }
+
+/* ==== For Error Message Component ==== */
+.errorArea{
+    text-align: center;
+    /* background-color: aliceblue; */
+    padding: 3rem;
+}
