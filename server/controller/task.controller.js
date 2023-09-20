@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
 const User = require("../models/user.model");
+const { findTaskWithId } = require("../helper/findTaskWithId");
 
 // GET all task by admin
 const getTask = async (req, res, next) => {
@@ -33,7 +34,9 @@ const getTask = async (req, res, next) => {
 const getTaskById = async (req, res, next) => {
   try {
     const id = req.params.id;
-    const task = await Task.findByPk(id);
+
+    const task = await findTaskWithId(id);
+
     return successResponse(res, {
       statusCode: 200,
       message: "Task was retured successfully",
@@ -89,10 +92,8 @@ const deleteTaskById = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    const existingTask = await Task.findByPk(id);
-    if (!existingTask) throw createError(404, "Task is not available");
-
-    await Task.destroy({ where: { id: existingTask.id } });
+    await findTaskWithId(id);
+    await Task.destroy({ where: { id: id } });
 
     return successResponse(res, {
       statusCode: 200,
@@ -131,7 +132,7 @@ const editTaskById = async (req, res, next) => {
       throw createError(404, "Task with this ID does not exist");
     }
 
-    const updatedTasks = await Task.findByPk(taskId);
+    const updatedTasks = await findTaskWithId(taskId);
 
     return successResponse(res, {
       statusCode: 200,
@@ -176,7 +177,7 @@ const editTaskStatusById = async (req, res, next) => {
       throw createError(404, "Task with this ID does not exist");
     }
 
-    const updatedTask = await Task.findByPk(taskId);
+    const updatedTask = await findTaskWithId(taskId);
 
     return successResponse(res, {
       statusCode: 200,
