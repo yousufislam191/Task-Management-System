@@ -355,7 +355,6 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
 };
 
 module.exports = {
-  getUser,
   getUserById,
   deleteUserById,
   createNewUser,
