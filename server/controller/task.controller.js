@@ -29,6 +29,21 @@ const getTask = async (req, res, next) => {
   }
 };
 
+// GET task by ID
+const getTaskById = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const task = await Task.findByPk(id);
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Task was retured successfully",
+      payload: { task },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // for create new Task
 const createNewTask = async (req, res, next) => {
   try {
@@ -88,4 +103,96 @@ const deleteTaskById = async (req, res, next) => {
   }
 };
 
-module.exports = { createNewTask, getTask, deleteTaskById };
+// Edit Task by Admin
+const editTaskById = async (req, res, next) => {
+  try {
+    const taskId = req.params.id;
+    let updates = {};
+
+    // === this field take value from request.body using loop, after that updated value will keep in the updates objects ===
+    const allowedFields = ["title", "tag", "description", "deadline"];
+    for (const key in req.body) {
+      if (allowedFields.includes(key)) {
+        updates[key] = req.body[key];
+      } else if (key === "status") {
+        throw createError(
+          404,
+          "You will not be able to modify status. When you will create a task then it goes to Assign status default."
+        );
+      }
+    }
+
+    const [rowsUpdated] = await Task.update(updates, {
+      where: { id: taskId },
+      returning: true, // Return the updated user(s)
+      plain: true,
+    });
+    if (rowsUpdated === 0) {
+      throw createError(404, "Task with this ID does not exist");
+    }
+
+    const updatedTasks = await Task.findByPk(taskId);
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Task was updated successfully",
+      payload: updatedTasks,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Edit Task status
+const editTaskStatusById = async (req, res, next) => {
+  try {
+    const taskId = req.params.id;
+    const allowedFields = ["status"];
+    const updates = {};
+
+    for (const key in req.body) {
+      if (
+        key === "title" ||
+        key === "description" ||
+        key === "deadline" ||
+        key === "tag"
+      ) {
+        throw createError(404, "You will not be able to update this");
+      }
+      if (allowedFields === null)
+        throw createError(404, "Status field is required");
+      if (allowedFields.includes(key)) {
+        updates[key] = req.body[key];
+      }
+    }
+
+    const [rowsUpdated] = await Task.update(updates, {
+      where: { id: taskId },
+      returning: true, // Return the updated user(s)
+      plain: true,
+    });
+
+    if (rowsUpdated === 0) {
+      throw createError(404, "Task with this ID does not exist");
+    }
+
+    const updatedTask = await Task.findByPk(taskId);
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: "Status updated successfully",
+      payload: updatedTask,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  createNewTask,
+  getTask,
+  deleteTaskById,
+  getTaskById,
+  editTaskById,
+  editTaskStatusById,
+};

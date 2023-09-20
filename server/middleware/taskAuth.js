@@ -1,6 +1,7 @@
 const { check } = require("express-validator");
 const createError = require("http-errors");
 const User = require("../models/user.model");
+const { errorResponse } = require("../controller/response.controller");
 
 const createTaskValidator = [
   check("title")

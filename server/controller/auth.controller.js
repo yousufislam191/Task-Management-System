@@ -84,7 +84,7 @@ const handleRefreshToken = async (req, res, next) => {
 
     // create access token
     const accessToken = createJWT(
-      decodedToken.user,
+      { user: decodedToken.user },
       jwtAccessKey,
       accessTokenExpireTime
     );
