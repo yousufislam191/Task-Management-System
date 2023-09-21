@@ -1,55 +1,36 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyledTableCell, StyledTableRow } from "../layout/tableTheme";
 import dateFormate from "../helper/dateFormate";
 import titleCase from "../helper/titleCase";
-import TaskDetails from "./TaskDetails";
 
-const TaskTableSingleRow = (props) => {
-  const { singleData } = props;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [rowId, setRowId] = useState();
-
-  const handleRowClick = (id) => {
-    setRowId(id);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+const TaskTableSingleRow = ({ task, onClick }) => {
+  const { title, deadline, status, createdBy, tag } = task;
 
   return (
     <>
-      <StyledTableRow
-        key={singleData.id}
-        onClick={() => handleRowClick(singleData.id)}
-        style={{ cursor: "pointer" }}
-      >
+      <StyledTableRow onClick={onClick} style={{ cursor: "pointer" }}>
         <StyledTableCell
           component="th"
           scope="row"
           style={{ fontWeight: "bold" }}
         >
-          {titleCase(singleData.title)}
+          {titleCase(title)}
         </StyledTableCell>
         <StyledTableCell align="center">
-          {dateFormate(singleData.deadline)}
+          {dateFormate(deadline)}
         </StyledTableCell>
         <StyledTableCell align="center">
-          {singleData.status === 0 ? (
+          {status === 0 ? (
             <p style={{ color: "blue" }}>Assigned</p>
-          ) : singleData.status === 1 ? (
+          ) : status === 1 ? (
             <p style={{ color: "orange" }}>In Progress</p>
-          ) : singleData.status === 2 ? (
+          ) : status === 2 ? (
             <p style={{ color: "green" }}>Done</p>
           ) : null}
         </StyledTableCell>
-        <StyledTableCell align="center">
-          {singleData.createdBy.name}
-        </StyledTableCell>
-        <StyledTableCell align="left">{singleData.tag}</StyledTableCell>
+        <StyledTableCell align="center">{createdBy.name}</StyledTableCell>
+        <StyledTableCell align="left">{tag}</StyledTableCell>
       </StyledTableRow>
-      <TaskDetails isOpen={isModalOpen} closeModal={closeModal} rowId={rowId} />
     </>
   );
 };

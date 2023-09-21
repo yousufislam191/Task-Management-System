@@ -7,7 +7,6 @@ import ErrorMessage from "./ErrorMessage";
 import {
   Box,
   Button,
-  Grid,
   Table,
   TableBody,
   TableHead,
@@ -16,6 +15,7 @@ import {
 } from "@mui/material";
 import { StyledTableCell } from "../layout/tableTheme";
 import TaskTableSingleRow from "./TaskTableSingleRow";
+import TaskDetailsModal from "./TaskDetailsModal";
 
 const Tasks = () => {
   const { user } = useUserContext();
@@ -23,7 +23,10 @@ const Tasks = () => {
   const [success, setSuccess] = useState();
   const [status, setStatus] = useState();
   const [errorMessage, setErrorMessage] = useState("");
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
+
+  const [selectedTaskId, setSelectedTaskId] = useState(null); // State to store the selected task ID
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getAllTasks = async () => {
     try {
@@ -45,6 +48,11 @@ const Tasks = () => {
     setLoading(false);
     getAllTasks();
   }, []);
+
+  const handleRowClick = (taskId) => {
+    setSelectedTaskId(taskId);
+    setIsModalOpen(true);
+  };
 
   return loading ? (
     user.isAdmin ? (
@@ -87,15 +95,22 @@ const Tasks = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data?.map((singleData) => (
+                {data?.map((task) => (
                   <TaskTableSingleRow
-                    key={singleData.id}
-                    singleData={singleData}
+                    key={task.id}
+                    task={task}
+                    onClick={() => handleRowClick(task.id)}
                   />
                 ))}
               </TableBody>
             </Table>
           </div>
+          {isModalOpen && selectedTaskId && (
+            <TaskDetailsModal
+              taskId={selectedTaskId}
+              onClose={() => setIsModalOpen(false)} // Close the modal
+            />
+          )}
         </>
       )
     ) : (
