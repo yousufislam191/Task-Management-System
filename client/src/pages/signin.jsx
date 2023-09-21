@@ -24,7 +24,7 @@ import theme from "../layout/theme";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
 import apiHostName from "../../secret";
 import Loading from "../components/Loading";
-import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
+import FullWidthSubmitButton from "../components/FullWidthSubmitButton";
 
 axios.defaults.withCredentials = true;
 
