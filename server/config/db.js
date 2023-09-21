@@ -1,18 +1,23 @@
-// const mysql = require("mysql2");
 const { Sequelize } = require("sequelize");
-const { dbHost, dbUserName, dbPass, dbName } = require("../secret");
+const { dbHost, dbUserName, dbPass, dbName, dbPort } = require("../secret");
 
 // ============ for MySQL with Sequelize Connetion ============
-const sequelize = new Sequelize(dbName, dbUserName, dbPass, {
-  host: dbHost,
+const sequelize = new Sequelize({
   dialect: "mysql",
-  operatorsAliases: false,
+  host: dbHost,
+  port: dbPort,
+  username: dbUserName,
+  password: dbPass,
+  database: dbName,
+  dialectOptions: {
+    ssl: { rejectUnauthorized: false },
+  },
 });
 
 const connectDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
+    console.log("Database connection has been established successfully.");
 
     // Synchronize the User model with the database
     try {
