@@ -133,6 +133,10 @@ const TaskDetailsModal = ({ taskId, onClose }) => {
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 2,
+                  "@media (max-width: 800px)": {
+                    flexDirection: "column",
+                    alignItems: "start",
+                  },
                 }}
               >
                 <Box
