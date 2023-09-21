@@ -21,10 +21,10 @@ import { ToastContainer } from "react-toastify";
 import SideImage from "../components/SideImage";
 import showToast from "../components/showToast";
 import theme from "../layout/theme";
-import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
 import apiHostName from "../../secret";
 import Loading from "../components/Loading";
+import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
 
 axios.defaults.withCredentials = true;
 
