@@ -1,9 +1,11 @@
 const { Sequelize } = require("sequelize");
+const mysql2 = require("mysql2");
 const { dbHost, dbUserName, dbPass, dbName, dbPort } = require("../secret");
 
 // ============ for MySQL with Sequelize Connetion ============
 const sequelize = new Sequelize({
   dialect: "mysql",
+  dialectModule: mysql2,
   host: dbHost,
   port: dbPort,
   username: dbUserName,
