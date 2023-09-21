@@ -21,7 +21,7 @@ import { ToastContainer } from "react-toastify";
 import SideImage from "../components/SideImage";
 import showToast from "../components/showToast";
 import theme from "../layout/theme";
-import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
+import FullWidthSubmitButton from "../components/FullWidthSubmitButton";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
 import apiHostName from "../../secret";
 
