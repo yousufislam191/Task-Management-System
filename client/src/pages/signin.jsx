@@ -24,6 +24,7 @@ import theme from "../layout/theme";
 import FullWidthSubmitButton from "../components/fullWidthSubmitButton";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
 import apiHostName from "../../secret";
+import Loading from "../components/Loading";
 
 axios.defaults.withCredentials = true;
 
@@ -188,7 +189,7 @@ const SignIn = () => {
       </ThemeProvider>
     </>
   ) : (
-    <h1>Loading...</h1>
+    <Loading />
   );
 };
 

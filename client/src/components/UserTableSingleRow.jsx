@@ -1,8 +1,21 @@
 import React from "react";
 import { StyledTableCell, StyledTableRow } from "../layout/tableTheme";
+import titleCase from "../helper/titleCase";
+import { Button, Menu, MenuItem } from "@mui/material";
+import MenuButton from "./MenuButton";
 
 const UserTableSingleRow = (props) => {
   const { singleData } = props;
+
+  //   const [anchorEl, setAnchorEl] = React.useState(null);
+  //   const open = Boolean(anchorEl);
+  //   const handleClick = (event) => {
+  //     setAnchorEl(event.currentTarget);
+  //   };
+  //   const handleClose = () => {
+  //     setAnchorEl(null);
+  //   };
+
   return (
     <StyledTableRow key={singleData.id}>
       <StyledTableCell
@@ -10,7 +23,7 @@ const UserTableSingleRow = (props) => {
         scope="row"
         style={{ fontWeight: "bold" }}
       >
-        {singleData.name}
+        {titleCase(singleData.name)}
       </StyledTableCell>
       <StyledTableCell align="left">{singleData.email}</StyledTableCell>
       {Array.from({ length: 3 }).map((_, index) => {
@@ -24,8 +37,18 @@ const UserTableSingleRow = (props) => {
           </StyledTableCell>
         );
       })}
-      <StyledTableCell align="right">
-        {singleData.isAdmin ? <p style={{ color: "green" }}>Yes</p> : "No"}
+      <StyledTableCell align="center">
+        {singleData.isAdmin ? (
+          <>
+            <MenuButton
+              name={"Yes"}
+              color={"success"}
+              itemName={"Remove Admin"}
+            />
+          </>
+        ) : (
+          <MenuButton name={"No"} color={"inherit"} itemName={"Make Admin"} />
+        )}
       </StyledTableCell>
     </StyledTableRow>
   );

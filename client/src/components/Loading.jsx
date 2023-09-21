@@ -1,30 +1,34 @@
-import React from "react";
-import { CSpinner } from "@coreui/react";
+import * as React from "react";
+import PropTypes from "prop-types";
+import { Typography, Skeleton, Grid } from "@mui/material";
+
+const variants = ["h1", "h2", "h3", "body1", "caption"];
+
+function TypographyDemo(props) {
+  const { loading = false } = props;
+
+  return (
+    <div>
+      {variants.map((variant) => (
+        <Typography component="div" key={variant} variant={variant}>
+          {loading ? <Skeleton /> : null}
+        </Typography>
+      ))}
+    </div>
+  );
+}
+
+TypographyDemo.propTypes = {
+  loading: PropTypes.bool,
+};
 
 const Loading = () => {
   return (
-    <div className="d-flex flex-column min-vh-100 min-vw-100">
-      <div className="d-flex flex-grow-1 justify-content-center align-items-center">
-        <CSpinner
-          color="primary"
-          variant="grow"
-          className="me-3"
-          style={{ width: "5rem", height: "5rem" }}
-        />
-        <CSpinner
-          color="dark"
-          variant="grow"
-          className="me-3"
-          style={{ width: "5rem", height: "5rem" }}
-        />
-        <CSpinner
-          color="secondary"
-          variant="grow"
-          className="fs-1"
-          style={{ width: "5rem", height: "5rem" }}
-        />
-      </div>
-    </div>
+    <Grid container spacing={8} sx={{ px: 6 }}>
+      <Grid item xs={12}>
+        <TypographyDemo loading />
+      </Grid>
+    </Grid>
   );
 };
 

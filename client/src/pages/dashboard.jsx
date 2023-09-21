@@ -21,6 +21,7 @@ import ManageUser from "../components/ManageUser";
 import Tasks from "../components/Tasks";
 import Profile from "../components/Profile";
 import Chart from "../components/Chart";
+import Loading from "../components/Loading";
 
 axios.defaults.withCredentials = true;
 
@@ -28,7 +29,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [isToken, setIsToken] = useState(false);
   const [open, setOpen] = useState(true);
-  const { user, setUser } = useUserContext();
+  const { setUser } = useUserContext();
   const { activeComponent } = useAppContext();
 
   const notify = (status, message) => showToast(status, message);
@@ -104,7 +105,7 @@ const Dashboard = () => {
       </ThemeProvider>
     </>
   ) : (
-    <h1>Loading...</h1>
+    <Loading />
   );
 };
 

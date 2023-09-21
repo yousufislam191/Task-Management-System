@@ -21,7 +21,7 @@ const UsersTable = ({ data }) => {
             <StyledTableCell align="center">Tasks Assigned</StyledTableCell>
             <StyledTableCell align="center">Tasks in Progress</StyledTableCell>
             <StyledTableCell align="center">Tasks Done</StyledTableCell>
-            <StyledTableCell align="right">Admin</StyledTableCell>
+            <StyledTableCell align="center">Admin</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>

@@ -4,6 +4,7 @@ import axios from "axios";
 import ErrorMessage from "./ErrorMessage";
 import UsersTable from "./UsersTable";
 import { Typography } from "@mui/material";
+import Loading from "./Loading";
 
 const ManageUser = () => {
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,7 @@ const ManageUser = () => {
       )}
     </>
   ) : (
-    <h1>Loading...</h1>
+    <Loading />
   );
 };
 
