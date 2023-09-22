@@ -4,7 +4,11 @@ const setAccessTokenCookie = (res, accessToken) => {
   res.cookie("accessToken", accessToken, {
     maxAge: 5 * 60 * 1000, // 5 minutes
     httpOnly: true,
-    secure: cookieProduction === "production",
+    secure: true,
+    domain:
+      cookieProduction === "production"
+        ? "https://task-management-system-eg5a.vercel.app"
+        : "localhost",
     sameSite: "none",
     path: "/",
   });
@@ -14,7 +18,11 @@ const setRefreshTokenCookie = (res, refreshToken) => {
   res.cookie("refreshToken", refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     httpOnly: true,
-    secure: cookieProduction === "production",
+    secure: true,
+    domain:
+      cookieProduction === "production"
+        ? "https://task-management-system-eg5a.vercel.app"
+        : "localhost",
     sameSite: "none",
     path: "/",
   });
