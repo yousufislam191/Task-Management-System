@@ -77,6 +77,10 @@ const handleLogout = async (req, res, next) => {
 const handleRefreshToken = async (req, res, next) => {
   try {
     const oldRefreshToken = req.cookies.refreshToken;
+    if (!oldRefreshToken) {
+      throw createError(404, "Refresh token not found");
+    }
+
     const decodedToken = JWT.verify(oldRefreshToken, jwtRefreshTokenKey);
     if (!decodedToken) {
       throw createError(401, "Invalid refresh token. Please login again");
