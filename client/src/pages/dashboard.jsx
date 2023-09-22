@@ -56,6 +56,7 @@ const Dashboard = () => {
       });
       if (res.data.success === true) {
         setIsToken(false);
+        console.log(res.data.payload);
         setUser(res.data.payload);
       }
     } catch (err) {
