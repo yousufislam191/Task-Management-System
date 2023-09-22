@@ -14,7 +14,7 @@
 - Update profile
 - Manage users by admin
 - Task management
-<h3>Technlogy that have been used</h3>
+<h3>Technology that have been used</h3>
 
 [React.js](https://react.dev/learn),
 [Material UI](https://mui.com/material-ui/getting-started/installation/),
@@ -25,7 +25,7 @@
 [Sequelize ORM](https://sequelize.org/docs/v6/getting-started/)
 
 <h1 align="center">Run this web application on your local server</h1>
-<p>Here is the step-by-step guideline that will help you run this project on your local server.</p>
+<p align="center">Here is the step-by-step guideline that will help you run this project on your local server.</p>
 
 1. **Open your terminal and clone the repository using this command**
 
