@@ -18,6 +18,6 @@ authRouter.post(
   handleLogin
 );
 authRouter.post("/logout", isLoggedIn, handleLogout);
-authRouter.get("/refresh-token", handleRefreshToken);
+authRouter.post("/refresh-token", handleRefreshToken);
 authRouter.get("/protected", handleProtectedRoute);
 module.exports = authRouter;
