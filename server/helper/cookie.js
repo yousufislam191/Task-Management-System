@@ -7,9 +7,9 @@ const setAccessTokenCookie = (res, accessToken) => {
     secure: true,
     domain:
       cookieProduction === "production"
-        ? "task-management-system-flax.vercel.app"
-        : // ? "task-management-system-eg5a.vercel.app"
-          `localhost:${serverPort}`,
+        ? // ? "task-management-system-flax.vercel.app"
+          "task-management-system-eg5a.vercel.app"
+        : `localhost:${serverPort}`,
     sameSite: "none",
     path: "/",
   });
@@ -22,9 +22,9 @@ const setRefreshTokenCookie = (res, refreshToken) => {
     secure: true,
     domain:
       cookieProduction === "production"
-        ? "task-management-system-flax.vercel.app"
-        : // ? "task-management-system-eg5a.vercel.app"
-          `localhost:${serverPort}`,
+        ? // ? "task-management-system-flax.vercel.app"
+          "task-management-system-eg5a.vercel.app"
+        : `localhost:${serverPort}`,
     sameSite: "none",
     path: "/",
   });
