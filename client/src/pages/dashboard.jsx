@@ -55,15 +55,17 @@ const Dashboard = () => {
         withCredentials: true,
       });
       if (res.data.success === true) {
-        setIsToken(true);
+        setIsToken(false);
         setUser(res.data.payload);
       }
     } catch (err) {
+      setIsToken(false);
       notify(err.response.status, err.response.data.message);
     }
   };
 
   useEffect(() => {
+    setIsToken(true);
     checkAccessToken();
   }, []);
 
