@@ -1,2 +1,113 @@
-<h1>Task Management System</h1>
-<h3>More info coming soon!!...</h3>
+<h3>API documentation coming soon!!...</h3>
+<h1 align="center">Task Management System</h1>
+<p align="center">
+<strong>"Task Management System"</strong> is a simple full-stack web application. Inside this app, the admin has more control than the user. The user will be able to just read their assigned task, update their task status and profile, and delete their account. On the other hand, admin will be able to do everything.
+</p>
+<h4>Visit website: https://task-management-system-flax.vercel.app</h4>
+<h3>Features that have been implemented</h3>
+
+- Login, Logout, and Registration authentication
+- Access token, and Refresh token based authentication
+- Role-based authorization
+- Account activated through token email verification
+- Reset password through token email verification
+- Update profile
+- Manage users by admin
+- Task management
+<h3>Technlogy that have been used</h3>
+
+[React.js](https://react.dev/learn),
+[Material UI](https://mui.com/material-ui/getting-started/installation/),
+[Tailwind CSS](https://tailwindcss.com/docs/installation),
+[Node.js](https://nodejs.org/en),
+[Express.js](https://expressjs.com/en/starter/installing.html),
+[MySQL](https://dev.mysql.com/doc/mysql-getting-started/en/),
+[Sequelize ORM](https://sequelize.org/docs/v6/getting-started/)
+
+<h1 align="center">Run this web application on your local server or computer</h1>
+<p>Here is the step-by-step guideline that will help you run this project on your local server.</p>
+
+1. **Open your terminal and clone the repository using this command**
+
+```terminal
+git clone https://github.com/yousufislam191/Task-Management-System.git
+```
+
+2. **After cloning, you will see a folder which name is `Task-Management-System`. Open this foler using vs code. After opening, you will see there are two folders which will be `client` and `server`.**
+
+---
+
+3. **For running front-end site, open your terminal in your vs code and run this three command**
+
+```terminal
+cd client
+npm install
+npm run dev
+```
+
+4. **You will get to show a URL where the front-end site is running, then open this link in your browser.**
+
+---
+
+5. **Now it's time to run the backend site, and there are some steps for running the backend site, and you have to follow these steps strictly; otherwise, you will face some errors.**
+6. **Open a new terminal in your vs code then run this two command.**
+
+```terminal
+cd server
+npm install
+```
+
+7. **Go to your email to create `SMTP App Password` or by clicking [here][1], or you can watch this [video][2] to understand the better way. After creating the password, you have to save this password in your notepad for later uses because you will never get it after closing the window.**
+
+[1]: https://security.google.com/settings/security/apppasswords "SMTP App Password"
+[2]: https://youtu.be/qpAI5qZR9ms?si=mlC-cNmT4gs5riMf "Youtube Video"
+
+8. **After that, create a new file in your root folder of the `server` folder which name will be `.env`**
+9. **Inside the `.env` file, you have to store some of your environment variables. Your environment variables must be exactly the same format. For example, `APP_NAME= Task Management System`. All environment variables are named below:**
+
+| Environment Variable Name           | Value                                                                                                                                                      |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SERVER_PORT                         | Your server port number, you can use any number, like `5100`                                                                                               |
+| DB_PORT                             | Your database port number like `3306`                                                                                                                      |
+| DB_HOST                             | Your database host name like `localhost`                                                                                                                   |
+| DB_USER_NAME                        | Your database username. By default your local mysql server username will be `root`                                                                         |
+| DB_PASS                             | Your database password                                                                                                                                     |
+| DB_NAME                             | Your database name                                                                                                                                         |
+| APP_NAME                            | You can be use any name such as `Task Management System`                                                                                                   |
+| CLIENT_URL                          | Your client site url which you are already running for front-end                                                                                           |
+| CORS_ORIGIN                         | Your client site url which you are already running for front-end                                                                                           |
+| USER_ACCOUNT_ACTIVATE_KEY           | You can be use any some word like uppercase, lowercase, number                                                                                             |
+| USER_ACCOUNT_JWT_EXPIRE_TIME        | You can be use any number like `10m` (ten minutes)                                                                                                         |
+| USER_LOGIN_KEY                      | You can be use any some word like uppercase, lowercase, number                                                                                             |
+| USER_ACCESS_TOKEN_EXPIRE_TIME       | You can be use any number like `5m` (five minutes)                                                                                                         |
+| REFRESH_TOKEN_KEY                   | You can be use any some word like uppercase, lowercase, number                                                                                             |
+| USER_REFRESH_TOKEN_EXPIRE_TIME      | You can be use any number but it must be a day like `7d` (seven days). And of course its duration must be greater than the `USER_ACCESS_TOKEN_EXPIRE_TIME` |
+| USER_PASSWORD_RESET_KEY             | You can be use any some word like uppercase, lowercase, number                                                                                             |
+| USER_PASSWORD_RESET_JWT_EXPIRE_TIME | You can be use any number like `10m` (ten minutes)                                                                                                         |
+| SMTP_USERNAME                       | This will be your email and the email you used to create the `SMTP App Password` in step 7 will be here                                                    |
+| SMTP_PASSWORD                       | This will be your password which you created in step 7 and saved in notepad                                                                                |
+
+10. **Then save changes and run this command.**
+
+```terminal
+npm run dev
+```
+
+<h4 align="center">Ok now enjoy everything ✌️</h4>
+<h1>About Developer</h1>
+
+**[Facebook][1]** |
+**[Linkedin][2]** |
+**[Instagram][3]** |
+**[Twittwer][4]** |
+**[Github][5]** |
+**[Kaggle][6]** |
+**[Website][7]**
+
+[1]: https://fb.com/yousufislam191
+[2]: https://linkedin.com/in/yousufislam191
+[3]: https://instagram.com/yousufislam191
+[4]: https://twitter.com/yousufislam_191
+[5]: https://github.com/yousufislam191
+[6]: https://www.kaggle.com/yousufislam191
+[7]: https://yousufislam191.github.io/resume/
