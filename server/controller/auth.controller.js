@@ -76,9 +76,14 @@ const handleLogout = async (req, res, next) => {
 // FOR REFRESH TOKEN
 const handleRefreshToken = async (req, res, next) => {
   try {
-    const oldRefreshToken = req.cookies.refreshToken;
-    if (!oldRefreshToken) {
-      throw createError(404, "Refresh token not found");
+    // if (!oldRefreshToken) {
+    //   throw createError(404, "Refresh token not found");
+    // }
+    let oldRefreshToken;
+    try {
+      oldRefreshToken = req.cookies.refreshToken;
+    } catch (error) {
+      throw error;
     }
 
     const decodedToken = JWT.verify(oldRefreshToken, jwtRefreshTokenKey);
