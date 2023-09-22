@@ -48,7 +48,9 @@ const SideNavBar = (props) => {
             px: [1],
           }}
         >
-          <Typography sx={{ pl: [1], fontWeight: 600 }}>{user.name}</Typography>
+          <Typography sx={{ pl: [1], fontWeight: 600 }}>
+            {user?.name}
+          </Typography>
           <IconButton onClick={onToggleDrawer}>
             <ChevronLeftIcon />
           </IconButton>

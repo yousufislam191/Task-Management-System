@@ -31,7 +31,7 @@ const ListItems = () => {
         </ListItemIcon>
         <ListItemText primary="Tasks" />
       </ListItemButton>
-      {user.isAdmin === true && (
+      {user?.isAdmin === true && (
         <ListItemButton onClick={() => handleItemClick("Manage Users")}>
           <ListItemIcon>
             <PeopleIcon />

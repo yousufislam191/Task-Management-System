@@ -76,7 +76,6 @@ const handleLogout = async (req, res, next) => {
 // FOR REFRESH TOKEN
 const handleRefreshToken = async (req, res, next) => {
   try {
-    console.log(req.cookies.refreshToken);
     const oldRefreshToken = req.cookies.refreshToken;
     const decodedToken = JWT.verify(oldRefreshToken, jwtRefreshTokenKey);
     if (!decodedToken) {
