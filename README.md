@@ -104,10 +104,10 @@ npm run dev
 **[Kaggle][8]** |
 **[Website][9]**
 
-[3]: https://fb.com/yousufislam191
+[3]: https://facebook.com/yousufislam191
 [4]: https://linkedin.com/in/yousufislam191
 [5]: https://instagram.com/yousufislam191
 [6]: https://twitter.com/yousufislam_191
 [7]: https://github.com/yousufislam191
-[8]: https://www.kaggle.com/yousufislam191
+[8]: https://kaggle.com/yousufislam191
 [9]: https://yousufislam191.github.io/resume/
