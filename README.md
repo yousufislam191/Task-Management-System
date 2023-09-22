@@ -24,7 +24,7 @@
 [MySQL](https://dev.mysql.com/doc/mysql-getting-started/en/),
 [Sequelize ORM](https://sequelize.org/docs/v6/getting-started/)
 
-<h1 align="center">Run this web application on your local server or computer</h1>
+<h1 align="center">Run this web application on your local server</h1>
 <p>Here is the step-by-step guideline that will help you run this project on your local server.</p>
 
 1. **Open your terminal and clone the repository using this command**
@@ -49,7 +49,7 @@ npm run dev
 
 ---
 
-5. **Now it's time to run the backend site, and there are some steps for running the backend site, and you have to follow these steps strictly; otherwise, you will face some errors.**
+5. _Now it's time to run the backend site, and there are some steps for running the backend site, and you have to follow these steps **strictly**; otherwise, you will face some errors._
 6. **Open a new terminal in your vs code then run this two command.**
 
 ```terminal
@@ -96,18 +96,18 @@ npm run dev
 <h4 align="center">Ok now enjoy everything ✌️</h4>
 <h1>About Developer</h1>
 
-**[Facebook][1]** |
-**[Linkedin][2]** |
-**[Instagram][3]** |
-**[Twittwer][4]** |
-**[Github][5]** |
-**[Kaggle][6]** |
-**[Website][7]**
+**[Facebook][3]** |
+**[Linkedin][4]** |
+**[Instagram][5]** |
+**[Twittwer][6]** |
+**[Github][7]** |
+**[Kaggle][8]** |
+**[Website][9]**
 
-[1]: https://fb.com/yousufislam191
-[2]: https://linkedin.com/in/yousufislam191
-[3]: https://instagram.com/yousufislam191
-[4]: https://twitter.com/yousufislam_191
-[5]: https://github.com/yousufislam191
-[6]: https://www.kaggle.com/yousufislam191
-[7]: https://yousufislam191.github.io/resume/
+[3]: https://fb.com/yousufislam191
+[4]: https://linkedin.com/in/yousufislam191
+[5]: https://instagram.com/yousufislam191
+[6]: https://twitter.com/yousufislam_191
+[7]: https://github.com/yousufislam191
+[8]: https://www.kaggle.com/yousufislam191
+[9]: https://yousufislam191.github.io/resume/
