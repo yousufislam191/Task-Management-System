@@ -50,15 +50,21 @@ const Dashboard = () => {
   };
 
   const checkAccessToken = async () => {
+    console.log("tokener function er vitre dhukse");
     try {
+      console.log("try er vitre dhukse");
       const res = await axios.get(`${apiHostName}/auth/refresh-token`, {
         withCredentials: true,
       });
       if (res.data.success === true) {
+        console.log("response dat if condition er vitre dhukse");
         setIsToken(true);
         setUser(res.data.payload);
       }
     } catch (err) {
+      console.log(
+        "tokener function er vitre dhuke nai nai, direct cathc er error"
+      );
       setIsToken(true);
       notify(err.response.status, err.response.data.message);
     }
