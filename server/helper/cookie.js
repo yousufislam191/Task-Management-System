@@ -1,4 +1,4 @@
-const { cookieProduction } = require("../secret");
+const { cookieProduction, serverPort } = require("../secret");
 
 const setAccessTokenCookie = (res, accessToken) => {
   res.cookie("accessToken", accessToken, {
@@ -7,8 +7,8 @@ const setAccessTokenCookie = (res, accessToken) => {
     secure: true,
     domain:
       cookieProduction === "production"
-        ? "https://task-management-system-eg5a.vercel.app"
-        : "localhost",
+        ? "task-management-system-eg5a.vercel.app"
+        : `localhost:${serverPort}`,
     sameSite: "none",
     path: "/",
   });
@@ -21,8 +21,8 @@ const setRefreshTokenCookie = (res, refreshToken) => {
     secure: true,
     domain:
       cookieProduction === "production"
-        ? "https://task-management-system-eg5a.vercel.app"
-        : "localhost",
+        ? "task-management-system-eg5a.vercel.app"
+        : `localhost:${serverPort}`,
     sameSite: "none",
     path: "/",
   });
