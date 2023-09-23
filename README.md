@@ -6,7 +6,7 @@
 
 #### Visit website: https://task-management-system-flax.vercel.app
 
-#### For Admin login---> Email: `tms.admin@gmail.com` | Password: `1qasw2!@Q`
+#### For Admin login---> Email: `tms-admin@gmail.com` | Password: `1qasw2!@Q`
 
 <h3>Features that have been implemented</h3>
 
