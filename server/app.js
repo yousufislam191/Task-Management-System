@@ -21,7 +21,7 @@ const limiter = rateLimit({
   message: "Too many requests from this IP. Please try again later",
 });
 
-app.use(cors({ credentials: true, origin: corsOrigin }));
+app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
