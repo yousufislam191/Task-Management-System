@@ -60,8 +60,17 @@ const handleLogin = async (req, res, next) => {
 // FOR LOGOUT
 const handleLogout = async (req, res, next) => {
   try {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    res.clearCookie("accessToken", {
+      path: "/",
+      secure: true,
+      sameSite: "none",
+    });
+
+    res.clearCookie("refreshToken", {
+      path: "/",
+      secure: true,
+      sameSite: "none",
+    });
 
     return successResponse(res, {
       statusCode: 200,
