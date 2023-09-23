@@ -31,8 +31,6 @@ const corsOrigin = process.env.CORS_ORIGIN || "http://localhost";
 const smtpUserName = process.env.SMTP_USERNAME || "";
 const smtpPassword = process.env.SMTP_PASSWORD || "";
 
-const cookieProduction = process.env.RESPONSE_COOKIE_SECURE || "production";
-
 const uuidRegex =
   "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}";
 
@@ -57,5 +55,4 @@ module.exports = {
   expireJwtForResetPassword,
   refreshTokenExpireTime,
   jwtRefreshTokenKey,
-  cookieProduction,
 };
