@@ -34,7 +34,6 @@ const Tasks = () => {
       if (res.data.success === true) {
         setLoading(true);
         setData(res.data.payload.tasks);
-        // console.log(res);
       }
     } catch (err) {
       setLoading(false);
@@ -109,6 +108,7 @@ const Tasks = () => {
             <TaskDetailsModal
               taskId={selectedTaskId}
               onClose={() => setIsModalOpen(false)} // Close the modal
+              onUpdateTask={getAllTasks}
             />
           )}
         </>

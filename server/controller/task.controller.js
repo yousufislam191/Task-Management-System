@@ -139,6 +139,10 @@ const deleteTaskById = async (req, res, next) => {
 const editTaskById = async (req, res, next) => {
   try {
     const taskId = req.params.id;
+    if (!taskId) {
+      throw createError(404, "Task id not found");
+    }
+
     let updates = {};
 
     // === this field take value from request.body using loop, after that updated value will keep in the updates objects ===
@@ -160,7 +164,10 @@ const editTaskById = async (req, res, next) => {
       plain: true,
     });
     if (rowsUpdated === 0) {
-      throw createError(404, "Task with this ID does not exist");
+      throw createError(
+        404,
+        "Something went wrong. Couldn't update tasks. Please try again"
+      );
     }
 
     const updatedTasks = await findTaskWithId(taskId);
