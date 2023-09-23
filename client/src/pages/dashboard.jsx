@@ -53,7 +53,7 @@ const Dashboard = () => {
     console.log("tokener function er vitre dhukse");
     try {
       console.log("try er vitre dhukse");
-      const res = await axios.post(`${apiHostName}/auth/refresh-token`, {
+      const res = await axios.get(`${apiHostName}/auth/refresh-token`, {
         withCredentials: true,
       });
       if (res.data.success === true) {
