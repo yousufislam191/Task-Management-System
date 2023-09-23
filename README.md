@@ -3,7 +3,11 @@
 <p align="center">
 <strong>"Task Management System"</strong> is a simple full-stack web application. Inside this app, the admin has more control than the user. The user will be able to just read their assigned task, update their task status and profile, and delete their account. On the other hand, admin will be able to do everything.
 </p>
-<h4>Visit website: https://task-management-system-flax.vercel.app</h4>
+
+#### Visit website: https://task-management-system-flax.vercel.app
+
+#### For Admin login---> Email: `tms.admin@gmail.com` | Password: `1qasw2!@Q`
+
 <h3>Features that have been implemented</h3>
 
 - Login, Logout, and Registration authentication
