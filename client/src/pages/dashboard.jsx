@@ -73,6 +73,8 @@ const Dashboard = () => {
   useEffect(() => {
     setLoading(false);
     checkAccessToken();
+    const intervalId = setInterval(checkAccessToken, 290000); // Call every 4:50 minutes(290,000 milliseconds)
+    return () => clearInterval(intervalId);
   }, []);
 
   return loading ? (

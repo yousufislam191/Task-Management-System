@@ -12,7 +12,7 @@ const sequelize = new Sequelize({
   password: dbPass,
   database: dbName,
   dialectOptions: {
-    ssl: { rejectUnauthorized: false },
+    ssl: dbHost !== "localhost" ? { rejectUnauthorized: false } : false,
   },
 });
 
