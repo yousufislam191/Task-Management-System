@@ -8,6 +8,7 @@ import EmailVerification from "../pages/emailVerification";
 import Dashboard from "../pages/dashboard";
 import { UserProvider } from "../context/UserContext";
 import { AppProvider } from "../context/AppContext";
+import { AllUsersProvider } from "../context/AllUsersContext";
 
 const RouterPath = () => {
   return (
@@ -26,11 +27,13 @@ const RouterPath = () => {
             exact
             path="/dashboard"
             element={
-              <UserProvider>
-                <AppProvider>
-                  <Dashboard />
-                </AppProvider>
-              </UserProvider>
+              <AllUsersProvider>
+                <UserProvider>
+                  <AppProvider>
+                    <Dashboard />
+                  </AppProvider>
+                </UserProvider>
+              </AllUsersProvider>
             }
           />
           <Route exact path="*" element={<NotFoundPage />} />

@@ -9,8 +9,10 @@ import {
 } from "@mui/material";
 import UserTableSingleRow from "./UserTableSingleRow";
 import { StyledTableCell } from "../layout/tableTheme";
+import { useAllUsersContext } from "../context/AllUsersContext";
 
-const UsersTable = ({ data }) => {
+const UsersTable = () => {
+  const { allUsers } = useAllUsersContext();
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -25,9 +27,21 @@ const UsersTable = ({ data }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.map((singleData) => (
-            <UserTableSingleRow key={singleData.id} singleData={singleData} />
-          ))}
+          {allUsers?.length === 0 ? (
+            <h1
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "4rem",
+              }}
+            >
+              No Users Available
+            </h1>
+          ) : (
+            allUsers?.map((singleData) => (
+              <UserTableSingleRow key={singleData.id} singleData={singleData} />
+            ))
+          )}
         </TableBody>
       </Table>
     </TableContainer>

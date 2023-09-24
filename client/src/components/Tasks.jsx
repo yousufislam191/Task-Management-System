@@ -16,6 +16,7 @@ import {
 import { StyledTableCell } from "../layout/tableTheme";
 import TaskTableSingleRow from "./TaskTableSingleRow";
 import TaskDetailsModal from "./TaskDetailsModal";
+import TaskCreateModal from "./TaskCreateModal";
 
 const Tasks = () => {
   const { user } = useUserContext();
@@ -27,6 +28,7 @@ const Tasks = () => {
 
   const [selectedTaskId, setSelectedTaskId] = useState(null); // State to store the selected task ID
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const getAllTasks = async () => {
     try {
@@ -51,6 +53,10 @@ const Tasks = () => {
   const handleRowClick = (taskId) => {
     setSelectedTaskId(taskId);
     setIsModalOpen(true);
+  };
+
+  const handleCreateTask = () => {
+    setIsCreateModalOpen(true);
   };
 
   return loading ? (
@@ -79,6 +85,7 @@ const Tasks = () => {
               <Button
                 variant="contained"
                 style={{ textTransform: "capitalize" }}
+                onClick={() => handleCreateTask()}
               >
                 Create Task
               </Button>
@@ -94,13 +101,25 @@ const Tasks = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data?.map((task) => (
-                  <TaskTableSingleRow
-                    key={task.id}
-                    task={task}
-                    onClick={() => handleRowClick(task.id)}
-                  />
-                ))}
+                {data?.length === 0 ? (
+                  <h1
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "4rem",
+                    }}
+                  >
+                    No Task Available
+                  </h1>
+                ) : (
+                  data?.map((task) => (
+                    <TaskTableSingleRow
+                      key={task.id}
+                      task={task}
+                      onClick={() => handleRowClick(task.id)}
+                    />
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
@@ -108,6 +127,12 @@ const Tasks = () => {
             <TaskDetailsModal
               taskId={selectedTaskId}
               onClose={() => setIsModalOpen(false)} // Close the modal
+              onUpdateTask={getAllTasks}
+            />
+          )}
+          {isCreateModalOpen && (
+            <TaskCreateModal
+              onClose={() => setIsCreateModalOpen(false)} // Close the modal
               onUpdateTask={getAllTasks}
             />
           )}
