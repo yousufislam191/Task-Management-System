@@ -178,6 +178,7 @@ const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
                   >
                     <Typography>Date: </Typography>
                     <DatePicker
+                      minDate={new Date()}
                       selected={
                         isEditable
                           ? editedDetails.deadline

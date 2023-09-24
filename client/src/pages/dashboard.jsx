@@ -23,6 +23,7 @@ import Profile from "../components/Profile";
 import Chart from "../components/Chart";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
+import { useAllUsersContext } from "../context/AllUsersContext";
 
 axios.defaults.withCredentials = true;
 
@@ -35,6 +36,7 @@ const Dashboard = () => {
   const [open, setOpen] = useState(true);
   const { setUser } = useUserContext();
   const { activeComponent } = useAppContext();
+  const { setAllUsers } = useAllUsersContext();
 
   const notify = (status, message) => showToast(status, message);
   const toggleDrawer = () => {
@@ -50,6 +52,22 @@ const Dashboard = () => {
       setTimeout(() => {
         navigate("/");
       }, 1500);
+    }
+  };
+
+  const getAllUsers = async () => {
+    try {
+      const res = await axios.get(`${apiHostName}/user`);
+      if (res.data.success === true) {
+        setLoading(true);
+        setAllUsers(res.data.payload);
+        // console.log(res);
+      }
+    } catch (err) {
+      setLoading(true);
+      setStatus(err.response.status);
+      setSuccess(err.response.data.success);
+      setErrorMessage(err.response.data.message);
     }
   };
 
@@ -73,6 +91,7 @@ const Dashboard = () => {
   useEffect(() => {
     setLoading(false);
     checkAccessToken();
+    getAllUsers();
     const intervalId = setInterval(checkAccessToken, 290000); // Call every 4:50 minutes(290,000 milliseconds)
     return () => clearInterval(intervalId);
   }, []);
