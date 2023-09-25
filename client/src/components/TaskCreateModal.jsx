@@ -194,7 +194,9 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                   display: "flex",
                   flexDirection: "row",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: 2,
+                  mt: 2,
                   "@media (max-width: 800px)": {
                     flexDirection: "column",
                     alignItems: "start",
@@ -245,7 +247,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                   ) : null}
                 </Box>
 
-                <FormControl fullWidth sx={{ m: 2 }}>
+                <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-helper-label">
                     Assign To
                   </InputLabel>
