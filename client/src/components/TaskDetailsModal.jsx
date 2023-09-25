@@ -9,9 +9,9 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import DatePicker from "react-datepicker";
-import { parseISO, format } from "date-fns";
-import "react-datepicker/dist/react-datepicker.css";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 import Loading from "./Loading";
 import apiHostName from "../../secret";
@@ -32,6 +32,13 @@ const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
   const handleClose = () => {
     setOpen(false);
     onClose();
+  };
+
+  const handleSave = () => {
+    setIsEditable(false);
+    setTaskDetails({ ...editedDetails });
+    setUpdateLoading(false);
+    updateTaskDetails();
   };
 
   const handleEdit = () => {
@@ -58,13 +65,6 @@ const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
       setOpen(false);
       notify(err.response.status, err.response.data.message);
     }
-  };
-
-  const handleSave = () => {
-    setIsEditable(false);
-    setTaskDetails({ ...editedDetails });
-    setUpdateLoading(false);
-    updateTaskDetails();
   };
 
   const fetchTaskDetails = async () => {
@@ -176,32 +176,28 @@ const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
                       gap: 2,
                     }}
                   >
-                    <Typography>Date: </Typography>
-                    <DatePicker
-                      minDate={new Date()}
-                      selected={
-                        isEditable
-                          ? editedDetails.deadline
-                            ? parseISO(editedDetails.deadline)
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        label="Deadline"
+                        disablePast
+                        disabled={!isEditable}
+                        value={
+                          isEditable
+                            ? editedDetails.deadline
+                              ? dayjs(editedDetails.deadline)
+                              : null
+                            : taskDetails.deadline
+                            ? dayjs(taskDetails.deadline)
                             : null
-                          : taskDetails.deadline
-                          ? parseISO(taskDetails.deadline)
-                          : null
-                      }
-                      onChange={(newDate) =>
-                        setEditedDetails({
-                          ...editedDetails,
-                          deadline: format(
-                            newDate,
-                            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-                          ),
-                        })
-                      }
-                      dateFormat="yyyy-MM-dd"
-                      showTimeInput
-                      timeInputLabel="Time"
-                      disabled={!isEditable}
-                    />
+                        }
+                        onChange={(newDate) =>
+                          setEditedDetails({
+                            ...editedDetails,
+                            deadline: newDate.toISOString(),
+                          })
+                        }
+                      />
+                    </LocalizationProvider>
                   </Box>
                   <TextField
                     fullWidth
