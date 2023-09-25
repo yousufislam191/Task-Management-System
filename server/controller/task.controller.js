@@ -4,7 +4,6 @@ const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
 const User = require("../models/user.model");
 const { findTaskWithId } = require("../helper/findTaskWithId");
-const { sequelize } = require("../config/db");
 
 // GET all task by admin
 const getTask = async (req, res, next) => {
@@ -55,11 +54,7 @@ const getAllTaskForSingleUser = async (req, res, next) => {
 
     const task = await Task.findAll({
       where: { createdToTask: id },
-      attributes: [
-        "status",
-        [sequelize.fn("COUNT", sequelize.col("status")), "count"],
-      ],
-      group: ["status"],
+      include: { model: User, as: "createdBy", attributes: ["name"] },
     });
     if (!task)
       throw createError(

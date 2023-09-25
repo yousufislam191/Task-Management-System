@@ -7,14 +7,11 @@ import axios from "axios";
 import apiHostName from "../../secret";
 import { Button, CircularProgress } from "@mui/material";
 import truncateText from "../helper/truncateText";
+import MenuButton from "./MenuButton";
 
-const TaskTableSingleRow = ({
-  task,
-  onClick,
-  onUpdateTaskForDetails,
-  onDeleteTaskTost,
-}) => {
-  const { id, title, deadline, status, createdBy, createdTo, tag } = task;
+const TaskTableSingleRow = (props) => {
+  const { onClick, isAdmin, onUpdateTaskForDetails, onDeleteTaskTost } = props;
+  const { id, title, deadline, status, createdBy, createdTo, tag } = props.task;
   const [loading, setLoading] = useState(true);
 
   const deleteTask = async (taskId, event) => {
@@ -45,39 +42,51 @@ const TaskTableSingleRow = ({
         >
           {truncateText(titleCase(title), 20)}
         </StyledTableCell>
+        <StyledTableCell align="center">{tag}</StyledTableCell>
+        <StyledTableCell align="center">{createdBy?.name}</StyledTableCell>
+        {isAdmin && (
+          <StyledTableCell align="center">{createdTo.name}</StyledTableCell>
+        )}
         <StyledTableCell align="center">
           {dateFormate(deadline)}
         </StyledTableCell>
         <StyledTableCell align="center">
           {status === 0 ? (
-            <p style={{ color: "blue" }}>Assigned</p>
+            isAdmin ? (
+              <p style={{ color: "blue" }}>Assigned</p>
+            ) : (
+              <MenuButton
+                name={"Assigned"}
+                color={"primary"}
+                itemName={["In Progress", "Done"]}
+              />
+            )
           ) : status === 1 ? (
             <p style={{ color: "orange" }}>In Progress</p>
           ) : status === 2 ? (
             <p style={{ color: "green" }}>Done</p>
           ) : null}
         </StyledTableCell>
-        <StyledTableCell align="center">{createdBy.name}</StyledTableCell>
-        <StyledTableCell align="center">{createdTo.name}</StyledTableCell>
-        <StyledTableCell align="center">{tag}</StyledTableCell>
-        <StyledTableCell align="center">
-          {loading ? (
-            <Button
-              sx={{
-                color: "#D32F2F",
-                borderRadius: 5,
-              }}
-              onClick={(e) => {
-                deleteTask(id, e);
-                setLoading(true);
-              }}
-            >
-              <DeleteForeverOutlinedIcon />
-            </Button>
-          ) : (
-            <CircularProgress size={20} />
-          )}
-        </StyledTableCell>
+        {isAdmin && (
+          <StyledTableCell align="center">
+            {loading ? (
+              <Button
+                sx={{
+                  color: "#D32F2F",
+                  borderRadius: 5,
+                }}
+                onClick={(e) => {
+                  deleteTask(id, e);
+                  setLoading(true);
+                }}
+              >
+                <DeleteForeverOutlinedIcon />
+              </Button>
+            ) : (
+              <CircularProgress size={20} />
+            )}
+          </StyledTableCell>
+        )}
       </StyledTableRow>
     </>
   );

@@ -34,7 +34,7 @@ const Dashboard = () => {
   const [status, setStatus] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(true);
-  const { setUser } = useUserContext();
+  const { user, setUser } = useUserContext();
   const { activeComponent } = useAppContext();
   const { setAllUsers } = useAllUsersContext();
 
@@ -91,7 +91,8 @@ const Dashboard = () => {
   useEffect(() => {
     setLoading(false);
     checkAccessToken();
-    getAllUsers();
+    user?.isAdmin && getAllUsers();
+
     const intervalId = setInterval(checkAccessToken, 290000); // Call every 4:50 minutes(290,000 milliseconds)
     return () => clearInterval(intervalId);
   }, []);

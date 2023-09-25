@@ -34,7 +34,9 @@ const MenuButton = (props) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClose}>{itemName}</MenuItem>
+        {itemName.map((item) => {
+          <MenuItem onClick={handleClose}>{item}</MenuItem>;
+        })}
       </Menu>
     </>
   );
