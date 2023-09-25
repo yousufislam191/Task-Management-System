@@ -17,6 +17,8 @@ import { StyledTableCell } from "../layout/tableTheme";
 import TaskTableSingleRow from "./TaskTableSingleRow";
 import TaskDetailsModal from "./TaskDetailsModal";
 import TaskCreateModal from "./TaskCreateModal";
+import showToast from "./showToast";
+import { ToastContainer } from "react-toastify";
 
 const Tasks = () => {
   const { user } = useUserContext();
@@ -25,10 +27,11 @@ const Tasks = () => {
   const [status, setStatus] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState([]);
-
   const [selectedTaskId, setSelectedTaskId] = useState(null); // State to store the selected task ID
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const notify = (status, message) => showToast(status, message);
 
   const getAllTasks = async () => {
     try {
@@ -59,12 +62,17 @@ const Tasks = () => {
     setIsCreateModalOpen(true);
   };
 
+  const handleDeleteTaskTost = (data) => {
+    notify(data.status, data.message);
+  };
+
   return loading ? (
     user.isAdmin ? (
       success === false ? (
         <ErrorMessage status={status} message={errorMessage} />
       ) : (
         <>
+          <ToastContainer />
           <div style={{ width: "100%" }}>
             <Box
               sx={{
@@ -97,7 +105,9 @@ const Tasks = () => {
                   <StyledTableCell align="center">Deadline</StyledTableCell>
                   <StyledTableCell align="center">Status</StyledTableCell>
                   <StyledTableCell align="center">Created By</StyledTableCell>
+                  <StyledTableCell align="center">Created To</StyledTableCell>
                   <StyledTableCell align="center">Tag</StyledTableCell>
+                  <StyledTableCell align="center">Delete Task</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -117,6 +127,7 @@ const Tasks = () => {
                       key={task.id}
                       task={task}
                       onClick={() => handleRowClick(task.id)}
+                      onDeleteTaskTost={handleDeleteTaskTost}
                     />
                   ))
                 )}
@@ -127,7 +138,7 @@ const Tasks = () => {
             <TaskDetailsModal
               taskId={selectedTaskId}
               onClose={() => setIsModalOpen(false)} // Close the modal
-              onUpdateTask={getAllTasks}
+              onUpdateTaskForDetails={getAllTasks}
             />
           )}
           {isCreateModalOpen && (
