@@ -33,6 +33,19 @@ const Tasks = () => {
 
   const notify = (status, message) => showToast(status, message);
 
+  const handleRowClick = (taskId) => {
+    setSelectedTaskId(taskId);
+    setIsModalOpen(true);
+  };
+
+  const handleCreateTask = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleDeleteTaskTost = (data) => {
+    notify(data.status, data.message);
+  };
+
   const getAllTasks = async () => {
     try {
       const res = await axios.get(`${apiHostName}/task`);
@@ -48,23 +61,27 @@ const Tasks = () => {
     }
   };
 
+  const getAllTaskForSingleUser = async () => {
+    try {
+      const res = await axios.get(
+        `${apiHostName}/task/user-all-task/${user.id}`
+      );
+      if (res.data.success === true) {
+        setLoading(true);
+        setData(res.data.payload.task);
+      }
+    } catch (err) {
+      setLoading(false);
+      setStatus(err.response.status);
+      setSuccess(err.response.data.success);
+      setErrorMessage(err.response.data.message);
+    }
+  };
+
   useEffect(() => {
     setLoading(false);
-    getAllTasks();
+    user.isAdmin ? getAllTasks() : getAllTaskForSingleUser();
   }, []);
-
-  const handleRowClick = (taskId) => {
-    setSelectedTaskId(taskId);
-    setIsModalOpen(true);
-  };
-
-  const handleCreateTask = () => {
-    setIsCreateModalOpen(true);
-  };
-
-  const handleDeleteTaskTost = (data) => {
-    notify(data.status, data.message);
-  };
 
   return loading ? (
     user.isAdmin ? (
@@ -102,12 +119,18 @@ const Tasks = () => {
               <TableHead>
                 <TableRow>
                   <StyledTableCell align="center">Title</StyledTableCell>
+                  <StyledTableCell align="center">Tag</StyledTableCell>
+                  <StyledTableCell align="center">Created By</StyledTableCell>
+                  {user.isAdmin && (
+                    <StyledTableCell align="center">Created To</StyledTableCell>
+                  )}
                   <StyledTableCell align="center">Deadline</StyledTableCell>
                   <StyledTableCell align="center">Status</StyledTableCell>
-                  <StyledTableCell align="center">Created By</StyledTableCell>
-                  <StyledTableCell align="center">Created To</StyledTableCell>
-                  <StyledTableCell align="center">Tag</StyledTableCell>
-                  <StyledTableCell align="center">Delete Task</StyledTableCell>
+                  {user.isAdmin && (
+                    <StyledTableCell align="center">
+                      Delete Task
+                    </StyledTableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -126,6 +149,7 @@ const Tasks = () => {
                     <TaskTableSingleRow
                       key={task.id}
                       task={task}
+                      isAdmin={user.isAdmin}
                       onClick={() => handleRowClick(task.id)}
                       onDeleteTaskTost={handleDeleteTaskTost}
                     />
@@ -151,7 +175,73 @@ const Tasks = () => {
       )
     ) : (
       <>
-        <h1>User Task</h1>
+        <ToastContainer />
+        <div style={{ width: "100%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: "lightgray",
+              borderRadius: 1,
+              py: 2,
+              px: 3,
+              mb: 2,
+            }}
+          >
+            <Typography component="h1" variant="h3" align="left">
+              Manage Your All Task
+            </Typography>
+          </Box>
+          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell align="center">Title</StyledTableCell>
+                <StyledTableCell align="center">Tag</StyledTableCell>
+                <StyledTableCell align="center">Created By</StyledTableCell>
+                {user.isAdmin && (
+                  <StyledTableCell align="center">Created To</StyledTableCell>
+                )}
+                <StyledTableCell align="center">Deadline</StyledTableCell>
+                <StyledTableCell align="center">Status</StyledTableCell>
+                {user.isAdmin && (
+                  <StyledTableCell align="center">Delete Task</StyledTableCell>
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data?.length === 0 ? (
+                <h1
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "4rem",
+                  }}
+                >
+                  No Task Available
+                </h1>
+              ) : (
+                data?.map((task) => (
+                  <TaskTableSingleRow
+                    key={task.id}
+                    task={task}
+                    isAdmin={user.isAdmin}
+                    onClick={() => handleRowClick(task.id)}
+                    onDeleteTaskTost={handleDeleteTaskTost}
+                  />
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        {isModalOpen && selectedTaskId && (
+          <TaskDetailsModal
+            taskId={selectedTaskId}
+            onClose={() => setIsModalOpen(false)} // Close the modal
+            onUpdateTaskForDetails={getAllTasks}
+          />
+        )}
       </>
     )
   ) : (

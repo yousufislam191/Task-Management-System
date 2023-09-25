@@ -17,9 +17,8 @@ const taskRouter = require("express").Router();
 taskRouter.get("/", isLoggedIn, checkIsAdmin, getTask);
 taskRouter.get(`/:id(${uuidRegex})`, isLoggedIn, getTaskById);
 taskRouter.get(
-  `/count-status/:id(${uuidRegex})`,
+  `/user-all-task/:id(${uuidRegex})`,
   isLoggedIn,
-  checkIsAdmin,
   getAllTaskForSingleUser
 );
 taskRouter.post(
