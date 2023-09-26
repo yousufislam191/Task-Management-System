@@ -42,7 +42,9 @@ const TaskTableSingleRow = (props) => {
         >
           {truncateText(titleCase(title), 20)}
         </StyledTableCell>
-        <StyledTableCell align="center">{tag}</StyledTableCell>
+        <StyledTableCell align="center">
+          {truncateText(tag, 20)}
+        </StyledTableCell>
         <StyledTableCell align="center">{createdBy?.name}</StyledTableCell>
         {isAdmin && (
           <StyledTableCell align="center">{createdTo.name}</StyledTableCell>
@@ -53,7 +55,7 @@ const TaskTableSingleRow = (props) => {
         <StyledTableCell align="center">
           {status === 0 ? (
             isAdmin ? (
-              <p style={{ color: "blue" }}>Assigned</p>
+              <p style={{ color: "#1976D2" }}>Assigned</p>
             ) : (
               <MenuButton
                 name={"Assigned"}
@@ -62,7 +64,15 @@ const TaskTableSingleRow = (props) => {
               />
             )
           ) : status === 1 ? (
-            <p style={{ color: "orange" }}>In Progress</p>
+            isAdmin ? (
+              <p style={{ color: "orange" }}>In Progress</p>
+            ) : (
+              <MenuButton
+                name={"In Progress"}
+                color={"warning"}
+                itemName={["Done"]}
+              />
+            )
           ) : status === 2 ? (
             <p style={{ color: "green" }}>Done</p>
           ) : null}

@@ -49,7 +49,6 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
       .required("Deadline is required")
       .min(new Date(), "Deadline must be a future date")
       .test("isValidDate", "Invalid date format", (value) => {
-        // Check if 'value' is a valid date
         return !isNaN(value);
       }),
     createdToTask: Yup.string()
@@ -69,6 +68,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
     },
     onSubmit: async (values, helpers) => {
       setLoading(false);
+      console.log(values);
       const res = await axios
         .post(`${apiHostName}/task/create-task`, {
           title: values.title,
@@ -103,7 +103,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
           sx={{
             position: "absolute",
             width: "70%",
-            maxHeight: "100vh",
+            maxHeight: "90vh",
             overflowY: "scroll",
             bgcolor: "background.paper",
             boxShadow: 24,
@@ -209,37 +209,29 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                     flexDirection: "column",
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: 2,
-                    }}
-                  >
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        label="Deadline"
-                        disablePast
-                        value={
-                          formik.values.deadline
-                            ? new Date(formik.values.deadline)
-                            : null
-                        }
-                        onChange={(date) =>
-                          formik.setFieldValue(
-                            "deadline",
-                            date ? date.toISOString() : null
-                          )
-                        }
-                        sx={{
-                          borderColor:
-                            formik.touched.deadline && formik.errors.deadline
-                              ? "#D32F2F"
-                              : undefined,
-                        }}
-                      />
-                    </LocalizationProvider>
-                  </Box>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Deadline"
+                      disablePast
+                      value={
+                        formik.values.deadline
+                          ? new Date(formik.values.deadline)
+                          : null
+                      }
+                      onChange={(date) =>
+                        formik.setFieldValue(
+                          "deadline",
+                          date ? date.toISOString() : null
+                        )
+                      }
+                      sx={{
+                        borderColor:
+                          formik.touched.deadline && formik.errors.deadline
+                            ? "#D32F2F"
+                            : undefined,
+                      }}
+                    />
+                  </LocalizationProvider>
                   {formik.touched.deadline && formik.errors.deadline ? (
                     <FormHelperText sx={{ color: "#D32F2F" }}>
                       {formik.errors.deadline}
@@ -262,10 +254,6 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                     }
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    helperText={
-                      formik.touched.createdToTask &&
-                      formik.errors.createdToTask
-                    }
                   >
                     {allUsers.map((user) => (
                       <MenuItem key={user.id} value={user.id}>

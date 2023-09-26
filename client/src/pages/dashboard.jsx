@@ -17,7 +17,7 @@ import DashboardAppBar from "../components/DashboardAppBar";
 import SideNavBar from "../components/SideNavBar";
 import { useUserContext } from "../context/UserContext";
 import { useAppContext } from "../context/AppContext";
-import ManageUser from "../components/ManageUser";
+import UsersTable from "../components/UsersTable";
 import Tasks from "../components/Tasks";
 import Profile from "../components/Profile";
 import Chart from "../components/Chart";
@@ -61,7 +61,6 @@ const Dashboard = () => {
       if (res.data.success === true) {
         setLoading(true);
         setAllUsers(res.data.payload);
-        // console.log(res);
       }
     } catch (err) {
       setLoading(true);
@@ -85,17 +84,24 @@ const Dashboard = () => {
       setStatus(err.response.status);
       setSuccess(err.response.data.success);
       setErrorMessage(err.response.data.message);
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
     }
   };
 
   useEffect(() => {
     setLoading(false);
     checkAccessToken();
-    user?.isAdmin && getAllUsers();
-
     const intervalId = setInterval(checkAccessToken, 290000); // Call every 4:50 minutes(290,000 milliseconds)
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    if (user?.isAdmin) {
+      getAllUsers();
+    }
+  }, [user?.isAdmin]);
 
   return loading ? (
     success === false ? (
@@ -129,7 +135,7 @@ const Dashboard = () => {
               <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 {activeComponent === "Dashboard" && <Chart />}
                 {activeComponent === "Tasks" && <Tasks />}
-                {activeComponent === "Manage Users" && <ManageUser />}
+                {activeComponent === "Manage Users" && <UsersTable />}
                 {activeComponent === "Profile" && <Profile />}
               </Container>
               <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}></Container>
