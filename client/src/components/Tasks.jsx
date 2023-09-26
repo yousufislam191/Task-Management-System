@@ -4,21 +4,11 @@ import Loading from "./Loading";
 import apiHostName from "../../secret";
 import axios from "axios";
 import ErrorMessage from "./ErrorMessage";
-import {
-  Box,
-  Button,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import { StyledTableCell } from "../layout/tableTheme";
-import TaskTableSingleRow from "./TaskTableSingleRow";
 import TaskDetailsModal from "./TaskDetailsModal";
 import TaskCreateModal from "./TaskCreateModal";
 import showToast from "./showToast";
 import { ToastContainer } from "react-toastify";
+import TaskTable from "./TaskTable";
 
 const Tasks = () => {
   const { user } = useUserContext();
@@ -32,19 +22,6 @@ const Tasks = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const notify = (status, message) => showToast(status, message);
-
-  const handleRowClick = (taskId) => {
-    setSelectedTaskId(taskId);
-    setIsModalOpen(true);
-  };
-
-  const handleCreateTask = () => {
-    setIsCreateModalOpen(true);
-  };
-
-  const handleDeleteTaskTost = (data) => {
-    notify(data.status, data.message);
-  };
 
   const getAllTasks = async () => {
     try {
@@ -83,6 +60,19 @@ const Tasks = () => {
     user.isAdmin ? getAllTasks() : getAllTaskForSingleUser();
   }, []);
 
+  const handleRowClick = (taskId) => {
+    setSelectedTaskId(taskId);
+    setIsModalOpen(true);
+  };
+
+  const handleCreateTask = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleDeleteTaskTost = (data) => {
+    notify(data.status, data.message);
+  };
+
   return loading ? (
     user.isAdmin ? (
       success === false ? (
@@ -90,84 +80,24 @@ const Tasks = () => {
       ) : (
         <>
           <ToastContainer />
-          <div style={{ width: "100%" }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                backgroundColor: "lightgray",
-                borderRadius: 1,
-                py: 2,
-                px: 3,
-                mb: 2,
-              }}
-            >
-              <Typography component="h1" variant="h3" align="left">
-                Manage Task
-              </Typography>
-              <Button
-                variant="contained"
-                style={{ textTransform: "capitalize" }}
-                onClick={() => handleCreateTask()}
-              >
-                Create Task
-              </Button>
-            </Box>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell align="center">Title</StyledTableCell>
-                  <StyledTableCell align="center">Tag</StyledTableCell>
-                  <StyledTableCell align="center">Created By</StyledTableCell>
-                  {user.isAdmin && (
-                    <StyledTableCell align="center">Created To</StyledTableCell>
-                  )}
-                  <StyledTableCell align="center">Deadline</StyledTableCell>
-                  <StyledTableCell align="center">Status</StyledTableCell>
-                  {user.isAdmin && (
-                    <StyledTableCell align="center">
-                      Delete Task
-                    </StyledTableCell>
-                  )}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data?.length === 0 ? (
-                  <h1
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginTop: "4rem",
-                    }}
-                  >
-                    No Task Available
-                  </h1>
-                ) : (
-                  data?.map((task) => (
-                    <TaskTableSingleRow
-                      key={task.id}
-                      task={task}
-                      isAdmin={user.isAdmin}
-                      onClick={() => handleRowClick(task.id)}
-                      onDeleteTaskTost={handleDeleteTaskTost}
-                    />
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <TaskTable
+            data={data}
+            user={user}
+            handleRowClick={handleRowClick}
+            handleCreateTask={handleCreateTask}
+            handleDeleteTaskTost={handleDeleteTaskTost}
+          />
           {isModalOpen && selectedTaskId && (
             <TaskDetailsModal
+              user={user}
               taskId={selectedTaskId}
-              onClose={() => setIsModalOpen(false)} // Close the modal
+              onClose={() => setIsModalOpen(false)}
               onUpdateTaskForDetails={getAllTasks}
             />
           )}
           {isCreateModalOpen && (
             <TaskCreateModal
-              onClose={() => setIsCreateModalOpen(false)} // Close the modal
+              onClose={() => setIsCreateModalOpen(false)}
               onUpdateTask={getAllTasks}
             />
           )}
@@ -176,69 +106,19 @@ const Tasks = () => {
     ) : (
       <>
         <ToastContainer />
-        <div style={{ width: "100%" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: "lightgray",
-              borderRadius: 1,
-              py: 2,
-              px: 3,
-              mb: 2,
-            }}
-          >
-            <Typography component="h1" variant="h3" align="left">
-              Manage Your All Task
-            </Typography>
-          </Box>
-          <Table sx={{ minWidth: 700 }} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="center">Title</StyledTableCell>
-                <StyledTableCell align="center">Tag</StyledTableCell>
-                <StyledTableCell align="center">Created By</StyledTableCell>
-                {user.isAdmin && (
-                  <StyledTableCell align="center">Created To</StyledTableCell>
-                )}
-                <StyledTableCell align="center">Deadline</StyledTableCell>
-                <StyledTableCell align="center">Status</StyledTableCell>
-                {user.isAdmin && (
-                  <StyledTableCell align="center">Delete Task</StyledTableCell>
-                )}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data?.length === 0 ? (
-                <h1
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "4rem",
-                  }}
-                >
-                  No Task Available
-                </h1>
-              ) : (
-                data?.map((task) => (
-                  <TaskTableSingleRow
-                    key={task.id}
-                    task={task}
-                    isAdmin={user.isAdmin}
-                    onClick={() => handleRowClick(task.id)}
-                    onDeleteTaskTost={handleDeleteTaskTost}
-                  />
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <TaskTable
+          data={data}
+          user={user}
+          handleRowClick={handleRowClick}
+          handleCreateTask={handleCreateTask}
+          handleDeleteTaskTost={handleDeleteTaskTost}
+        />
+
         {isModalOpen && selectedTaskId && (
           <TaskDetailsModal
+            user={user}
             taskId={selectedTaskId}
-            onClose={() => setIsModalOpen(false)} // Close the modal
+            onClose={() => setIsModalOpen(false)}
             onUpdateTaskForDetails={getAllTasks}
           />
         )}

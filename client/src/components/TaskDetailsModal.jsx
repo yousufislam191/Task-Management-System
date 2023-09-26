@@ -18,8 +18,9 @@ import apiHostName from "../../secret";
 import showToast from "./showToast";
 import { ToastContainer } from "react-toastify";
 import FullWidthLoadingButton from "./FullWidthLoadingButton";
+import dateFormate from "../helper/dateFormate";
 
-const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
+const TaskDetailsModal = ({ user, taskId, onClose, onUpdateTask }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [updateLoading, setUpdateLoading] = useState(true);
@@ -99,6 +100,8 @@ const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
           sx={{
             position: "absolute",
             width: "70%",
+            maxHeight: "90vh",
+            overflowY: "scroll",
             bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
@@ -214,11 +217,42 @@ const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
                     }
                   />
                 </Box>
+
+                {!user.isAdmin && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: 2,
+                    }}
+                  >
+                    <TextField
+                      label="Assigned Date"
+                      value={dateFormate(taskDetails.createdAt)}
+                      variant="outlined"
+                      disabled
+                    />
+                    <TextField
+                      label="Status"
+                      value={
+                        taskDetails.status === 0
+                          ? "Assigned"
+                          : taskDetails.status === 1
+                          ? "In Progress"
+                          : taskDetails.status === 2
+                          ? "Done"
+                          : null
+                      }
+                      variant="outlined"
+                      disabled
+                    />
+                  </Box>
+                )}
+
                 <TextField
                   fullWidth
                   label="Description"
                   multiline
-                  rows={4}
                   value={
                     isEditable
                       ? editedDetails.description || ""
@@ -234,7 +268,8 @@ const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
                   }
                 />
               </Box>
-              {isEditable &&
+              {user.isAdmin &&
+                isEditable &&
                 (updateLoading ? (
                   <Button
                     variant="contained"
@@ -247,7 +282,7 @@ const TaskDetailsModal = ({ taskId, onClose, onUpdateTask }) => {
                 ) : (
                   <FullWidthLoadingButton />
                 ))}
-              {!isEditable && (
+              {user.isAdmin && !isEditable && (
                 <Button
                   variant="contained"
                   fullWidth

@@ -7,9 +7,11 @@ const MenuButton = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleClose = (event) => {
+    event.stopPropagation();
     setAnchorEl(null);
   };
   return (
@@ -34,9 +36,11 @@ const MenuButton = (props) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        {itemName.map((item) => {
-          <MenuItem onClick={handleClose}>{item}</MenuItem>;
-        })}
+        {itemName.map((item, index) => (
+          <MenuItem onClick={handleClose} key={index}>
+            {item}
+          </MenuItem>
+        ))}
       </Menu>
     </>
   );

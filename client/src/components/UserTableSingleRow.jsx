@@ -33,11 +33,11 @@ const UserTableSingleRow = (props) => {
             <MenuButton
               name={"Yes"}
               color={"success"}
-              itemName={"Remove Admin"}
+              itemName={["Remove Admin"]}
             />
           </>
         ) : (
-          <MenuButton name={"No"} color={"inherit"} itemName={"Make Admin"} />
+          <MenuButton name={"No"} color={"inherit"} itemName={["Make Admin"]} />
         )}
       </StyledTableCell>
     </StyledTableRow>
