@@ -173,7 +173,7 @@ const SignIn = () => {
                   <Typography variant="body2" align="left">
                     <Link href="/forgot-password">Forgot Password?</Link>
                   </Typography>
-                  <div className="flex justify-center text-center gap-3">
+                  <div className="flex justify-center text-center gap-3 mt-2">
                     <Typography variant="body2" align="center">
                       Don't have an account?
                     </Typography>
