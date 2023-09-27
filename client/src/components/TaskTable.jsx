@@ -2,8 +2,10 @@ import React from "react";
 import {
   Box,
   Button,
+  Paper,
   Table,
   TableBody,
+  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -20,33 +22,33 @@ const TaskTable = ({
 }) => {
   return (
     <>
-      <div style={{ width: "100%" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "lightgray",
-            borderRadius: 1,
-            py: 2,
-            px: 3,
-            mb: 2,
-          }}
-        >
-          <Typography component="h1" variant="h3" align="left">
-            {user.isAdmin ? "Manage Task" : "Manage Your All Task"}
-          </Typography>
-          {user.isAdmin && (
-            <Button
-              variant="contained"
-              style={{ textTransform: "capitalize" }}
-              onClick={handleCreateTask}
-            >
-              Create Task
-            </Button>
-          )}
-        </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "lightgray",
+          borderRadius: 1,
+          py: 2,
+          px: 3,
+          mb: 2,
+        }}
+      >
+        <Typography component="h1" variant="h3" align="left">
+          {user.isAdmin ? "Manage Task" : "Manage Your All Task"}
+        </Typography>
+        {user.isAdmin && (
+          <Button
+            variant="contained"
+            style={{ textTransform: "capitalize" }}
+            onClick={handleCreateTask}
+          >
+            Create Task
+          </Button>
+        )}
+      </Box>
+      <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           {/* ...Table headers */}
           <TableHead>
@@ -89,7 +91,7 @@ const TaskTable = ({
             )}
           </TableBody>
         </Table>
-      </div>
+      </TableContainer>
     </>
   );
 };
