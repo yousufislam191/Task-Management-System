@@ -112,6 +112,9 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
             left: "50%",
             transform: "translate(-50%, -50%)",
             borderRadius: 2,
+            "@media (max-width: 600px)": {
+              width: "90%",
+            },
           }}
         >
           <Box
@@ -124,7 +127,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
               borderRadius: 1,
               py: 1,
               px: 2,
-              mb: 4,
+              // mb: 2,
             }}
           >
             <Typography variant="h6">Make a task for user</Typography>
