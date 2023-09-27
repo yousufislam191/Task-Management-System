@@ -16,7 +16,7 @@ const TaskTable = ({
   user,
   handleRowClick,
   handleCreateTask,
-  handleDeleteTaskTost,
+  handleTost,
 }) => {
   return (
     <>
@@ -83,7 +83,7 @@ const TaskTable = ({
                   task={task}
                   isAdmin={user.isAdmin}
                   onClick={() => handleRowClick(task.id)}
-                  onDeleteTaskTost={handleDeleteTaskTost}
+                  onTost={handleTost}
                 />
               ))
             )}

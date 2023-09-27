@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Menu, MenuItem } from "@mui/material";
 
 const MenuButton = (props) => {
-  const { name, color, itemName } = props;
+  const { name, color, itemName, handleStatus } = props;
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -10,9 +10,12 @@ const MenuButton = (props) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = (event) => {
+  const handleClose = (event, item) => {
     event.stopPropagation();
     setAnchorEl(null);
+    if (item) {
+      handleStatus(item);
+    }
   };
   return (
     <>
@@ -37,7 +40,7 @@ const MenuButton = (props) => {
         }}
       >
         {itemName.map((item, index) => (
-          <MenuItem onClick={handleClose} key={index}>
+          <MenuItem onClick={(event) => handleClose(event, item)} key={index}>
             {item}
           </MenuItem>
         ))}

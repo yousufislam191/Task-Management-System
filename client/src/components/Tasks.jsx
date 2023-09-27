@@ -69,7 +69,7 @@ const Tasks = () => {
     setIsCreateModalOpen(true);
   };
 
-  const handleDeleteTaskTost = (data) => {
+  const handleTost = (data) => {
     notify(data.status, data.message);
   };
 
@@ -85,7 +85,7 @@ const Tasks = () => {
             user={user}
             handleRowClick={handleRowClick}
             handleCreateTask={handleCreateTask}
-            handleDeleteTaskTost={handleDeleteTaskTost}
+            handleTost={handleTost}
           />
           {isModalOpen && selectedTaskId && (
             <TaskDetailsModal
@@ -111,7 +111,7 @@ const Tasks = () => {
           user={user}
           handleRowClick={handleRowClick}
           handleCreateTask={handleCreateTask}
-          handleDeleteTaskTost={handleDeleteTaskTost}
+          handleTost={handleTost}
         />
 
         {isModalOpen && selectedTaskId && (

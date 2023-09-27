@@ -10,7 +10,7 @@ import truncateText from "../helper/truncateText";
 import MenuButton from "./MenuButton";
 
 const TaskTableSingleRow = (props) => {
-  const { onClick, isAdmin, onUpdateTaskForDetails, onDeleteTaskTost } = props;
+  const { onClick, isAdmin, onUpdateTaskForDetails, onTost } = props;
   const { id, title, deadline, status, createdBy, createdTo, tag } = props.task;
   const [loading, setLoading] = useState(true);
 
@@ -20,12 +20,39 @@ const TaskTableSingleRow = (props) => {
       const res = await axios.delete(`${apiHostName}/task/${taskId}`);
       if (res.data.success) {
         setLoading(true);
-        onDeleteTaskTost({ status: res.status, message: res.data.message });
+        onTost({ status: res.status, message: res.data.message });
         onUpdateTaskForDetails();
       }
     } catch (err) {
       setLoading(true);
-      onDeleteTaskTost({
+      onTost({
+        status: err.response.status,
+        message: err.response.data.message,
+      });
+    }
+  };
+
+  const handleStatusClick = async (itemName) => {
+    let updateStatus = {};
+    if (itemName === "In Progress") {
+      updateStatus = 1;
+    }
+    if (itemName === "Done") {
+      updateStatus = 2;
+    }
+
+    try {
+      const res = await axios.put(`${apiHostName}/task/status/${id}`, {
+        status: updateStatus,
+      });
+      if (res.data.success) {
+        setLoading(true);
+        onTost({ status: res.status, message: res.data.message });
+        onUpdateTaskForDetails();
+      }
+    } catch (err) {
+      setLoading(true);
+      onTost({
         status: err.response.status,
         message: err.response.data.message,
       });
@@ -56,22 +83,34 @@ const TaskTableSingleRow = (props) => {
           {status === 0 ? (
             isAdmin ? (
               <p style={{ color: "#1976D2" }}>Assigned</p>
-            ) : (
+            ) : loading ? (
               <MenuButton
                 name={"Assigned"}
                 color={"primary"}
                 itemName={["In Progress", "Done"]}
+                handleStatus={(itemName) => {
+                  setLoading(false);
+                  handleStatusClick(itemName);
+                }}
               />
+            ) : (
+              <CircularProgress size={20} />
             )
           ) : status === 1 ? (
             isAdmin ? (
               <p style={{ color: "orange" }}>In Progress</p>
-            ) : (
+            ) : loading ? (
               <MenuButton
                 name={"In Progress"}
                 color={"warning"}
                 itemName={["Done"]}
+                handleStatus={(itemName) => {
+                  setLoading(false);
+                  handleStatusClick(itemName);
+                }}
               />
+            ) : (
+              <CircularProgress size={20} />
             )
           ) : status === 2 ? (
             <p style={{ color: "green" }}>Done</p>
@@ -86,8 +125,8 @@ const TaskTableSingleRow = (props) => {
                   borderRadius: 5,
                 }}
                 onClick={(e) => {
+                  setLoading(false);
                   deleteTask(id, e);
-                  setLoading(true);
                 }}
               >
                 <DeleteForeverOutlinedIcon />
