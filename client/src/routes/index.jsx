@@ -9,6 +9,7 @@ import Dashboard from "../pages/dashboard";
 import { UserProvider } from "../context/UserContext";
 import { AppProvider } from "../context/AppContext";
 import { AllUsersProvider } from "../context/AllUsersContext";
+import ResetPassword from "../pages/resetPassword";
 
 const RouterPath = () => {
   return (
@@ -22,6 +23,11 @@ const RouterPath = () => {
             exact
             path="/verify-email/:token"
             element={<EmailVerification />}
+          />
+          <Route
+            exact
+            path="/reset-password/:token"
+            element={<ResetPassword />}
           />
           <Route
             exact

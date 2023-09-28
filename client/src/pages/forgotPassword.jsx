@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { TextField, Paper, Box, Grid, Typography } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useFormik } from "formik";
 import axios from "axios";
 import * as Yup from "yup";
@@ -9,9 +10,14 @@ import showToast from "../components/showToast";
 import theme from "../layout/theme";
 import FullWidthSubmitButton from "../components/FullWidthSubmitButton";
 import FullWidthLoadingButton from "../components/FullWidthLoadingButton";
+import { useNavigate } from "react-router-dom";
+import apiHostName from "../../secret";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+
+  const notify = (status, message) => showToast(status, message);
 
   const userSchema = Yup.object({
     email: Yup.string()
@@ -24,12 +30,23 @@ const ForgotPassword = () => {
       email: "",
     },
     onSubmit: async (values, helpers) => {
-      console.log(values);
-      notify(200, values.email);
+      setLoading(false);
+      try {
+        const res = await axios.post(`${apiHostName}/user/forgot-password`, {
+          email: values.email,
+        });
+        if (res.data.success === true) {
+          setLoading(true);
+          notify(res.status, res.data.message);
+        }
+      } catch (err) {
+        setLoading(true);
+        notify(err.response.status, err.response.data.message);
+      }
     },
     validationSchema: userSchema,
   });
-  const notify = (status, message) => showToast(status, message);
+
   return (
     <>
       <ToastContainer />
@@ -54,12 +71,25 @@ const ForgotPassword = () => {
               component={Paper}
               elevation={6}
               square
-              borderRadius={5}
+              borderRadius={4}
             >
-              <Box sx={{ mx: 4, my: 4 }}>
-                <Typography component="h3" variant="h3" align="left">
-                  Reset Password
-                </Typography>
+              <Box sx={{ mx: 3, my: 3 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <ArrowBackIcon
+                    onClick={() => navigate("/")}
+                    sx={{ cursor: "pointer" }}
+                  />
+                  <Typography component="h3" variant="h3" align="left">
+                    Reset Password
+                  </Typography>
+                </Box>
                 <form onSubmit={formik.handleSubmit}>
                   <TextField
                     margin="normal"
