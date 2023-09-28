@@ -2,6 +2,7 @@ import React from "react";
 import {
   Box,
   Button,
+  Grid,
   Paper,
   Table,
   TableBody,
@@ -9,9 +10,11 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { StyledTableCell } from "../layout/tableTheme";
 import TaskTableSingleRow from "./TaskTableSingleRow";
+import TaskCardSingleContent from "./TaskCardSingleContent";
 
 const TaskTable = ({
   data,
@@ -20,6 +23,8 @@ const TaskTable = ({
   handleCreateTask,
   handleTost,
 }) => {
+  const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+
   return (
     <>
       <Box
@@ -48,50 +53,81 @@ const TaskTable = ({
           </Button>
         )}
       </Box>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          {/* ...Table headers */}
-          <TableHead>
-            <TableRow>
-              <StyledTableCell align="center">Title</StyledTableCell>
-              <StyledTableCell align="center">Tag</StyledTableCell>
-              <StyledTableCell align="center">Created By</StyledTableCell>
-              {user.isAdmin && (
-                <StyledTableCell align="center">Created To</StyledTableCell>
+      {isLargeScreen ? (
+        <TableContainer component={Paper}>
+          <Table
+            sx={{
+              minWidth: 700,
+            }}
+            aria-label="customized table"
+          >
+            {/* ...Table headers */}
+            <TableHead>
+              <TableRow>
+                <StyledTableCell align="center">Title</StyledTableCell>
+                <StyledTableCell align="center">Tag</StyledTableCell>
+                <StyledTableCell align="center">Created By</StyledTableCell>
+                {user.isAdmin && (
+                  <StyledTableCell align="center">Created To</StyledTableCell>
+                )}
+                <StyledTableCell align="center">Deadline</StyledTableCell>
+                <StyledTableCell align="center">Status</StyledTableCell>
+                {user.isAdmin && (
+                  <StyledTableCell align="center">Delete Task</StyledTableCell>
+                )}
+              </TableRow>
+            </TableHead>
+            {/* ...Table Body */}
+            <TableBody>
+              {data?.length === 0 ? (
+                <h1
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "4rem",
+                  }}
+                >
+                  No Task Available
+                </h1>
+              ) : (
+                data?.map((task) => (
+                  <TaskTableSingleRow
+                    key={task.id}
+                    task={task}
+                    isAdmin={user.isAdmin}
+                    onClick={() => handleRowClick(task.id)}
+                    onTost={handleTost}
+                  />
+                ))
               )}
-              <StyledTableCell align="center">Deadline</StyledTableCell>
-              <StyledTableCell align="center">Status</StyledTableCell>
-              {user.isAdmin && (
-                <StyledTableCell align="center">Delete Task</StyledTableCell>
-              )}
-            </TableRow>
-          </TableHead>
-          {/* ...Table Body */}
-          <TableBody>
-            {data?.length === 0 ? (
-              <h1
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "4rem",
-                }}
-              >
-                No Task Available
-              </h1>
-            ) : (
-              data?.map((task) => (
-                <TaskTableSingleRow
-                  key={task.id}
-                  task={task}
-                  isAdmin={user.isAdmin}
-                  onClick={() => handleRowClick(task.id)}
-                  onTost={handleTost}
-                />
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : data?.length === 0 ? (
+        <h1
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "4rem",
+          }}
+        >
+          No Task Available
+        </h1>
+      ) : (
+        <Grid container spacing={2}>
+          {data?.map((task) => (
+            <Grid item xs={12} sm={6} md={4}>
+              <TaskCardSingleContent
+                key={task.id}
+                task={task}
+                isAdmin={user.isAdmin}
+                onClick={() => handleRowClick(task.id)}
+                onTost={handleTost}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </>
   );
 };
