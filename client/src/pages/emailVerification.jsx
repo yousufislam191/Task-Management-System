@@ -78,7 +78,11 @@ const EmailVerification = () => {
                   </Typography>
                 ) : (
                   <>
-                    <Typography component="h3" variant="h3" align="center">
+                    <Typography
+                      component="h3"
+                      variant="h3"
+                      Typographyalign="center"
+                    >
                       Verifying Your Account
                     </Typography>
                     <Typography component="h3" variant="h3" align="center">

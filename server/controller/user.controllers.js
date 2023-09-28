@@ -94,7 +94,7 @@ const createNewUser = async (req, res, next) => {
     return successResponse(res, {
       statusCode: 200,
       message: `A verification email has been sent to this email ${email}. Please go to your email to complete your registration process.`,
-      payload: { token },
+      payload: {},
     });
   } catch (error) {
     next(error);
@@ -239,7 +239,7 @@ const forgetUserPassword = async (req, res, next) => {
       html: `
     <h2>Hello ${userData.name}</h2>
     <h3>Thanks for requesting to reset your password.</h3>
-    <h4>Please click here to <a href="${clientURL}/api/reset-password/${token}" target="_blank">reset your password</a>. The Link will be expire after ${expireJwtForResetPassword}.</h4>
+    <h4>Please click here to <a href="${clientURL}/reset-password/${token}" target="_blank">reset your password</a>. The Link will be expire after ${expireJwtForResetPassword}.</h4>
     `, // html body
     };
 
@@ -249,7 +249,7 @@ const forgetUserPassword = async (req, res, next) => {
     return successResponse(res, {
       statusCode: 200,
       message: `A reset password link has been sent to this email ${email}. Please go to your email to reset your password.`,
-      payload: { token },
+      payload: {},
     });
   } catch (error) {
     next(error);
