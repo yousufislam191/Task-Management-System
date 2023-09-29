@@ -52,11 +52,10 @@ const TaskTableSingleRow = (props) => {
       }
     } catch (err) {
       setLoading(true);
-      // onTost({
-      //   status: err.response.status,
-      //   message: err.response.data.message,
-      // });
-      console.log(err);
+      onTost({
+        status: err.response.status,
+        message: err.response.data.message,
+      });
     }
   };
 
