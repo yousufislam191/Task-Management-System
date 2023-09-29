@@ -100,7 +100,7 @@ const createNewUser = async (req, res, next) => {
     };
 
     // send activation email
-    // sendEmail(emailData);
+    sendEmail(emailData);
 
     return successResponse(res, {
       statusCode: 200,
