@@ -20,7 +20,12 @@ import { ToastContainer } from "react-toastify";
 import FullWidthLoadingButton from "./FullWidthLoadingButton";
 import dateFormate from "../helper/dateFormate";
 
-const TaskDetailsModal = ({ user, taskId, onClose, onUpdateTask }) => {
+const TaskDetailsModal = ({
+  user,
+  taskId,
+  onClose,
+  onUpdateTaskForDetails,
+}) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [updateLoading, setUpdateLoading] = useState(true);
@@ -59,7 +64,7 @@ const TaskDetailsModal = ({ user, taskId, onClose, onUpdateTask }) => {
         setUpdateLoading(true);
         setOpen(false);
         notify(res.status, res.data.message);
-        onUpdateTask();
+        onUpdateTaskForDetails();
       }
     } catch (err) {
       setUpdateLoading(true);

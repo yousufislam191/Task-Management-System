@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   CircularProgress,
+  Grid,
   Typography,
 } from "@mui/material";
 import truncateText from "../helper/truncateText";
@@ -66,112 +67,121 @@ const TaskCardSingleContent = (props) => {
 
   return (
     <>
-      <Card onClick={onClick} style={{ cursor: "pointer" }}>
-        <CardContent>
-          <Typography
-            variant="h5"
-            component="div"
-            style={{ fontWeight: "bold" }}
-          >
-            {truncateText(titleCase(title), 20)}
-          </Typography>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Tag: {truncateText(tag, 30)}
-          </Typography>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Deadline: {dateFormate(deadline)}
-          </Typography>
-
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "start",
-              alignContent: "center",
-              gap: 1,
-            }}
-          >
+      <Grid item xs={12} sm={6} md={4}>
+        <Card onClick={onClick} style={{ cursor: "pointer" }}>
+          <CardContent>
+            <Typography
+              variant="h3"
+              style={{ fontWeight: "bold", marginBottom: "0.5rem" }}
+            >
+              {truncateText(titleCase(title), 20)}
+            </Typography>
             <Typography
               sx={{ fontSize: 14 }}
               color="text.secondary"
               gutterBottom
             >
-              Status:
+              Tag: {truncateText(tag, 30)}
             </Typography>
-            {status === 0 ? (
-              isAdmin ? (
-                <Typography sx={{ color: "#1976D2", fontSize: 14 }}>
-                  Assigned
-                </Typography>
-              ) : loading ? (
-                <MenuButton
-                  name={"Assigned"}
-                  color={"primary"}
-                  itemName={["In Progress", "Done"]}
-                  handleStatus={(itemName) => {
-                    setLoading(false);
-                    handleStatusClick(itemName);
-                  }}
-                />
-              ) : (
-                <CircularProgress size={20} />
-              )
-            ) : status === 1 ? (
-              isAdmin ? (
-                <Typography sx={{ color: "orange", fontSize: 14 }}>
-                  In Progress
-                </Typography>
-              ) : loading ? (
-                <MenuButton
-                  name={"In Progress"}
-                  color={"warning"}
-                  itemName={["Done"]}
-                  handleStatus={(itemName) => {
-                    setLoading(false);
-                    handleStatusClick(itemName);
-                  }}
-                />
-              ) : (
-                <CircularProgress size={20} />
-              )
-            ) : status === 2 ? (
-              <Typography sx={{ color: "green", fontSize: 14 }}>
-                Done
-              </Typography>
-            ) : null}
-          </Box>
-
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Created By: {createdBy?.name}
-          </Typography>
-          {isAdmin && (
             <Typography
               sx={{ fontSize: 14 }}
               color="text.secondary"
               gutterBottom
             >
-              Created To: {createdTo.name}
+              Deadline: {dateFormate(deadline)}
             </Typography>
-          )}
-
-          {isAdmin &&
-            (loading ? (
-              <Button
-                variant="outlined"
-                color="error"
-                size="small"
-                style={{ textTransform: "capitalize", marginTop: "1rem" }}
-                onClick={(e) => {
-                  setLoading(false);
-                  deleteTask(id, e);
-                }}
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Created By: {createdBy?.name}
+            </Typography>
+            {isAdmin && (
+              <Typography
+                sx={{ fontSize: 14 }}
+                color="text.secondary"
+                gutterBottom
               >
-                Delete Task
-              </Button>
-            ) : (
-              <CircularProgress size={20} />
-            ))}
-        </CardContent>
-      </Card>
+                Created To: {createdTo.name}
+              </Typography>
+            )}
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "start",
+                alignContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Typography sx={{ fontSize: 14 }} color="text.secondary">
+                Status:
+              </Typography>
+              {status === 0 ? (
+                isAdmin ? (
+                  <Typography sx={{ color: "#1976D2", fontSize: 14 }}>
+                    Assigned
+                  </Typography>
+                ) : loading ? (
+                  <MenuButton
+                    name={"Assigned"}
+                    color={"primary"}
+                    itemName={["In Progress", "Done"]}
+                    handleStatus={(itemName) => {
+                      setLoading(false);
+                      handleStatusClick(itemName);
+                    }}
+                  />
+                ) : (
+                  <CircularProgress size={20} />
+                )
+              ) : status === 1 ? (
+                isAdmin ? (
+                  <Typography sx={{ color: "orange", fontSize: 14 }}>
+                    In Progress
+                  </Typography>
+                ) : loading ? (
+                  <MenuButton
+                    name={"In Progress"}
+                    color={"warning"}
+                    itemName={["Done"]}
+                    handleStatus={(itemName) => {
+                      setLoading(false);
+                      handleStatusClick(itemName);
+                    }}
+                  />
+                ) : (
+                  <CircularProgress size={20} />
+                )
+              ) : status === 2 ? (
+                <Typography sx={{ color: "green", fontSize: 14 }}>
+                  Done
+                </Typography>
+              ) : null}
+            </Box>
+
+            {isAdmin &&
+              (loading ? (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  size="small"
+                  style={{ textTransform: "capitalize", marginTop: "1rem" }}
+                  onClick={(e) => {
+                    setLoading(false);
+                    deleteTask(id, e);
+                  }}
+                >
+                  Delete Task
+                </Button>
+              ) : (
+                <CircularProgress size={20} />
+              ))}
+          </CardContent>
+        </Card>
+      </Grid>
     </>
   );
 };

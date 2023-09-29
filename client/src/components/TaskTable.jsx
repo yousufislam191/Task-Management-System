@@ -22,6 +22,7 @@ const TaskTable = ({
   handleRowClick,
   handleCreateTask,
   handleTost,
+  onUpdateTaskForDetails,
 }) => {
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
@@ -97,6 +98,7 @@ const TaskTable = ({
                     isAdmin={user.isAdmin}
                     onClick={() => handleRowClick(task.id)}
                     onTost={handleTost}
+                    onUpdateTaskForDetails={onUpdateTaskForDetails}
                   />
                 ))
               )}
@@ -116,15 +118,13 @@ const TaskTable = ({
       ) : (
         <Grid container spacing={2}>
           {data?.map((task) => (
-            <Grid item xs={12} sm={6} md={4}>
-              <TaskCardSingleContent
-                key={task.id}
-                task={task}
-                isAdmin={user.isAdmin}
-                onClick={() => handleRowClick(task.id)}
-                onTost={handleTost}
-              />
-            </Grid>
+            <TaskCardSingleContent
+              key={task.id}
+              task={task}
+              isAdmin={user.isAdmin}
+              onClick={() => handleRowClick(task.id)}
+              onTost={handleTost}
+            />
           ))}
         </Grid>
       )}
