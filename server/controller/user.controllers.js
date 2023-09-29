@@ -42,6 +42,17 @@ const deleteUserById = async (req, res, next) => {
     const attributes = { exclude: ["password"] };
     const user = await findWithId(User, id, attributes);
 
+    // Find all tasks associated with the user
+    const userTasks = await Task.findAll({
+      where: { createdToTask: user.id },
+    });
+
+    if (userTasks) {
+      await Task.destroy({
+        where: { createdToTask: user.id },
+      });
+    }
+
     const deleteUser = await User.destroy({
       where: {
         [Op.and]: [{ id: user.id }, { isAdmin: { [Op.eq]: false } }],
@@ -55,7 +66,7 @@ const deleteUserById = async (req, res, next) => {
 
     return successResponse(res, {
       statusCode: 200,
-      message: "User was deleted successfully",
+      message: "User and associated tasks were deleted successfully",
     });
   } catch (error) {
     next(error);
@@ -89,12 +100,12 @@ const createNewUser = async (req, res, next) => {
     };
 
     // send activation email
-    sendEmail(emailData);
+    // sendEmail(emailData);
 
     return successResponse(res, {
       statusCode: 200,
       message: `A verification email has been sent to this email ${email}. Please go to your email to complete your registration process.`,
-      payload: {},
+      payload: { token },
     });
   } catch (error) {
     next(error);

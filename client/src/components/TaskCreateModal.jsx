@@ -68,7 +68,6 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
     },
     onSubmit: async (values, helpers) => {
       setLoading(false);
-      console.log(values);
       const res = await axios
         .post(`${apiHostName}/task/create-task`, {
           title: values.title,
