@@ -31,7 +31,7 @@ const Tasks = () => {
         setData(res.data.payload.tasks);
       }
     } catch (err) {
-      setLoading(false);
+      setLoading(true);
       setStatus(err.response.status);
       setSuccess(err.response.data.success);
       setErrorMessage(err.response.data.message);
@@ -48,7 +48,7 @@ const Tasks = () => {
         setData(res.data.payload.task);
       }
     } catch (err) {
-      setLoading(false);
+      setLoading(true);
       setStatus(err.response.status);
       setSuccess(err.response.data.success);
       setErrorMessage(err.response.data.message);
@@ -114,6 +114,7 @@ const Tasks = () => {
           handleRowClick={handleRowClick}
           handleCreateTask={handleCreateTask}
           handleTost={handleTost}
+          onUpdateTaskForDetails={getAllTaskForSingleUser}
         />
 
         {isModalOpen && selectedTaskId && (
