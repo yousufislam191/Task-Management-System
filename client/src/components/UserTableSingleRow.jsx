@@ -29,13 +29,11 @@ const UserTableSingleRow = (props) => {
       })}
       <StyledTableCell align="center">
         {singleData.isAdmin ? (
-          <>
-            <MenuButton
-              name={"Yes"}
-              color={"success"}
-              itemName={["Remove Admin"]}
-            />
-          </>
+          <MenuButton
+            name={"Yes"}
+            color={"success"}
+            itemName={["Remove Admin"]}
+          />
         ) : (
           <MenuButton name={"No"} color={"inherit"} itemName={["Make Admin"]} />
         )}

@@ -7,14 +7,19 @@ import {
   TableRow,
   Paper,
   Typography,
+  useMediaQuery,
+  Grid,
 } from "@mui/material";
 import UserTableSingleRow from "./UserTableSingleRow";
 import { StyledTableCell } from "../layout/tableTheme";
 import { useAllUsersContext } from "../context/AllUsersContext";
+import UserCardSingleContent from "./UserCardSingleContent";
 
 const UsersTable = () => {
   const { allUsers } = useAllUsersContext();
-  return (
+  const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+
+  return isLargeScreen ? (
     <>
       <Typography component="h1" variant="h3" align="left" sx={{ mb: 4 }}>
         Manage Users
@@ -56,6 +61,12 @@ const UsersTable = () => {
         </Table>
       </TableContainer>
     </>
+  ) : (
+    <Grid container spacing={2}>
+      {allUsers?.map((singleData) => (
+        <UserCardSingleContent key={singleData.id} singleData={singleData} />
+      ))}
+    </Grid>
   );
 };
 
