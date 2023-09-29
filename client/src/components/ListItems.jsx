@@ -19,12 +19,12 @@ const ListItems = () => {
 
   return (
     <>
-      <ListItemButton onClick={() => handleItemClick("Dashboard")}>
+      {/* <ListItemButton onClick={() => handleItemClick("Dashboard")}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
-      </ListItemButton>
+      </ListItemButton> */}
       <ListItemButton onClick={() => handleItemClick("Tasks")}>
         <ListItemIcon>
           <AssignmentIcon />

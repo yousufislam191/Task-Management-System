@@ -78,6 +78,7 @@ const Dashboard = () => {
       if (res.data.success === true) {
         setLoading(true);
         setUser(res.data.payload);
+        // getCurrentUser(res.data.payload.id);
       }
     } catch (err) {
       setLoading(true);
