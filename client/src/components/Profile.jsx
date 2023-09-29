@@ -20,14 +20,14 @@ import showToast from "./showToast";
 import apiHostName from "../../secret";
 import { useNavigate } from "react-router-dom";
 
-const Profile = () => {
+const Profile = ({ onUpdateProfile }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isEditable, setIsEditable] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [editedDetails, setEditedDetails] = useState();
   const [openPasswordField, setOpenPasswordField] = useState(false);
-  const { user, setUser } = useUserContext();
+  const { user } = useUserContext();
   const userId = user.id;
 
   const notify = (status, message) => showToast(status, message);
@@ -124,18 +124,10 @@ const Profile = () => {
         name: editedDetails.name,
       });
       if (res.data.success) {
-        const updateUserResponse = await axios
-          .get(`${apiHostName}/user/${userId}`)
-          .catch((err) => {
-            notify(err.response.status, err.response.data.message);
-          });
-        if (updateUserResponse.data.success) {
-          setUser(updateUserResponse.data.payload.user);
-        }
-
         setLoading(true);
         setIsEditable(false);
         notify(res.status, res.data.message);
+        onUpdateProfile();
       }
     } catch (err) {
       setLoading(true);

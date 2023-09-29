@@ -78,7 +78,6 @@ const Dashboard = () => {
       if (res.data.success === true) {
         setLoading(true);
         setUser(res.data.payload);
-        // getCurrentUser(res.data.payload.id);
       }
     } catch (err) {
       setLoading(true);
@@ -139,7 +138,9 @@ const Dashboard = () => {
                 {activeComponent === "Manage Users" && (
                   <UsersTable onUpdateUsers={getAllUsers} />
                 )}
-                {activeComponent === "Profile" && <Profile />}
+                {activeComponent === "Profile" && (
+                  <Profile onUpdateProfile={checkAccessToken} />
+                )}
               </Container>
               <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}></Container>
             </Box>
