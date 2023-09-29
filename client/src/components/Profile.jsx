@@ -27,7 +27,7 @@ const Profile = () => {
   const [openModal, setOpenModal] = useState(false);
   const [editedDetails, setEditedDetails] = useState();
   const [openPasswordField, setOpenPasswordField] = useState(false);
-  const { user } = useUserContext();
+  const { user, setUser } = useUserContext();
   const userId = user.id;
 
   const notify = (status, message) => showToast(status, message);
@@ -116,10 +116,31 @@ const Profile = () => {
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
 
-  const handleSave = () => {
-    setIsEditable(false);
-    // setTaskDetails({ ...editedDetails });
-    console.log(editedDetails.name);
+  const handleSave = async () => {
+    setLoading(false);
+
+    try {
+      const res = await axios.put(`${apiHostName}/user/${userId}`, {
+        name: editedDetails.name,
+      });
+      if (res.data.success) {
+        const updateUserResponse = await axios
+          .get(`${apiHostName}/user/${userId}`)
+          .catch((err) => {
+            notify(err.response.status, err.response.data.message);
+          });
+        if (updateUserResponse.data.success) {
+          setUser(updateUserResponse.data.payload.user);
+        }
+
+        setLoading(true);
+        setIsEditable(false);
+        notify(res.status, res.data.message);
+      }
+    } catch (err) {
+      setLoading(true);
+      notify(err.response.status, err.response.data.message);
+    }
   };
 
   const handleOpenPasswordField = () => {
@@ -199,46 +220,49 @@ const Profile = () => {
                   Edit
                 </Button>
               )}
-              {isEditable && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Button
-                    variant="text"
-                    disableElevation
-                    onClick={handleSave}
+              {isEditable &&
+                (loading ? (
+                  <Box
                     sx={{
-                      textTransform: "capitalize",
-                      alignItems: "left",
-                      backgroundColor: "transparent",
-                      "&:hover": {
-                        backgroundColor: "transparent",
-                      },
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
                     }}
                   >
-                    Save
-                  </Button>
-                  <Button
-                    variant="text"
-                    disableElevation
-                    onClick={() => setIsEditable(false)}
-                    sx={{
-                      textTransform: "capitalize",
-                      alignItems: "left",
-                      backgroundColor: "transparent",
-                      "&:hover": {
+                    <Button
+                      variant="text"
+                      disableElevation
+                      onClick={handleSave}
+                      sx={{
+                        textTransform: "capitalize",
+                        alignItems: "left",
                         backgroundColor: "transparent",
-                      },
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Box>
-              )}
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                        },
+                      }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="text"
+                      disableElevation
+                      onClick={() => setIsEditable(false)}
+                      sx={{
+                        textTransform: "capitalize",
+                        alignItems: "left",
+                        backgroundColor: "transparent",
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                        },
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                ) : (
+                  <CircularProgress size={20} />
+                ))}
             </Box>
 
             <TextField
@@ -338,16 +362,18 @@ const Profile = () => {
               >
                 {openPasswordField ? "Close Password" : "Change Password"}
               </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleModalOpen}
-                sx={{
-                  textTransform: "capitalize",
-                }}
-              >
-                Delete Account
-              </Button>
+              {!user.isAdmin && (
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleModalOpen}
+                  sx={{
+                    textTransform: "capitalize",
+                  }}
+                >
+                  Delete Account
+                </Button>
+              )}
             </Box>
           </Box>
         </Box>
