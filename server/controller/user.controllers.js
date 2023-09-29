@@ -11,12 +11,20 @@ const {
   clientURL,
   jwtPasswordResetKey,
   expireJwtForResetPassword,
+  jwtAccessKey,
+  accessTokenExpireTime,
+  jwtRefreshTokenKey,
+  refreshTokenExpireTime,
 } = require("../secret");
 const { createJWT } = require("../helper/createJWT");
 const { findWithId } = require("../helper/findWithId");
 const { findWithEmail } = require("../helper/findWithEmail");
 const sendEmail = require("../helper/sendEmail");
 const Task = require("../models/task.model");
+const {
+  setAccessTokenCookie,
+  setRefreshTokenCookie,
+} = require("../helper/cookie");
 
 // GET user by ID
 const getUserById = async (req, res, next) => {
@@ -179,9 +187,36 @@ const updateUserById = async (req, res, next) => {
     const attributes = { exclude: ["password"] };
     const updatedUsers = await findWithId(User, userId, attributes);
 
+    res.clearCookie("accessToken", {
+      path: "/",
+      secure: true,
+      sameSite: "none",
+    });
+    res.clearCookie("refreshToken", {
+      path: "/",
+      secure: true,
+      sameSite: "none",
+    });
+
+    // create access token
+    const accessToken = createJWT(
+      { user: updatedUsers },
+      jwtAccessKey,
+      accessTokenExpireTime
+    );
+    setAccessTokenCookie(res, accessToken);
+
+    // create refresh token
+    const refreshToken = createJWT(
+      { user: updatedUsers },
+      jwtRefreshTokenKey,
+      refreshTokenExpireTime
+    );
+    setRefreshTokenCookie(res, refreshToken);
+
     return successResponse(res, {
       statusCode: 200,
-      message: "User was updated successfully",
+      message: "User profile was updated successfully",
       payload: updatedUsers,
     });
   } catch (error) {
