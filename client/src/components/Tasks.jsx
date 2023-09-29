@@ -86,7 +86,9 @@ const Tasks = () => {
             handleRowClick={handleRowClick}
             handleCreateTask={handleCreateTask}
             handleTost={handleTost}
+            onUpdateTaskForDetails={getAllTasks}
           />
+
           {isModalOpen && selectedTaskId && (
             <TaskDetailsModal
               user={user}

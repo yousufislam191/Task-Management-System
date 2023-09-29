@@ -13,7 +13,7 @@ const MenuButton = (props) => {
   const handleClose = (event, item) => {
     event.stopPropagation();
     setAnchorEl(null);
-    if (item) {
+    if (item !== "backdropClick") {
       handleStatus(item);
     }
   };
