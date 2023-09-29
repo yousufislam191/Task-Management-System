@@ -124,6 +124,7 @@ const TaskTable = ({
               isAdmin={user.isAdmin}
               onClick={() => handleRowClick(task.id)}
               onTost={handleTost}
+              onUpdateTaskForDetails={onUpdateTaskForDetails}
             />
           ))}
         </Grid>

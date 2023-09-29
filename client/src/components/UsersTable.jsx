@@ -14,13 +14,22 @@ import UserTableSingleRow from "./UserTableSingleRow";
 import { StyledTableCell } from "../layout/tableTheme";
 import { useAllUsersContext } from "../context/AllUsersContext";
 import UserCardSingleContent from "./UserCardSingleContent";
+import showToast from "./showToast";
+import { ToastContainer } from "react-toastify";
 
-const UsersTable = () => {
+const UsersTable = ({ onUpdateUsers }) => {
   const { allUsers } = useAllUsersContext();
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
+  const notify = (status, message) => showToast(status, message);
+
+  const handleTost = (data) => {
+    notify(data.status, data.message);
+  };
+
   return isLargeScreen ? (
     <>
+      <ToastContainer />
       <Typography component="h1" variant="h3" align="left" sx={{ mb: 4 }}>
         Manage Users
       </Typography>
@@ -36,6 +45,7 @@ const UsersTable = () => {
               </StyledTableCell>
               <StyledTableCell align="center">Tasks Done</StyledTableCell>
               <StyledTableCell align="center">Admin</StyledTableCell>
+              <StyledTableCell align="center">Delete User</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -54,6 +64,8 @@ const UsersTable = () => {
                 <UserTableSingleRow
                   key={singleData.id}
                   singleData={singleData}
+                  onTost={handleTost}
+                  onUpdateUsers={onUpdateUsers}
                 />
               ))
             )}
@@ -62,11 +74,19 @@ const UsersTable = () => {
       </TableContainer>
     </>
   ) : (
-    <Grid container spacing={2}>
-      {allUsers?.map((singleData) => (
-        <UserCardSingleContent key={singleData.id} singleData={singleData} />
-      ))}
-    </Grid>
+    <>
+      <ToastContainer />
+      <Grid container spacing={2}>
+        {allUsers?.map((singleData) => (
+          <UserCardSingleContent
+            key={singleData.id}
+            singleData={singleData}
+            onTost={handleTost}
+            onUpdateUsers={onUpdateUsers}
+          />
+        ))}
+      </Grid>
+    </>
   );
 };
 

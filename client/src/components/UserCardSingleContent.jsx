@@ -1,11 +1,39 @@
-import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
-import React from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
+import React, { useState } from "react";
 import titleCase from "../helper/titleCase";
 import MenuButton from "./MenuButton";
+import axios from "axios";
+import apiHostName from "../../secret";
 
 const UserCardSingleContent = (props) => {
-  const { singleData } = props;
+  const { singleData, onTost, onUpdateUsers } = props;
+  const [loading, setLoading] = useState(true);
   const statusLabels = ["Tasks Assigned", "Tasks in Progress", "Tasks Done"];
+
+  const deleteUser = async (id) => {
+    try {
+      const res = await axios.delete(`${apiHostName}/user/${id}`);
+      if (res.data.success) {
+        setLoading(true);
+        onTost({ status: res.status, message: res.data.message });
+        onUpdateUsers();
+      }
+    } catch (err) {
+      setLoading(true);
+      onTost({
+        status: err.response.status,
+        message: err.response.data.message,
+      });
+    }
+  };
 
   return (
     <>
@@ -42,40 +70,64 @@ const UserCardSingleContent = (props) => {
                 </Typography>
               );
             })}
-
-            {singleData.isAdmin ? (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "start",
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
-              >
-                <Typography>Admin: </Typography>
-                <MenuButton
-                  name={"Yes"}
-                  color={"success"}
-                  itemName={["Remove Admin"]}
-                />
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "start",
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
-              >
-                <Typography>Admin: </Typography>
-                <MenuButton
-                  name={"No"}
-                  color={"inherit"}
-                  itemName={["Make Admin"]}
-                />
-              </Box>
-            )}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                alignContent: "center",
+              }}
+            >
+              {singleData.isAdmin ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "start",
+                    alignItems: "center",
+                    alignContent: "center",
+                  }}
+                >
+                  <Typography>Admin: </Typography>
+                  <MenuButton
+                    name={"Yes"}
+                    color={"success"}
+                    itemName={["Remove Admin"]}
+                  />
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "start",
+                    alignItems: "center",
+                    alignContent: "center",
+                  }}
+                >
+                  <Typography>Admin: </Typography>
+                  <MenuButton
+                    name={"No"}
+                    color={"inherit"}
+                    itemName={["Make Admin"]}
+                  />
+                </Box>
+              )}
+              {loading ? (
+                <Button
+                  variant="outlined"
+                  color="error"
+                  size="small"
+                  style={{ textTransform: "capitalize" }}
+                  onClick={() => {
+                    setLoading(false);
+                    deleteUser(singleData.id);
+                  }}
+                >
+                  Delete User
+                </Button>
+              ) : (
+                <CircularProgress size={20} />
+              )}
+            </Box>
           </CardContent>
         </Card>
       </Grid>

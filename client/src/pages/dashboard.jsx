@@ -135,7 +135,9 @@ const Dashboard = () => {
               <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 {activeComponent === "Dashboard" && <Chart />}
                 {activeComponent === "Tasks" && <Tasks />}
-                {activeComponent === "Manage Users" && <UsersTable />}
+                {activeComponent === "Manage Users" && (
+                  <UsersTable onUpdateUsers={getAllUsers} />
+                )}
                 {activeComponent === "Profile" && <Profile />}
               </Container>
               <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}></Container>
