@@ -66,7 +66,7 @@ npm install
 [1]: https://security.google.com/settings/security/apppasswords "SMTP App Password"
 [2]: https://youtu.be/qpAI5qZR9ms?si=mlC-cNmT4gs5riMf "Youtube Video"
 
-8. **After that, create a new file in your root folder of the `server` folder which name will be `.env`**
+8. **After that, create a new file in your root folder of the `server` folder which name will be `.env`, or you will be able to see a `.env.example` file, where you can set the environment variable by removin `.example` from the `.env.example`.**
 9. **Inside the `.env` file, you have to store some of your environment variables. Your environment variables must be exactly the same format. For example, `APP_NAME= Task Management System`. All environment variables are named below:**
 
 | Environment Variable Name           | Value                                                                                                                                                      |
