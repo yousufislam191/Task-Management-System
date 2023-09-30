@@ -32,7 +32,7 @@ app.use(xssClean());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/task", taskRouter);
-app.use("/api/seed", seedRouter); // Seed api has been used for development purposes
+// app.use("/api/seed", seedRouter); // Seed api has been used for development purposes
 
 // app.get("/", (req, res) => {
 //   res.status(200).send("server home route");
