@@ -33,6 +33,7 @@ const Dashboard = () => {
   const [success, setSuccess] = useState();
   const [status, setStatus] = useState();
   const [errorMessage, setErrorMessage] = useState("");
+  const [notAvailableMessage, setNotAvailableMessage] = useState("");
   const [open, setOpen] = useState(true);
   const { user, setUser } = useUserContext();
   const { activeComponent } = useAppContext();
@@ -64,9 +65,13 @@ const Dashboard = () => {
       }
     } catch (err) {
       setLoading(true);
-      setStatus(err.response.status);
-      setSuccess(err.response.data.success);
-      setErrorMessage(err.response.data.message);
+      if (err.response.status === 404) {
+        setNotAvailableMessage(err.response.data.message);
+      } else {
+        setStatus(err.response.status);
+        setSuccess(err.response.data.success);
+        setErrorMessage(err.response.data.message);
+      }
     }
   };
 
@@ -136,7 +141,10 @@ const Dashboard = () => {
                 {activeComponent === "Dashboard" && <Chart />}
                 {activeComponent === "Tasks" && <Tasks />}
                 {activeComponent === "Manage Users" && (
-                  <UsersTable onUpdateUsers={getAllUsers} />
+                  <UsersTable
+                    notAvailableMessage={notAvailableMessage}
+                    onUpdateUsers={getAllUsers}
+                  />
                 )}
                 {activeComponent === "Profile" && (
                   <Profile onUpdateProfile={checkAccessToken} />
