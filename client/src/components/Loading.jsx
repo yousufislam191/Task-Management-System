@@ -24,7 +24,7 @@ TypographyDemo.propTypes = {
 
 const Loading = () => {
   return (
-    <Grid container spacing={8} sx={{ px: 6 }}>
+    <Grid container spacing={8}>
       <Grid item xs={12}>
         <TypographyDemo loading />
       </Grid>

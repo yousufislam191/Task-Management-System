@@ -157,7 +157,13 @@ const Dashboard = () => {
       </>
     )
   ) : (
-    <Loading />
+    <Box
+      sx={{
+        padding: "3rem",
+      }}
+    >
+      <Loading />
+    </Box>
   );
 };
 
