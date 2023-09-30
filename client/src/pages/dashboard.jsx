@@ -58,7 +58,7 @@ const Dashboard = () => {
 
   const getAllUsers = async () => {
     try {
-      const res = await axios.get(`${apiHostName}/user`);
+      const res = await axios.get(`${apiHostName}/user`, { timeout: 5000 });
       if (res.data.success === true) {
         setLoading(true);
         setAllUsers(res.data.payload);
