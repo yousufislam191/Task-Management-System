@@ -347,7 +347,7 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
     });
 
     if (!users || users.length === 0) {
-      throw createError(404, "User not found");
+      throw createError(404, "Users are not available");
     }
 
     // Initialize an empty array to store the final response

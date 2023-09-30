@@ -79,19 +79,18 @@ const TaskTable = ({
               </TableRow>
             </TableHead>
             {/* ...Table Body */}
-            <TableBody>
-              {data?.length === 0 ? (
-                <h1
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "4rem",
-                  }}
-                >
-                  No Task Available
-                </h1>
-              ) : (
-                data?.map((task) => (
+            {data?.length === 0 ? (
+              <Typography
+                component="h1"
+                variant="h3"
+                align="left"
+                sx={{ mt: 2 }}
+              >
+                No Task Available
+              </Typography>
+            ) : (
+              <TableBody>
+                {data?.map((task) => (
                   <TaskTableSingleRow
                     key={task.id}
                     task={task}
@@ -100,9 +99,9 @@ const TaskTable = ({
                     onTost={handleTost}
                     onUpdateTaskForDetails={onUpdateTaskForDetails}
                   />
-                ))
-              )}
-            </TableBody>
+                ))}
+              </TableBody>
+            )}
           </Table>
         </TableContainer>
       ) : data?.length === 0 ? (
