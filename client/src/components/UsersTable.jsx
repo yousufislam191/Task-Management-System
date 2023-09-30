@@ -17,8 +17,9 @@ import { useAllUsersContext } from "../context/AllUsersContext";
 import UserCardSingleContent from "./UserCardSingleContent";
 import showToast from "./showToast";
 import { ToastContainer } from "react-toastify";
+import Loading from "./Loading";
 
-const UsersTable = ({ notAvailableMessage, onUpdateUsers }) => {
+const UsersTable = ({ notAvailableMessage, onUpdateUsers, loading }) => {
   const { allUsers } = useAllUsersContext();
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
 
@@ -49,33 +50,42 @@ const UsersTable = ({ notAvailableMessage, onUpdateUsers }) => {
               <StyledTableCell align="center">Delete User</StyledTableCell>
             </TableRow>
           </TableHead>
-          {!notAvailableMessage ? (
-            <TableBody>
-              {allUsers?.length === 0 ? (
-                <h1
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "4rem",
-                  }}
-                >
-                  No Users Available
-                </h1>
-              ) : (
-                allUsers?.map((singleData) => (
-                  <UserTableSingleRow
-                    key={singleData.id}
-                    singleData={singleData}
-                    onTost={handleTost}
-                    onUpdateUsers={onUpdateUsers}
-                  />
-                ))
-              )}
-            </TableBody>
+          {loading ? (
+            !notAvailableMessage ? (
+              <TableBody>
+                {allUsers?.length === 0 ? (
+                  <h1
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "4rem",
+                    }}
+                  >
+                    No Users Available
+                  </h1>
+                ) : (
+                  allUsers?.map((singleData) => (
+                    <UserTableSingleRow
+                      key={singleData.id}
+                      singleData={singleData}
+                      onTost={handleTost}
+                      onUpdateUsers={onUpdateUsers}
+                    />
+                  ))
+                )}
+              </TableBody>
+            ) : (
+              <Typography
+                component="h1"
+                variant="h3"
+                align="left"
+                sx={{ mt: 2 }}
+              >
+                {notAvailableMessage}
+              </Typography>
+            )
           ) : (
-            <Typography component="h1" variant="h3" align="left" sx={{ mt: 2 }}>
-              {notAvailableMessage}
-            </Typography>
+            <Loading />
           )}
         </Table>
       </TableContainer>
@@ -96,21 +106,25 @@ const UsersTable = ({ notAvailableMessage, onUpdateUsers }) => {
           Manage Users
         </Typography>
       </Box>
-      {!notAvailableMessage ? (
-        <Grid container spacing={2}>
-          {allUsers?.map((singleData) => (
-            <UserCardSingleContent
-              key={singleData.id}
-              singleData={singleData}
-              onTost={handleTost}
-              onUpdateUsers={onUpdateUsers}
-            />
-          ))}
-        </Grid>
+      {loading ? (
+        !notAvailableMessage ? (
+          <Grid container spacing={2}>
+            {allUsers?.map((singleData) => (
+              <UserCardSingleContent
+                key={singleData.id}
+                singleData={singleData}
+                onTost={handleTost}
+                onUpdateUsers={onUpdateUsers}
+              />
+            ))}
+          </Grid>
+        ) : (
+          <Typography component="h1" variant="h3" align="left" sx={{ mt: 2 }}>
+            {notAvailableMessage}
+          </Typography>
+        )
       ) : (
-        <Typography component="h1" variant="h3" align="left" sx={{ mt: 2 }}>
-          {notAvailableMessage}
-        </Typography>
+        <Loading />
       )}
     </>
   );
