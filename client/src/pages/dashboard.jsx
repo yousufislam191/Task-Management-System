@@ -104,6 +104,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (user?.isAdmin) {
+      setLoading(false);
       getAllUsers();
     }
   }, [user?.isAdmin]);
@@ -144,6 +145,7 @@ const Dashboard = () => {
                   <UsersTable
                     notAvailableMessage={notAvailableMessage}
                     onUpdateUsers={getAllUsers}
+                    loading={loading}
                   />
                 )}
                 {activeComponent === "Profile" && (
