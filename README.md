@@ -98,6 +98,46 @@ npm run dev
 ```
 
 <h4 align="center">Ok now enjoy everything ✌️</h4>
+
+---
+
+<h1 align="center">API Endpoints</h1>
+<h2 align="left">User API</h2>
+
+- `GET /api/user` : Get all users with task status activities. [*for admin only*]
+- `GET /api/user/:id` : Get user by id.
+- `POST /api/user/register` : Create user account.
+- `POST /api/user/verify-account` : Verify user account.
+- `POST /api/user/forgot-password` : Forget user password.
+- `PUT /api/user/reset-password` : Reset user password.
+- `PUT /api/user/:id` : Update user account by id.
+- `PUT /api/user/update-password/:id` : Update user password.
+- `DELETE /api/user/:id` : Delete user by id.
+
+<h2 align="left">Auth API</h2>
+
+- `POST /api/auth/login` : User login.
+- `POST /api/auth/logout` : User logout.
+- `GET /api/auth/refresh-token` : Generate refresh token.
+- `GET /api/auth/protected` : Check protected access.
+
+<h2 align="left">Task API</h2>
+
+- `GET /api/task` : Get all tasks. [*for admin only*]
+- `GET /api/task/:id` : Get task by id.
+- `GET /api/task/user-all-task/:id` : Get all task for a particular user.
+- `POST /api/task/create-task` : Create new task. [*for admin only*]
+- `PUT /api/task/:id` : Update task by id. [*for admin only*]
+- `PUT /api/task/status/:id` : Update task status. [*for user only*]
+- `DELETE /api/task/:id` : Delete task by id. [*for admin only*]
+
+<h2 align="left">Seed API</h2>
+
+Seed API has been used for enhancing development purposes. For the production grade, it has been disabled. You will be able to use it for your local server by removing the `//` from the `app.js` file.
+
+- `GET /api/seed/users` : Seed user.
+- `GET /api/seed/tasks` : Seed task.
+
 <h1>About Developer</h1>
 
 **[Facebook][3]** |
