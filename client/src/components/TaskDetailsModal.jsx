@@ -31,7 +31,10 @@ const TaskDetailsModal = ({
   const [updateLoading, setUpdateLoading] = useState(true);
   const [taskDetails, setTaskDetails] = useState({});
   const [isEditable, setIsEditable] = useState(false);
-  const [editedDetails, setEditedDetails] = useState({});
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedTag, setEditedTag] = useState("");
+  const [editedDeadline, setEditedDeadline] = useState(null);
+  const [editedDescription, setEditedDescription] = useState("");
 
   const notify = (status, message) => showToast(status, message);
 
@@ -42,23 +45,32 @@ const TaskDetailsModal = ({
 
   const handleSave = () => {
     setIsEditable(false);
-    setTaskDetails({ ...editedDetails });
+    resetEditedValues();
     setUpdateLoading(false);
     updateTaskDetails();
   };
 
   const handleEdit = () => {
     setIsEditable(true);
-    setEditedDetails({ ...taskDetails });
+    resetEditedValues();
+  };
+
+  const resetEditedValues = () => {
+    setEditedTitle(taskDetails.title || "");
+    setEditedTag(taskDetails.tag || "");
+    setEditedDeadline(
+      taskDetails.deadline ? dayjs(taskDetails.deadline) : null
+    );
+    setEditedDescription(taskDetails.description || "");
   };
 
   const updateTaskDetails = async () => {
     try {
       const res = await axios.put(`${apiHostName}/task/${taskId}`, {
-        title: editedDetails.title,
-        tag: editedDetails.tag,
-        description: editedDetails.description,
-        deadline: editedDetails.deadline,
+        title: editedTitle,
+        tag: editedTag,
+        description: editedDescription,
+        deadline: editedDeadline,
       });
       if (res.data.success) {
         setUpdateLoading(true);
@@ -157,16 +169,10 @@ const TaskDetailsModal = ({
                 <TextField
                   fullWidth
                   label="Title"
-                  value={
-                    isEditable
-                      ? editedDetails.title || ""
-                      : taskDetails.title || ""
-                  }
                   variant="outlined"
                   disabled={!isEditable}
-                  onChange={(e) =>
-                    setEditedDetails({ ...taskDetails, title: e.target.value })
-                  }
+                  value={isEditable ? editedTitle : taskDetails.title || ""}
+                  onChange={(e) => setEditedTitle(e.target.value)}
                 />
                 <Box
                   sx={{
@@ -192,20 +198,13 @@ const TaskDetailsModal = ({
                         label="Deadline"
                         disablePast
                         disabled={!isEditable}
+                        onChange={(newDate) =>
+                          setEditedDeadline(newDate.toISOString())
+                        }
                         value={
                           isEditable
-                            ? editedDetails.deadline
-                              ? dayjs(editedDetails.deadline)
-                              : null
-                            : taskDetails.deadline
-                            ? dayjs(taskDetails.deadline)
-                            : null
-                        }
-                        onChange={(newDate) =>
-                          setEditedDetails({
-                            ...editedDetails,
-                            deadline: newDate.toISOString(),
-                          })
+                            ? dayjs(editedDeadline)
+                            : dayjs(taskDetails.deadline) || null
                         }
                       />
                     </LocalizationProvider>
@@ -213,16 +212,10 @@ const TaskDetailsModal = ({
                   <TextField
                     fullWidth
                     label="Tag"
-                    value={
-                      isEditable
-                        ? editedDetails.tag || ""
-                        : taskDetails.tag || ""
-                    }
                     variant="outlined"
                     disabled={!isEditable}
-                    onChange={(e) =>
-                      setEditedDetails({ ...taskDetails, tag: e.target.value })
-                    }
+                    value={isEditable ? editedTag : taskDetails.tag || ""}
+                    onChange={(e) => setEditedTag(e.target.value)}
                   />
                 </Box>
 
@@ -260,20 +253,15 @@ const TaskDetailsModal = ({
                 <TextField
                   fullWidth
                   label="Description"
+                  variant="outlined"
+                  disabled={!isEditable}
                   multiline
                   value={
                     isEditable
-                      ? editedDetails.description || ""
+                      ? editedDescription
                       : taskDetails.description || ""
                   }
-                  variant="outlined"
-                  disabled={!isEditable}
-                  onChange={(e) =>
-                    setEditedDetails({
-                      ...taskDetails,
-                      description: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setEditedDescription(e.target.value)}
                 />
               </Box>
               {user.isAdmin &&
