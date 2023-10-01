@@ -1,6 +1,6 @@
 const setAccessTokenCookie = (res, accessToken) => {
   res.cookie("accessToken", accessToken, {
-    maxAge: 5 * 60 * 1000, // 5 minutes
+    maxAge: 60 * 60 * 1000, // 60 minutes
     httpOnly: true,
     secure: true,
     sameSite: "none",
