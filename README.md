@@ -1,10 +1,9 @@
-<h3>API documentation coming soon!!...</h3>
 <h1 align="center">Task Management System</h1>
 <p align="center">
 <strong>"Task Management System"</strong> is a simple full-stack web application. Inside this app, the admin has more control than the user. The user will be able to just read their assigned task, update their task status and profile, and delete their account. On the other hand, admin will be able to do everything.
 </p>
 
-#### Visit website: https://task-management-system-flax.vercel.app
+#### Visit website: <a href="https://task-management-system-flax.vercel.app" target="_blank">https://task-management-system-flax.vercel.app</a>
 
 #### For Admin login---> Email: `tms-admin@gmail.com` | Password: `1qasw2!@Q`
 
@@ -102,9 +101,12 @@ npm run dev
 ---
 
 <h1 align="center">API Endpoints</h1>
+
+Here are all the API endpoints for this project. And you can also [**visit**][10] the Postman API documentation for these projects.
+
 <h2 align="left">User API</h2>
 
-- `GET /api/user` : Get all users with task status activities. [*for admin only*]
+- `GET /api/user` : Get all users with task status activities. _[for admin only]_
 - `GET /api/user/:id` : Get user by id.
 - `POST /api/user/register` : Create user account.
 - `POST /api/user/verify-account` : Verify user account.
@@ -123,13 +125,13 @@ npm run dev
 
 <h2 align="left">Task API</h2>
 
-- `GET /api/task` : Get all tasks. [*for admin only*]
+- `GET /api/task` : Get all tasks. _[for admin only]_
 - `GET /api/task/:id` : Get task by id.
 - `GET /api/task/user-all-task/:id` : Get all task for a particular user.
-- `POST /api/task/create-task` : Create new task. [*for admin only*]
-- `PUT /api/task/:id` : Update task by id. [*for admin only*]
-- `PUT /api/task/status/:id` : Update task status. [*for user only*]
-- `DELETE /api/task/:id` : Delete task by id. [*for admin only*]
+- `POST /api/task/create-task` : Create new task. _[for admin only]_
+- `PUT /api/task/:id` : Update task by id. _[for admin only]_
+- `PUT /api/task/status/:id` : Update task status. _[for user only]_
+- `DELETE /api/task/:id` : Delete task by id. _[for admin only]_
 
 <h2 align="left">Seed API</h2>
 
@@ -155,3 +157,4 @@ Seed API has been used for enhancing development purposes. For the production gr
 [7]: https://github.com/yousufislam191
 [8]: https://kaggle.com/yousufislam191
 [9]: https://yousufislam191.github.io/resume/
+[10]: https://documenter.getpostman.com/view/27853638/2s9YCBsoy2
