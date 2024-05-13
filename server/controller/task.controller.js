@@ -4,9 +4,13 @@ const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
 const User = require("../models/user.model");
 const { findTaskWithId } = require("../helper/findTaskWithId");
-const { scheduleTaskReminders } = require("../helper/taskReminderScheduler");
+const {
+  scheduleTaskReminders,
+  movedFailedTaskRemindersSchedule,
+} = require("../helper/reminderScheduler");
 
 scheduleTaskReminders();
+movedFailedTaskRemindersSchedule();
 
 // GET all task by admin
 const getTask = async (req, res, next) => {
@@ -106,7 +110,7 @@ const createNewTask = async (req, res, next) => {
       throw createError(409, "Same task already assigned for this user");
 
     const user = await User.findByPk(createdToTask, {
-      attributes: ["email"], // Only fetch the email
+      attributes: ["email"],
     });
 
     const newTask = {

@@ -11,6 +11,9 @@ const userRouter = require("./routes/user.routes");
 const authRouter = require("./routes/auth.routes");
 const { corsOrigin } = require("./secret");
 const taskRouter = require("./routes/task.routes");
+// const {
+//   movedFailedTaskRemindersSchedule,
+// } = require("./helper/reminderScheduler");
 const app = express();
 
 require("./config/db");
@@ -28,6 +31,9 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(xssClean());
 // app.use(limiter);
+
+// cron job for failed task reminders
+// movedFailedTaskRemindersSchedule();
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
