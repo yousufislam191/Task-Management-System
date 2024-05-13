@@ -28,6 +28,25 @@ const createTaskValidator = [
     .withMessage("Deadline is required")
     .isISO8601()
     .withMessage("Invalid deadline format. Use ISO8601 date format."),
+  check("hour")
+    .notEmpty()
+    .withMessage("Hour is required")
+    .isInt()
+    .withMessage("Hour should be an integer")
+    .isInt({ min: 0, max: 12 })
+    .withMessage("Hour should be between 0 and 12"),
+  check("minute")
+    .notEmpty()
+    .withMessage("Minute is required")
+    .isInt()
+    .withMessage("Minute should be an integer")
+    .isInt({ min: 0, max: 59 })
+    .withMessage("Minute should be between 0 and 59"),
+  check("partOfDay")
+    .notEmpty()
+    .withMessage("Part of day is required")
+    .isIn(["AM", "PM"])
+    .withMessage("Invalid part of day value. Should be AM or PM"),
   check("createdToTask")
     .notEmpty()
     .withMessage("createdToTask is required")

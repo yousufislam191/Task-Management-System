@@ -2,12 +2,25 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 const User = require("./user.model");
 
-const Task = sequelize.define("tasks", {
+// const Task = sequelize.define("tasks", {
+const Task = sequelize.define("newTasks", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     allowNull: false,
     primaryKey: true,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: {
+        msg: "Must be a valid email address",
+      },
+      notNull: {
+        msg: "User email is required",
+      },
+    },
   },
   title: {
     type: DataTypes.STRING,
@@ -51,6 +64,43 @@ const Task = sequelize.define("tasks", {
     type: DataTypes.DATE,
     allowNull: false,
   },
+  hour: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+    validate: {
+      min: 0,
+      max: 12,
+      notNull: {
+        msg: "Hour is required",
+      },
+    },
+  },
+  minute: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+    validate: {
+      min: 0,
+      max: 60,
+      notNull: {
+        msg: "Minute is required",
+      },
+    },
+  },
+  partOfDay: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notNull: {
+        msg: "Part of day is required",
+      },
+      isIn: {
+        args: [["AM", "PM"]],
+        msg: "Part of day must be either 'AM' or 'PM'",
+      },
+    },
+  },
   status: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
@@ -91,20 +141,11 @@ const Task = sequelize.define("tasks", {
       },
     },
   },
-  //   comment: {
-  //     type: DataTypes.JSON,
-  //     allowNull: true,
-  //     defaultValue: [],
-  //     // {
-  //     //   userId: DataTypes.UUID,
-  //     //   allowNull: true,
-  //     //   references: {
-  //     //     model: User,
-  //     //     key: "id",
-  //     //   },
-  //     //   timestamps: true,
-  //     // },
-  //   },
+  reminderSent: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
 });
 
 // Define associations between Task and User

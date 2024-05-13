@@ -4,6 +4,9 @@ const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
 const User = require("../models/user.model");
 const { findTaskWithId } = require("../helper/findTaskWithId");
+const { scheduleTaskReminders } = require("../helper/taskReminderScheduler");
+
+scheduleTaskReminders();
 
 // GET all task by admin
 const getTask = async (req, res, next) => {
@@ -77,7 +80,16 @@ const getAllTaskForSingleUser = async (req, res, next) => {
 const createNewTask = async (req, res, next) => {
   try {
     const createdByTask = req.user.id;
-    const { title, tag, description, deadline, createdToTask } = req.body;
+    const {
+      title,
+      tag,
+      description,
+      deadline,
+      hour,
+      minute,
+      partOfDay,
+      createdToTask,
+    } = req.body;
 
     if (createdByTask === createdToTask)
       throw createError(
@@ -93,11 +105,19 @@ const createNewTask = async (req, res, next) => {
     if (checkingExistingTask)
       throw createError(409, "Same task already assigned for this user");
 
+    const user = await User.findByPk(createdToTask, {
+      attributes: ["email"], // Only fetch the email
+    });
+
     const newTask = {
+      email: user.email,
       title,
       tag,
       description,
       deadline,
+      hour,
+      minute,
+      partOfDay,
       createdByTask,
       createdToTask,
     };
