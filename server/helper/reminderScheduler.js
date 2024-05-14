@@ -71,7 +71,7 @@ const movedFailedTaskRemindersSchedule = () => {
       const failedTasks = await Task.findAll({
         where: {
           [Op.and]: [
-            { status: { [Op.ne]: 3 } },
+            { status: { [Op.in]: [0, 1] } },
             {
               [Op.or]: [
                 {
@@ -105,6 +105,16 @@ const movedFailedTaskRemindersSchedule = () => {
       });
 
       if (failedTasks.length !== 0) {
+        // const tasksToUpdate = failedTasks.map((task) => ({
+        //   id: task.id, // Use the existing ID for update
+        //   status: 3, // Set status to 3 (assuming failed)
+        // }));
+
+        // // Update tasks in the Task table
+        // await Task.bulkUpdate(tasksToUpdate, {
+        //   where: { id: { [Op.in]: tasksToUpdate.map((t) => t.id) } },
+        // });
+
         const insertData = failedTasks.map((task) => ({
           taskId: task.id,
           email: task.email,

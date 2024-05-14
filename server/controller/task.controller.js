@@ -9,8 +9,8 @@ const {
   movedFailedTaskRemindersSchedule,
 } = require("../helper/reminderScheduler");
 
-scheduleTaskReminders();
-movedFailedTaskRemindersSchedule();
+// scheduleTaskReminders();
+// movedFailedTaskRemindersSchedule();
 
 // GET all task by admin
 const getTask = async (req, res, next) => {
@@ -246,6 +246,50 @@ const editTaskStatusById = async (req, res, next) => {
   }
 };
 
+// Edit Task status
+const searchTasksByUserNameAndStatus = async (req, res, next) => {
+  const { name, status } = req.body;
+  // let statusCondition = {};
+  // if (status) {
+  //   statusCondition = { status };
+  // }
+
+  try {
+    let message;
+    let tasks;
+    try {
+      tasks = await Task.findAll({
+        include: [
+          {
+            model: User,
+            as: "createdTo",
+            where: { name },
+          },
+        ],
+        // where: { ...statusCondition },
+        where: { status },
+      });
+    } catch (error) {
+      console.error("Error while searching tasks by name: ", error);
+    }
+
+    if (tasks.length === 0) {
+      message = "No tasks found for this user";
+    } else {
+      message = "Tasks found for this user successfully";
+      tasks = tasks;
+    }
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: message,
+      payload: tasks,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createNewTask,
   getTask,
@@ -254,4 +298,5 @@ module.exports = {
   editTaskById,
   editTaskStatusById,
   getAllTaskForSingleUser,
+  searchTasksByUserNameAndStatus,
 };

@@ -11,7 +11,18 @@ import MenuButton from "./MenuButton";
 
 const TaskTableSingleRow = (props) => {
   const { onClick, isAdmin, onUpdateTaskForDetails, onTost } = props;
-  const { id, title, deadline, status, createdBy, createdTo, tag } = props.task;
+  const {
+    id,
+    title,
+    deadline,
+    status,
+    createdBy,
+    createdTo,
+    tag,
+    hour,
+    minute,
+    partOfDay,
+  } = props.task;
   const [loading, setLoading] = useState(true);
 
   const deleteTask = async (taskId, event) => {
@@ -80,6 +91,9 @@ const TaskTableSingleRow = (props) => {
           {dateFormate(deadline)}
         </StyledTableCell>
         <StyledTableCell align="center">
+          {hour}:{minute} {partOfDay}
+        </StyledTableCell>
+        <StyledTableCell align="center">
           {status === 0 ? (
             isAdmin ? (
               <p style={{ color: "#1976D2" }}>Assigned</p>
@@ -114,6 +128,8 @@ const TaskTableSingleRow = (props) => {
             )
           ) : status === 2 ? (
             <p style={{ color: "green" }}>Done</p>
+          ) : status === 3 ? (
+            <p style={{ color: "red", fontWeight: "bold" }}>Failed</p>
           ) : null}
         </StyledTableCell>
         {isAdmin && (

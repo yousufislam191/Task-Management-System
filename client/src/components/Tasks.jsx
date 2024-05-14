@@ -37,6 +37,25 @@ const Tasks = () => {
       setErrorMessage(err.response.data.message);
     }
   };
+  const searchTasks = async (values) => {
+    try {
+      setLoading(false);
+      const res = await axios.post(`${apiHostName}/task/search`, {
+        name: values.name,
+        status: values.status,
+      });
+      if (res.data.success === true) {
+        setLoading(true);
+        setData(res.data.payload);
+        console.log(res.data.payload);
+      }
+    } catch (err) {
+      setLoading(true);
+      setStatus(err.response.status);
+      setSuccess(err.response.data.success);
+      setErrorMessage(err.response.data.message);
+    }
+  };
 
   const getAllTaskForSingleUser = async () => {
     try {
@@ -46,6 +65,7 @@ const Tasks = () => {
       if (res.data.success === true) {
         setLoading(true);
         setData(res.data.payload.task);
+        console.log(res.data.payload.task);
       }
     } catch (err) {
       setLoading(true);
@@ -85,6 +105,7 @@ const Tasks = () => {
             user={user}
             handleRowClick={handleRowClick}
             handleCreateTask={handleCreateTask}
+            searchTasks={searchTasks}
             handleTost={handleTost}
             onUpdateTaskForDetails={getAllTasks}
           />
@@ -113,6 +134,7 @@ const Tasks = () => {
           user={user}
           handleRowClick={handleRowClick}
           handleCreateTask={handleCreateTask}
+          handleSearch={handleSearch}
           handleTost={handleTost}
           onUpdateTaskForDetails={getAllTaskForSingleUser}
         />

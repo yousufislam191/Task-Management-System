@@ -6,6 +6,7 @@ const {
   editTaskById,
   editTaskStatusById,
   getAllTaskForSingleUser,
+  searchTasksByUserNameAndStatus,
 } = require("../controller/task.controller");
 const { validationHandler } = require("../middleware");
 const { isLoggedIn, checkIsAdmin } = require("../middleware/auth");
@@ -28,6 +29,12 @@ taskRouter.post(
   validationHandler,
   checkIsAdmin,
   createNewTask
+);
+taskRouter.post(
+  "/search",
+  isLoggedIn,
+  checkIsAdmin,
+  searchTasksByUserNameAndStatus
 );
 taskRouter.delete(
   `/:id(${uuidRegex})`,

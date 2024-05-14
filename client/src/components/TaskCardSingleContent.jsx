@@ -17,7 +17,18 @@ import MenuButton from "./MenuButton";
 
 const TaskCardSingleContent = (props) => {
   const { onClick, isAdmin, onUpdateTaskForDetails, onTost } = props;
-  const { id, title, deadline, status, createdBy, createdTo, tag } = props.task;
+  const {
+    id,
+    title,
+    deadline,
+    status,
+    createdBy,
+    createdTo,
+    tag,
+    hour,
+    minute,
+    partOfDay,
+  } = props.task;
   const [loading, setLoading] = useState(true);
 
   const deleteTask = async (taskId, event) => {
@@ -88,7 +99,14 @@ const TaskCardSingleContent = (props) => {
               color="text.secondary"
               gutterBottom
             >
-              Deadline: {dateFormate(deadline)}
+              Deadline Date: {dateFormate(deadline)}
+            </Typography>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Deadline Time: {hour}:{minute} {partOfDay}
             </Typography>
             <Typography
               sx={{ fontSize: 14 }}
@@ -158,6 +176,12 @@ const TaskCardSingleContent = (props) => {
               ) : status === 2 ? (
                 <Typography sx={{ color: "green", fontSize: 14 }}>
                   Done
+                </Typography>
+              ) : status === 3 ? (
+                <Typography
+                  sx={{ color: "red", fontSize: 14, fontWeight: "bold" }}
+                >
+                  Failed
                 </Typography>
               ) : null}
             </Box>
