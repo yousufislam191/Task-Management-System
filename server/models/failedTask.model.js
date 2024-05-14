@@ -69,7 +69,7 @@ const FailedTask = sequelize.define("failedTasks", {
     },
   },
   deadline: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   hour: {
@@ -78,7 +78,7 @@ const FailedTask = sequelize.define("failedTasks", {
     defaultValue: 0,
     validate: {
       min: 0,
-      max: 12,
+      max: 24,
       notNull: {
         msg: "Hour is required",
       },

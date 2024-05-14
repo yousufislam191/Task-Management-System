@@ -2,8 +2,8 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 const User = require("./user.model");
 
-// const Task = sequelize.define("tasks", {
-const Task = sequelize.define("newTasks", {
+const Task = sequelize.define("tasks", {
+  // const Task = sequelize.define("newTasks", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -61,7 +61,7 @@ const Task = sequelize.define("newTasks", {
     },
   },
   deadline: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   hour: {
@@ -70,7 +70,7 @@ const Task = sequelize.define("newTasks", {
     defaultValue: 0,
     validate: {
       min: 0,
-      max: 12,
+      max: 24,
       notNull: {
         msg: "Hour is required",
       },

@@ -16,12 +16,40 @@ const sequelize = new Sequelize({
   },
 });
 
+// Create the database if it doesn't exist
+const createDatabase = async () => {
+  const connection = mysql2.createConnection({
+    host: dbHost,
+    port: dbPort,
+    user: dbUserName,
+    password: dbPass,
+  });
+
+  try {
+    await connection
+      .promise()
+      .query(`CREATE DATABASE IF NOT EXISTS ${dbName};`);
+    console.log("Database created successfully or already exists.");
+  } catch (error) {
+    console.error("Error creating database:", error);
+  } finally {
+    connection.end();
+  }
+};
+
 const connectDB = async () => {
   try {
+    // Create the database if it doesn't exist
+    await createDatabase();
+
+    // Use the created database for Sequelize connection
+    sequelize.options.database = dbName;
+
+    // Try to authenticate
     await sequelize.authenticate();
     console.log("Database connection has been established successfully.");
 
-    // Synchronize the User model with the database
+    // Try to synchronize the User model with the database
     try {
       await sequelize.sync({ force: false }); // Set force to true to drop and recreate the table
       console.log("Model synchronized with database");
