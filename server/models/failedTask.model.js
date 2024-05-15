@@ -1,7 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 const User = require("./user.model");
-const Task = require("./task.model");
 
 const FailedTask = sequelize.define("failedTasks", {
   id: {
@@ -9,14 +8,6 @@ const FailedTask = sequelize.define("failedTasks", {
     defaultValue: DataTypes.UUIDV4,
     allowNull: false,
     primaryKey: true,
-  },
-  taskId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: Task,
-      key: "id",
-    },
   },
   email: {
     type: DataTypes.STRING,
@@ -78,7 +69,7 @@ const FailedTask = sequelize.define("failedTasks", {
     defaultValue: 0,
     validate: {
       min: 0,
-      max: 24,
+      max: 23,
       notNull: {
         msg: "Hour is required",
       },
@@ -90,22 +81,9 @@ const FailedTask = sequelize.define("failedTasks", {
     defaultValue: 0,
     validate: {
       min: 0,
-      max: 60,
+      max: 59,
       notNull: {
         msg: "Minute is required",
-      },
-    },
-  },
-  partOfDay: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notNull: {
-        msg: "Part of day is required",
-      },
-      isIn: {
-        args: [["AM", "PM"]],
-        msg: "Part of day must be either 'AM' or 'PM'",
       },
     },
   },
@@ -116,6 +94,7 @@ const FailedTask = sequelize.define("failedTasks", {
   createdByTask: {
     type: DataTypes.UUID,
     allowNull: false,
+    onDelete: "CASCADE",
     references: {
       model: User,
       key: "id",
@@ -132,6 +111,7 @@ const FailedTask = sequelize.define("failedTasks", {
   createdToTask: {
     type: DataTypes.UUID,
     allowNull: false,
+    onDelete: "CASCADE",
     references: {
       model: User,
       key: "id",

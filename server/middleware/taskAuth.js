@@ -1,7 +1,6 @@
 const { check } = require("express-validator");
 const createError = require("http-errors");
 const User = require("../models/user.model");
-const { errorResponse } = require("../controller/response.controller");
 
 const createTaskValidator = [
   check("title")
@@ -33,7 +32,7 @@ const createTaskValidator = [
     .withMessage("Hour is required")
     .isInt()
     .withMessage("Hour should be an integer")
-    .isInt({ min: 0, max: 12 })
+    .isInt({ min: 0, max: 23 })
     .withMessage("Hour should be between 0 and 12"),
   check("minute")
     .notEmpty()
@@ -42,11 +41,6 @@ const createTaskValidator = [
     .withMessage("Minute should be an integer")
     .isInt({ min: 0, max: 59 })
     .withMessage("Minute should be between 0 and 59"),
-  check("partOfDay")
-    .notEmpty()
-    .withMessage("Part of day is required")
-    .isIn(["AM", "PM"])
-    .withMessage("Invalid part of day value. Should be AM or PM"),
   check("createdToTask")
     .notEmpty()
     .withMessage("createdToTask is required")

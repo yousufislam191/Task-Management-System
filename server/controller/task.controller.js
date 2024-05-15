@@ -4,13 +4,6 @@ const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
 const User = require("../models/user.model");
 const { findTaskWithId } = require("../helper/findTaskWithId");
-const {
-  scheduleTaskReminders,
-  movedFailedTaskRemindersSchedule,
-} = require("../helper/reminderScheduler");
-
-// scheduleTaskReminders();
-// movedFailedTaskRemindersSchedule();
 
 // GET all task by admin
 const getTask = async (req, res, next) => {
@@ -84,16 +77,8 @@ const getAllTaskForSingleUser = async (req, res, next) => {
 const createNewTask = async (req, res, next) => {
   try {
     const createdByTask = req.user.id;
-    const {
-      title,
-      tag,
-      description,
-      deadline,
-      hour,
-      minute,
-      partOfDay,
-      createdToTask,
-    } = req.body;
+    const { title, tag, description, deadline, hour, minute, createdToTask } =
+      req.body;
 
     if (createdByTask === createdToTask)
       throw createError(
@@ -121,7 +106,6 @@ const createNewTask = async (req, res, next) => {
       deadline,
       hour,
       minute,
-      partOfDay,
       createdByTask,
       createdToTask,
     };

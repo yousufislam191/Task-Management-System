@@ -3,7 +3,6 @@ const { sequelize } = require("../config/db");
 const User = require("./user.model");
 
 const Task = sequelize.define("tasks", {
-  // const Task = sequelize.define("newTasks", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -70,7 +69,7 @@ const Task = sequelize.define("tasks", {
     defaultValue: 0,
     validate: {
       min: 0,
-      max: 24,
+      max: 23,
       notNull: {
         msg: "Hour is required",
       },
@@ -82,22 +81,9 @@ const Task = sequelize.define("tasks", {
     defaultValue: 0,
     validate: {
       min: 0,
-      max: 60,
+      max: 59,
       notNull: {
         msg: "Minute is required",
-      },
-    },
-  },
-  partOfDay: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notNull: {
-        msg: "Part of day is required",
-      },
-      isIn: {
-        args: [["AM", "PM"]],
-        msg: "Part of day must be either 'AM' or 'PM'",
       },
     },
   },
@@ -112,6 +98,7 @@ const Task = sequelize.define("tasks", {
   createdByTask: {
     type: DataTypes.UUID,
     allowNull: false,
+    onDelete: "CASCADE",
     references: {
       model: User,
       key: "id",
@@ -128,6 +115,7 @@ const Task = sequelize.define("tasks", {
   createdToTask: {
     type: DataTypes.UUID,
     allowNull: false,
+    onDelete: "CASCADE",
     references: {
       model: User,
       key: "id",

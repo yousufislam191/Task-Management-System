@@ -3,6 +3,19 @@ const { Op } = require("sequelize");
 const Task = require("../models/task.model");
 const sendEmail = require("./sendEmail");
 const FailedTask = require("../models/failedTask.model");
+const { sequelize } = require("../config/db");
+
+/*
+# ┌────────────── second (optional)
+# │ ┌──────────── minute
+# │ │ ┌────────── hour
+# │ │ │ ┌──────── day of month
+# │ │ │ │ ┌────── month
+# │ │ │ │ │ ┌──── day of week
+# │ │ │ │ │ │
+# │ │ │ │ │ │
+# * * * * * *
+*/
 
 // Define a cron job to check for tasks due for a reminder
 const scheduleTaskReminders = () => {
@@ -22,7 +35,7 @@ const scheduleTaskReminders = () => {
               hour: targetHour,
               minute: { [Op.between]: [targetMinute - 15, targetMinute] },
             },
-            { status: [1, 2] }, // Scheduled or Pending
+            { status: [0, 1] }, // Scheduled or Pending
             { reminderSent: false },
           ],
         },
@@ -58,65 +71,50 @@ const sendTaskReminderEmail = async (task) => {
 };
 
 // Function to move failed tasks from the newTask table to the failedTask table
-const movedFailedTaskRemindersSchedule = () => {
+const movedFailedTaskRemindersSchedule = (req, res, next) => {
   cron.schedule("*/1 * * * *", async () => {
     console.log(
       "========***CHECKING FOR FAILED TASKS AND MOVING...***=========="
     );
+    const now = new Date();
+    const formattedMonth = ("0" + (now.getMonth() + 1)).slice(-2);
+    const formattedDate = ("0" + now.getDate()).slice(-2);
+    const date = `${now.getFullYear()}-${formattedMonth}-${formattedDate}`;
+    let transaction;
 
     try {
-      const date = new Date().toISOString().slice(0, 10); // Assuming local time zone
-      const now = new Date();
-
       const failedTasks = await Task.findAll({
         where: {
           [Op.and]: [
             { status: { [Op.in]: [0, 1] } },
             {
               [Op.or]: [
+                { deadline: { [Op.lt]: date } }, // Strictly before from current date
                 {
-                  deadline: { [Op.lt]: date }, // Strictly before adjusted time
+                  deadline: { [Op.eq]: date },
+                  hour: { [Op.lt]: now.getHours() },
                 },
                 {
-                  deadline: { [Op.eq]: date }, // Only date part
-                  [Op.and]: [
-                    {
-                      [Op.or]: [
-                        {
-                          hour: { [Op.lt]: now.getHours() },
-                        },
-                        {
-                          hour: { [Op.eq]: now.getHours() },
-                          [Op.and]: [
-                            {
-                              minute: { [Op.lt]: now.getMinutes() },
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  ],
+                  deadline: { [Op.eq]: date }, // strictly before from current date and hour and minute
+                  hour: { [Op.eq]: now.getHours() },
+                  minute: { [Op.lt]: now.getMinutes() },
                 },
               ],
             },
           ],
         },
-        order: [["createdAt", "DESC"]],
+        order: [
+          ["deadline", "ASC"],
+          ["hour", "ASC"],
+          ["minute", "ASC"],
+        ],
       });
 
       if (failedTasks.length !== 0) {
-        // const tasksToUpdate = failedTasks.map((task) => ({
-        //   id: task.id, // Use the existing ID for update
-        //   status: 3, // Set status to 3 (assuming failed)
-        // }));
+        // Start a transaction if there are failed tasks to process
+        transaction = await sequelize.transaction();
 
-        // // Update tasks in the Task table
-        // await Task.bulkUpdate(tasksToUpdate, {
-        //   where: { id: { [Op.in]: tasksToUpdate.map((t) => t.id) } },
-        // });
-
-        const insertData = failedTasks.map((task) => ({
-          taskId: task.id,
+        const failedTasksAttributes = failedTasks.map((task) => ({
           email: task.email,
           title: task.title,
           tag: task.tag,
@@ -124,35 +122,32 @@ const movedFailedTaskRemindersSchedule = () => {
           deadline: task.deadline,
           hour: task.hour,
           minute: task.minute,
-          partOfDay: task.partOfDay,
           createdByTask: task.createdByTask,
           createdToTask: task.createdToTask,
           reminderSent: task.reminderSent,
-          createdAt: task.createdAt,
-          updatedAt: task.updatedAt,
         }));
 
-        const tasksToInsert = [];
-        for (const data of insertData) {
-          const existing = await FailedTask.findOne({
-            where: { taskId: data.taskId },
-          });
-          if (!existing) {
-            tasksToInsert.push(data);
-          }
-        }
+        // Insert failedTasks into FailedTask table
+        await FailedTask.bulkCreate(failedTasksAttributes, { transaction });
 
-        if (tasksToInsert.length > 0) {
-          const result = await FailedTask.bulkCreate(tasksToInsert);
-          if (result) {
-            console.log("Failed tasks moved successfully");
-          }
-        } else {
-          console.log("No new failed tasks to insert.");
-        }
+        // Delete failedTasks from Task table
+        await Task.destroy({
+          where: { id: failedTasks.map((task) => task.id) },
+          transaction,
+        });
+
+        // Commit the transaction if everything is successful
+        await transaction.commit();
+        console.log("Failed tasks moved successfully");
+      } else {
+        // No failed tasks to process
+        console.log("No failed tasks available to move.");
       }
     } catch (error) {
+      // Rollback the transaction if an error occurs
+      if (transaction) await transaction.rollback();
       console.error("Error moving failed tasks:", error);
+      next(error);
     }
   });
 };
