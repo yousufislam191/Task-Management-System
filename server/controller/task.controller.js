@@ -4,26 +4,60 @@ const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
 const User = require("../models/user.model");
 const { findTaskWithId } = require("../helper/findTaskWithId");
+const FailedTask = require("../models/failedTask.model");
 
-// GET all task by admin
-const getTask = async (req, res, next) => {
+// GET all tasks by admin with status or not status
+const getAllTasks = async (req, res, next) => {
   try {
+    let whereClause = {};
+
+    if (req.params.status) {
+      const status = req.params.status;
+
+      let setStatus;
+      if (status === "PENDING") {
+        setStatus = 0;
+      } else if (status === "INPROGRESS") {
+        setStatus = 1;
+      } else if (status === "COMPLETED") {
+        setStatus = 2;
+      } else if (status === "FAILED") {
+        setStatus = 3;
+      } else {
+        throw createError(404, "Invalid status");
+      }
+
+      whereClause = { status: setStatus };
+    }
+
     const addAttributes = [
       { model: User, as: "createdBy", attributes: ["name"] },
       { model: User, as: "createdTo", attributes: ["name"] },
     ];
 
     const tasks = await Task.findAll({
+      where: whereClause,
       include: addAttributes,
+      order: [["createdAt", "DESC"]],
     });
 
-    if (!tasks || tasks.lenght === 0)
-      throw createError(404, "Any tasks not available");
+    const failedTasks = await FailedTask.findAll({
+      where: whereClause,
+      include: addAttributes,
+      order: [["createdAt", "DESC"]],
+    });
+
+    const allTasks = [...tasks, ...failedTasks].sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
+
+    if (!allTasks || allTasks.length === 0)
+      throw createError(404, "Task not available...");
 
     return successResponse(res, {
       statusCode: 200,
-      message: "Tasks were retured successfully",
-      payload: { tasks },
+      message: "Tasks were returned successfully",
+      payload: { allTasks },
     });
   } catch (error) {
     next(error);
@@ -276,7 +310,7 @@ const searchTasksByUserNameAndStatus = async (req, res, next) => {
 
 module.exports = {
   createNewTask,
-  getTask,
+  getAllTasks,
   deleteTaskById,
   getTaskById,
   editTaskById,
