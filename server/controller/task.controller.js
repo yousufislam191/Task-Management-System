@@ -9,11 +9,10 @@ const FailedTask = require("../models/failedTask.model");
 // GET all tasks by admin with status or not status
 const getAllTasks = async (req, res, next) => {
   try {
+    const status = req.params.status;
     let whereClause = {};
 
-    if (req.params.status) {
-      const status = req.params.status;
-
+    if (status && status !== ":status") {
       let setStatus;
       if (status === "PENDING") {
         setStatus = 0;
@@ -57,7 +56,57 @@ const getAllTasks = async (req, res, next) => {
     return successResponse(res, {
       statusCode: 200,
       message: "Tasks were returned successfully",
-      payload: { allTasks },
+      payload: { totalTask: allTasks.length, allTasks },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET All Task For Single User by User ID with status or not status
+const getAllTaskForSingleUser = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const status = req.params.status;
+
+    const filter = {
+      where: { createdToTask: id },
+      include: { model: User, as: "createdBy", attributes: ["name"] },
+      order: [["createdAt", "DESC"]],
+    };
+
+    // Apply status filter if provided
+    if (status && status !== ":status") {
+      let setStatus;
+      if (status === "PENDING") {
+        setStatus = 0;
+      } else if (status === "INPROGRESS") {
+        setStatus = 1;
+      } else if (status === "COMPLETED") {
+        setStatus = 2;
+      } else if (status === "FAILED") {
+        setStatus = 3;
+      } else {
+        throw createError(404, "Invalid status");
+      }
+      filter.where.status = setStatus;
+    }
+
+    const tasks = await Task.findAll(filter);
+    const failedTasks = await FailedTask.findAll(filter);
+
+    const allTasks = [...tasks, ...failedTasks].sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
+
+    if (!allTasks || allTasks.length === 0)
+      throw createError(404, "Task not available...");
+
+    return successResponse(res, {
+      statusCode: 200,
+      message:
+        "For this particular id task has been counted and it was retured successfully",
+      payload: { totalTask: allTasks.length, allTasks },
     });
   } catch (error) {
     next(error);
@@ -74,32 +123,6 @@ const getTaskById = async (req, res, next) => {
     return successResponse(res, {
       statusCode: 200,
       message: "Task was retured successfully",
-      payload: { task },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// GET All Task For Single User by User ID
-const getAllTaskForSingleUser = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-
-    const task = await Task.findAll({
-      where: { createdToTask: id },
-      include: { model: User, as: "createdBy", attributes: ["name"] },
-    });
-    if (!task)
-      throw createError(
-        404,
-        "Something went wrong for counting task status for this user"
-      );
-
-    return successResponse(res, {
-      statusCode: 200,
-      message:
-        "For this particular id task has been counted and it was retured successfully",
       payload: { task },
     });
   } catch (error) {
