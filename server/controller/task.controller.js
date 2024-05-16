@@ -195,13 +195,22 @@ const deleteTaskById = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    await findTaskWithId(id);
-    await Task.destroy({ where: { id: id } });
+    const task = await findTaskWithId(id);
 
-    return successResponse(res, {
-      statusCode: 200,
-      message: "Task was deleted successfully",
-    });
+    if (task) {
+      const deleteTaskFromTaskTable = await Task.destroy({ where: { id: id } });
+      if (!deleteTaskFromTaskTable) {
+        await FailedTask.destroy({ where: { id: id } });
+        return successResponse(res, {
+          statusCode: 200,
+          message: "Task was deleted successfully",
+        });
+      }
+      return successResponse(res, {
+        statusCode: 200,
+        message: "Task was deleted successfully",
+      });
+    }
   } catch (error) {
     next(error);
   }

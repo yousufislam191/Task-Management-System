@@ -25,6 +25,7 @@ const {
   setAccessTokenCookie,
   setRefreshTokenCookie,
 } = require("../helper/cookie");
+const FailedTask = require("../models/failedTask.model");
 
 // GET user by ID
 const getUserById = async (req, res, next) => {
@@ -352,7 +353,6 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
 
     // Initialize an empty array to store the final response
     const response = [];
-
     // Loop through each user to retrieve their associated tasks and status counts
     for (const user of users) {
       // Perform a JOIN operation between User and Task tables on 'createdByTask' and 'createdToTask'
@@ -361,8 +361,17 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
         attributes: ["status"],
       });
 
+      // Perform a JOIN operation between User and failedTask tables on 'createdByTask' and 'createdToTask'
+      const failedTasks = await FailedTask.findAll({
+        where: { createdToTask: user.id },
+        attributes: ["status"],
+      });
+
+      // Combine tasks and failedTasks into one array
+      const allTasks = [...tasks, ...failedTasks];
+
       // Aggregate status counts
-      const statusCounts = tasks.reduce((acc, task) => {
+      const statusCounts = allTasks.reduce((acc, task) => {
         const status = task.status;
         if (!acc[status]) {
           acc[status] = 1;

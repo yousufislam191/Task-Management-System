@@ -41,11 +41,12 @@ const UsersTable = ({ notAvailableMessage, onUpdateUsers, loading }) => {
             <TableRow>
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell align="left">Email</StyledTableCell>
-              <StyledTableCell align="center">Tasks Assigned</StyledTableCell>
+              <StyledTableCell align="center">Pending Tasks</StyledTableCell>
               <StyledTableCell align="center">
-                Tasks in Progress
+                In Progress Tasks
               </StyledTableCell>
-              <StyledTableCell align="center">Tasks Done</StyledTableCell>
+              <StyledTableCell align="center">Completed Tasks</StyledTableCell>
+              <StyledTableCell align="center">Failed Tasks</StyledTableCell>
               <StyledTableCell align="center">Admin</StyledTableCell>
               <StyledTableCell align="center">Delete User</StyledTableCell>
             </TableRow>

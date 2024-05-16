@@ -13,10 +13,15 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import {
+  LocalizationProvider,
+  DatePicker,
+  TimePicker,
+} from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import dayjs from "dayjs";
 
 import apiHostName from "../../secret";
 import showToast from "./showToast";
@@ -47,10 +52,10 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
     description: Yup.string().required("Description is required"),
     deadline: Yup.date()
       .required("Deadline is required")
-      .min(new Date(), "Deadline must be a future date")
       .test("isValidDate", "Invalid date format", (value) => {
         return !isNaN(value);
       }),
+    time: Yup.string().required("Time is required"),
     createdToTask: Yup.string()
       .matches(
         /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/
@@ -65,8 +70,12 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
       description: "",
       deadline: "",
       createdToTask: "",
+      time: null,
+      hour: null,
+      minute: null,
     },
     onSubmit: async (values, helpers) => {
+      // console.log(values);
       setLoading(false);
       const res = await axios
         .post(`${apiHostName}/task/create-task`, {
@@ -75,6 +84,8 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
           description: values.description,
           deadline: values.deadline,
           createdToTask: values.createdToTask,
+          hour: values.hour,
+          minute: values.minute,
         })
         .catch((err) => {
           notify(err.response.status, err.response.data.message);
@@ -158,6 +169,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                 name="title"
                 autoComplete="title"
                 type="title"
+                size="small"
                 error={formik.errors.title}
                 onChange={formik.handleChange}
                 helperText={formik.errors.title}
@@ -171,6 +183,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                 name="tag"
                 autoComplete="tag"
                 type="tag"
+                size="small"
                 error={formik.errors.tag}
                 onChange={formik.handleChange}
                 helperText={formik.errors.tag}
@@ -184,6 +197,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                 name="description"
                 autoComplete="description"
                 type="description"
+                size="small"
                 multiline
                 rows={4}
                 error={formik.errors.description}
@@ -214,18 +228,19 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
                       label="Deadline"
+                      slotProps={{ textField: { size: "small" } }}
                       disablePast
                       value={
                         formik.values.deadline
-                          ? new Date(formik.values.deadline)
+                          ? dayjs(formik.values.deadline)
                           : null
                       }
-                      onChange={(date) =>
+                      onChange={(date) => {
                         formik.setFieldValue(
                           "deadline",
-                          date ? date.toISOString() : null
-                        )
-                      }
+                          date.format("YYYY-MM-DD")
+                        );
+                      }}
                       sx={{
                         borderColor:
                           formik.touched.deadline && formik.errors.deadline
@@ -240,16 +255,64 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                     </FormHelperText>
                   ) : null}
                 </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <TimePicker
+                      label="Time"
+                      ampm={false}
+                      slotProps={{ textField: { size: "small" } }}
+                      value={
+                        formik.values.time ? new Date(formik.values.time) : null
+                      }
+                      onChange={(time) => {
+                        const selectedTime = time ? new Date(time) : null;
+                        formik.setFieldValue("time", selectedTime);
+                        if (selectedTime) {
+                          formik.setFieldValue("hour", selectedTime.getHours());
+                          formik.setFieldValue(
+                            "minute",
+                            selectedTime.getMinutes()
+                          );
+                        } else {
+                          formik.setFieldValue("hour", null);
+                          formik.setFieldValue("minute", null);
+                        }
+                      }}
+                      sx={{
+                        borderColor:
+                          formik.touched.time && formik.errors.time
+                            ? "#D32F2F"
+                            : undefined,
+                      }}
+                    />
+                  </LocalizationProvider>
+                  {formik.touched.time && formik.errors.time ? (
+                    <FormHelperText sx={{ color: "#D32F2F" }}>
+                      {formik.errors.time}
+                    </FormHelperText>
+                  ) : null}
+                </Box>
 
-                <FormControl fullWidth>
+                {/* <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-helper-label">
                     Assign To
+                  </InputLabel> */}
+                <FormControl size="small" fullWidth>
+                  <InputLabel id="createdToTask-label">
+                    Assign a User
                   </InputLabel>
+
                   <Select
                     id="createdToTask"
                     name="createdToTask"
                     value={formik.values.createdToTask}
                     label="Assign To"
+                    size="small"
                     error={
                       formik.touched.createdToTask &&
                       Boolean(formik.errors.createdToTask)

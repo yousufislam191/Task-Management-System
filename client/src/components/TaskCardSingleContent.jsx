@@ -16,7 +16,13 @@ import truncateText from "../helper/truncateText";
 import MenuButton from "./MenuButton";
 
 const TaskCardSingleContent = (props) => {
-  const { onClick, isAdmin, onUpdateTaskForDetails, onTost } = props;
+  const {
+    onClick,
+    user,
+    onUpdateTaskForDetails,
+    getAllTaskForSingleUser,
+    onTost,
+  } = props;
   const {
     id,
     title,
@@ -36,8 +42,13 @@ const TaskCardSingleContent = (props) => {
       const res = await axios.delete(`${apiHostName}/task/${taskId}`);
       if (res.data.success) {
         setLoading(true);
+        if (user.isAdmin) {
+          onUpdateTaskForDetails();
+        } else {
+          const status = "";
+          getAllTaskForSingleUser(user.id, status);
+        }
         onTost({ status: res.status, message: res.data.message });
-        onUpdateTaskForDetails();
       }
     } catch (err) {
       setLoading(true);
@@ -63,8 +74,13 @@ const TaskCardSingleContent = (props) => {
       });
       if (res.data.success) {
         setLoading(true);
+        if (user.isAdmin) {
+          onUpdateTaskForDetails();
+        } else {
+          const status = "";
+          getAllTaskForSingleUser(user.id, status);
+        }
         onTost({ status: res.status, message: res.data.message });
-        onUpdateTaskForDetails();
       }
     } catch (err) {
       setLoading(true);
@@ -111,7 +127,7 @@ const TaskCardSingleContent = (props) => {
             >
               Assigned By: {createdBy?.name}
             </Typography>
-            {isAdmin && (
+            {user.isAdmin && (
               <Typography
                 sx={{ fontSize: 14 }}
                 color="text.secondary"
@@ -134,7 +150,7 @@ const TaskCardSingleContent = (props) => {
                 Status:
               </Typography>
               {status === 0 ? (
-                isAdmin ? (
+                user.isAdmin ? (
                   <Typography sx={{ color: "#1976D2", fontSize: 14 }}>
                     Assigned
                   </Typography>
@@ -152,7 +168,7 @@ const TaskCardSingleContent = (props) => {
                   <CircularProgress size={20} />
                 )
               ) : status === 1 ? (
-                isAdmin ? (
+                user.isAdmin ? (
                   <Typography sx={{ color: "orange", fontSize: 14 }}>
                     In Progress
                   </Typography>
@@ -182,7 +198,7 @@ const TaskCardSingleContent = (props) => {
               ) : null}
             </Box>
 
-            {isAdmin &&
+            {user.isAdmin &&
               (loading ? (
                 <Button
                   variant="outlined"

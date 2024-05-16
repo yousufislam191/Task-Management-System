@@ -17,10 +17,10 @@ const UserCardSingleContent = (props) => {
   const { singleData, onTost, onUpdateUsers } = props;
   const [loading, setLoading] = useState(true);
   const statusLabels = [
-    "Tasks Assigned",
-    "Tasks in Progress",
-    "Tasks Done",
-    "Task Failed",
+    "Pending Tasks",
+    "In Progress Tasks",
+    "Completed Tasks",
+    "Failed Task",
   ];
 
   const deleteUser = async (id) => {

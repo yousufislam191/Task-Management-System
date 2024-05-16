@@ -154,10 +154,11 @@ const TaskTable = ({
                     <TaskTableSingleRow
                       key={task.id}
                       task={task}
-                      isAdmin={user.isAdmin}
+                      user={user}
                       onClick={() => handleRowClick(task.id)}
                       onTost={handleTost}
                       onUpdateTaskForDetails={onUpdateTaskForDetails}
+                      getAllTaskForSingleUser={getAllTaskForSingleUser}
                     />
                   ))}
                 </TableBody>
@@ -318,10 +319,11 @@ const TaskTable = ({
               <TaskCardSingleContent
                 key={task.id}
                 task={task}
-                isAdmin={user.isAdmin}
+                user={user}
                 onClick={() => handleRowClick(task.id)}
                 onTost={handleTost}
                 onUpdateTaskForDetails={onUpdateTaskForDetails}
+                getAllTaskForSingleUser={getAllTaskForSingleUser}
               />
             ))}
           </Grid>
