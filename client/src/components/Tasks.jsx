@@ -23,12 +23,16 @@ const Tasks = () => {
 
   const notify = (status, message) => showToast(status, message);
 
-  const getAllTasks = async (status) => {
+  const getAllTasks = async (status = "", name = "") => {
     try {
-      const res = await axios.get(`${apiHostName}/task/${status}`);
+      const res = await axios.post(`${apiHostName}/task`, {
+        status: status,
+        name: name,
+      });
       if (res.data.success === true) {
         setLoading(true);
         setData(res.data.payload);
+        console.log(res.data.payload);
       }
     } catch (err) {
       setLoading(true);
@@ -47,7 +51,7 @@ const Tasks = () => {
       if (res.data.success === true) {
         setLoading(true);
         setData(res.data.payload);
-        console.log(res.data.payload);
+        console.log(res);
       }
     } catch (err) {
       setLoading(true);
@@ -76,8 +80,7 @@ const Tasks = () => {
 
   useEffect(() => {
     setLoading(false);
-    const status = "";
-    user.isAdmin ? getAllTasks(status) : getAllTaskForSingleUser(status);
+    user.isAdmin ? getAllTasks() : getAllTaskForSingleUser(status);
   }, []);
 
   const handleRowClick = (taskId) => {

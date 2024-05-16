@@ -36,10 +36,16 @@ const TaskTable = ({
 }) => {
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
   const [status, setStatus] = useState("");
+  const [name, setName] = useState("");
 
-  const handleChange = (event) => {
+  const handleStatusChange = (event) => {
     setStatus(event.target.value);
-    onUpdateTaskForDetails(event.target.value);
+    onUpdateTaskForDetails(event.target.value, name);
+  };
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+    onUpdateTaskForDetails(status, event.target.value);
   };
 
   const userSchema = Yup.object({
@@ -181,8 +187,14 @@ const TaskTable = ({
         <Typography component="h6" variant="h6" align="left">
           Total Task: {data?.totalTask || 0}
         </Typography>
+        <TextField
+          label="Search by name"
+          variant="outlined"
+          value={name}
+          onChange={handleNameChange}
+        ></TextField>
         <Box>
-          <Select value={status} displayEmpty onChange={handleChange}>
+          <Select value={status} displayEmpty onChange={handleStatusChange}>
             <MenuItem value="">All</MenuItem>
             <MenuItem value="PENDING">Pending</MenuItem>
             <MenuItem value="INPROGRESS">In Progress</MenuItem>

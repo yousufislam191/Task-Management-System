@@ -87,7 +87,9 @@ const TaskDetailsModal = ({
 
   const fetchTaskDetails = async () => {
     try {
-      const res = await axios.get(`${apiHostName}/task/single-task/${taskId}`);
+      const res = await axios.get(
+        `${apiHostName}/task/single-task/by-id/${taskId}`
+      );
       if (res.data.success === true) {
         setLoading(true);
         setTaskDetails(res.data.payload.task);
@@ -278,7 +280,7 @@ const TaskDetailsModal = ({
                 ) : (
                   <FullWidthLoadingButton />
                 ))}
-              {user.isAdmin && !isEditable && (
+              {user.isAdmin && !isEditable && taskDetails.status !== 2 && (
                 <Button
                   variant="contained"
                   fullWidth

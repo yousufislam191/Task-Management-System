@@ -9,11 +9,11 @@ const FailedTask = require("../models/failedTask.model");
 // GET all tasks by admin with status or not status
 const getAllTasks = async (req, res, next) => {
   try {
-    const status = req.params.status;
+    const { status, name } = req.body;
     let whereClause = {};
     let message;
 
-    if (status && status !== ":status") {
+    if (status && status !== "") {
       let setStatus;
       if (status === "PENDING") {
         setStatus = 0;
@@ -34,6 +34,15 @@ const getAllTasks = async (req, res, next) => {
       { model: User, as: "createdBy", attributes: ["name"] },
       { model: User, as: "createdTo", attributes: ["name"] },
     ];
+
+    if (name && name !== "") {
+      addAttributes.push({
+        model: User,
+        as: "createdTo",
+        where: { name: { [Op.like]: `%${name}%` } },
+        attributes: ["name"],
+      });
+    }
 
     const tasks = await Task.findAll({
       where: whereClause,
@@ -328,7 +337,7 @@ const searchTasksByUserNameAndStatus = async (req, res, next) => {
     return successResponse(res, {
       statusCode: 200,
       message: message,
-      payload: tasks,
+      payload: { totalTask: tasks.length, allTasks: tasks },
     });
   } catch (error) {
     next(error);
