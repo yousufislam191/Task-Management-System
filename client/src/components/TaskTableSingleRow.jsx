@@ -127,7 +127,7 @@ const TaskTableSingleRow = (props) => {
               <CircularProgress size={20} />
             )
           ) : status === 2 ? (
-            <p style={{ color: "green" }}>Done</p>
+            <p style={{ color: "green" }}>Completed</p>
           ) : status === 3 ? (
             <p style={{ color: "red", fontWeight: "bold" }}>Failed</p>
           ) : null}

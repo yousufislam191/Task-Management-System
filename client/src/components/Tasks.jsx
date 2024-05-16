@@ -32,26 +32,6 @@ const Tasks = () => {
       if (res.data.success === true) {
         setLoading(true);
         setData(res.data.payload);
-        console.log(res.data.payload);
-      }
-    } catch (err) {
-      setLoading(true);
-      setStatus(err.response.status);
-      setSuccess(err.response.data.success);
-      setErrorMessage(err.response.data.message);
-    }
-  };
-  const searchTasks = async (values) => {
-    try {
-      setLoading(false);
-      const res = await axios.post(`${apiHostName}/task/search`, {
-        name: values.name,
-        status: values.status,
-      });
-      if (res.data.success === true) {
-        setLoading(true);
-        setData(res.data.payload);
-        console.log(res);
       }
     } catch (err) {
       setLoading(true);
@@ -61,11 +41,12 @@ const Tasks = () => {
     }
   };
 
-  const getAllTaskForSingleUser = async (status) => {
+  const getAllTaskForSingleUser = async (id, status = "") => {
     try {
-      const res = await axios.get(
-        `${apiHostName}/task/user-all-task/${user.id}/${status}`
-      );
+      const res = await axios.post(`${apiHostName}/task/user-tasks`, {
+        id: id,
+        status: status,
+      });
       if (res.data.success === true) {
         setLoading(true);
         setData(res.data.payload);
@@ -80,7 +61,7 @@ const Tasks = () => {
 
   useEffect(() => {
     setLoading(false);
-    user.isAdmin ? getAllTasks() : getAllTaskForSingleUser(status);
+    user.isAdmin ? getAllTasks() : getAllTaskForSingleUser(user.id);
   }, []);
 
   const handleRowClick = (taskId) => {
@@ -108,7 +89,6 @@ const Tasks = () => {
             user={user}
             handleRowClick={handleRowClick}
             handleCreateTask={handleCreateTask}
-            searchTasks={searchTasks}
             handleTost={handleTost}
             onUpdateTaskForDetails={getAllTasks}
           />
@@ -137,9 +117,8 @@ const Tasks = () => {
           user={user}
           handleRowClick={handleRowClick}
           handleCreateTask={handleCreateTask}
-          // handleSearch={handleSearch}
           handleTost={handleTost}
-          onUpdateTaskForDetails={getAllTaskForSingleUser}
+          getAllTaskForSingleUser={getAllTaskForSingleUser}
         />
 
         {isModalOpen && selectedTaskId && (

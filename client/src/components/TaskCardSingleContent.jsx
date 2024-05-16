@@ -27,7 +27,6 @@ const TaskCardSingleContent = (props) => {
     tag,
     hour,
     minute,
-    partOfDay,
   } = props.task;
   const [loading, setLoading] = useState(true);
 
@@ -81,18 +80,15 @@ const TaskCardSingleContent = (props) => {
       <Grid item xs={12} sm={6} md={4}>
         <Card onClick={onClick} style={{ cursor: "pointer" }}>
           <CardContent>
-            <Typography
-              variant="h3"
-              style={{ fontWeight: "bold", marginBottom: "0.5rem" }}
-            >
-              {truncateText(titleCase(title), 20)}
+            <Typography style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>
+              {truncateText(titleCase(title), 30)}
             </Typography>
             <Typography
               sx={{ fontSize: 14 }}
               color="text.secondary"
               gutterBottom
             >
-              Tag: {truncateText(tag, 30)}
+              Catagory: {truncateText(tag, 30)}
             </Typography>
             <Typography
               sx={{ fontSize: 14 }}
@@ -106,14 +102,14 @@ const TaskCardSingleContent = (props) => {
               color="text.secondary"
               gutterBottom
             >
-              Deadline Time: {hour}:{minute} {partOfDay}
+              Deadline Time: {hour}:{minute}
             </Typography>
             <Typography
               sx={{ fontSize: 14 }}
               color="text.secondary"
               gutterBottom
             >
-              Created By: {createdBy?.name}
+              Assigned By: {createdBy?.name}
             </Typography>
             {isAdmin && (
               <Typography
@@ -121,7 +117,7 @@ const TaskCardSingleContent = (props) => {
                 color="text.secondary"
                 gutterBottom
               >
-                Created To: {createdTo.name}
+                Assigned User: {createdTo.name}
               </Typography>
             )}
 

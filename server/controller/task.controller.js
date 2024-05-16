@@ -76,8 +76,7 @@ const getAllTasks = async (req, res, next) => {
 // GET All Task For Single User by User ID with status or not status
 const getAllTaskForSingleUser = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const status = req.params.status;
+    const { id, status } = req.body;
     let message;
 
     const filter = {
@@ -87,7 +86,7 @@ const getAllTaskForSingleUser = async (req, res, next) => {
     };
 
     // Apply status filter if provided
-    if (status && status !== ":status") {
+    if (status && status !== "") {
       let setStatus;
       if (status === "PENDING") {
         setStatus = 0;
@@ -300,50 +299,6 @@ const editTaskStatusById = async (req, res, next) => {
   }
 };
 
-// Edit Task status
-const searchTasksByUserNameAndStatus = async (req, res, next) => {
-  const { name, status } = req.body;
-  // let statusCondition = {};
-  // if (status) {
-  //   statusCondition = { status };
-  // }
-
-  try {
-    let message;
-    let tasks;
-    try {
-      tasks = await Task.findAll({
-        include: [
-          {
-            model: User,
-            as: "createdTo",
-            where: { name },
-          },
-        ],
-        // where: { ...statusCondition },
-        where: { status },
-      });
-    } catch (error) {
-      console.error("Error while searching tasks by name: ", error);
-    }
-
-    if (tasks.length === 0) {
-      message = "No tasks found for this user";
-    } else {
-      message = "Tasks found for this user successfully";
-      tasks = tasks;
-    }
-
-    return successResponse(res, {
-      statusCode: 200,
-      message: message,
-      payload: { totalTask: tasks.length, allTasks: tasks },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 module.exports = {
   createNewTask,
   getAllTasks,
@@ -352,5 +307,4 @@ module.exports = {
   editTaskById,
   editTaskStatusById,
   getAllTaskForSingleUser,
-  searchTasksByUserNameAndStatus,
 };
