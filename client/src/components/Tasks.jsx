@@ -23,12 +23,12 @@ const Tasks = () => {
 
   const notify = (status, message) => showToast(status, message);
 
-  const getAllTasks = async () => {
+  const getAllTasks = async (status) => {
     try {
-      const res = await axios.get(`${apiHostName}/task`);
+      const res = await axios.get(`${apiHostName}/task/${status}`);
       if (res.data.success === true) {
         setLoading(true);
-        setData(res.data.payload.tasks);
+        setData(res.data.payload);
       }
     } catch (err) {
       setLoading(true);
@@ -57,15 +57,14 @@ const Tasks = () => {
     }
   };
 
-  const getAllTaskForSingleUser = async () => {
+  const getAllTaskForSingleUser = async (status) => {
     try {
       const res = await axios.get(
-        `${apiHostName}/task/user-all-task/${user.id}`
+        `${apiHostName}/task/user-all-task/${user.id}/${status}`
       );
       if (res.data.success === true) {
         setLoading(true);
-        setData(res.data.payload.task);
-        console.log(res.data.payload.task);
+        setData(res.data.payload);
       }
     } catch (err) {
       setLoading(true);
@@ -77,7 +76,8 @@ const Tasks = () => {
 
   useEffect(() => {
     setLoading(false);
-    user.isAdmin ? getAllTasks() : getAllTaskForSingleUser();
+    const status = "";
+    user.isAdmin ? getAllTasks(status) : getAllTaskForSingleUser(status);
   }, []);
 
   const handleRowClick = (taskId) => {
@@ -134,7 +134,7 @@ const Tasks = () => {
           user={user}
           handleRowClick={handleRowClick}
           handleCreateTask={handleCreateTask}
-          handleSearch={handleSearch}
+          // handleSearch={handleSearch}
           handleTost={handleTost}
           onUpdateTaskForDetails={getAllTaskForSingleUser}
         />

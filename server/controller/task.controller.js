@@ -11,6 +11,7 @@ const getAllTasks = async (req, res, next) => {
   try {
     const status = req.params.status;
     let whereClause = {};
+    let message;
 
     if (status && status !== ":status") {
       let setStatus;
@@ -49,13 +50,13 @@ const getAllTasks = async (req, res, next) => {
     const allTasks = [...tasks, ...failedTasks].sort(
       (a, b) => b.createdAt - a.createdAt
     );
+    if (allTasks) message = "Tasks were returned successfully";
 
-    if (!allTasks || allTasks.length === 0)
-      throw createError(404, "Task not available...");
+    if (!allTasks || allTasks.length === 0) message = "Task not available...";
 
     return successResponse(res, {
       statusCode: 200,
-      message: "Tasks were returned successfully",
+      message: message,
       payload: { totalTask: allTasks.length, allTasks },
     });
   } catch (error) {
@@ -68,6 +69,7 @@ const getAllTaskForSingleUser = async (req, res, next) => {
   try {
     const id = req.params.id;
     const status = req.params.status;
+    let message;
 
     const filter = {
       where: { createdToTask: id },
@@ -99,13 +101,15 @@ const getAllTaskForSingleUser = async (req, res, next) => {
       (a, b) => b.createdAt - a.createdAt
     );
 
-    if (!allTasks || allTasks.length === 0)
-      throw createError(404, "Task not available...");
+    if (allTasks)
+      message =
+        "For this particular id task has been counted and it was retured successfully";
+
+    if (!allTasks || allTasks.length === 0) message = "Task not available...";
 
     return successResponse(res, {
       statusCode: 200,
-      message:
-        "For this particular id task has been counted and it was retured successfully",
+      message: message,
       payload: { totalTask: allTasks.length, allTasks },
     });
   } catch (error) {

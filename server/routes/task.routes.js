@@ -16,7 +16,7 @@ const { uuidRegex } = require("../secret");
 const taskRouter = require("express").Router();
 
 taskRouter.get("/:status?", isLoggedIn, checkIsAdmin, getAllTasks);
-taskRouter.get(`/:id(${uuidRegex})`, isLoggedIn, getTaskById);
+taskRouter.get(`/single-task/:id(${uuidRegex})`, isLoggedIn, getTaskById);
 taskRouter.get(
   `/user-all-task/:id(${uuidRegex})/:status?`,
   isLoggedIn,

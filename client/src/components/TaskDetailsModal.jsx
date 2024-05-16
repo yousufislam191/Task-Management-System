@@ -87,7 +87,7 @@ const TaskDetailsModal = ({
 
   const fetchTaskDetails = async () => {
     try {
-      const res = await axios.get(`${apiHostName}/task/${taskId}`);
+      const res = await axios.get(`${apiHostName}/task/single-task/${taskId}`);
       if (res.data.success === true) {
         setLoading(true);
         setTaskDetails(res.data.payload.task);

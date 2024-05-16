@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -35,6 +35,12 @@ const TaskTable = ({
   searchTasks,
 }) => {
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+  const [status, setStatus] = useState("");
+
+  const handleChange = (event) => {
+    setStatus(event.target.value);
+    onUpdateTaskForDetails(event.target.value);
+  };
 
   const userSchema = Yup.object({
     name: Yup.string()
@@ -164,6 +170,27 @@ const TaskTable = ({
           </form>
         </Box>
       )}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography component="h6" variant="h6" align="left">
+          Total Task: {data?.totalTask || 0}
+        </Typography>
+        <Box>
+          <Select value={status} displayEmpty onChange={handleChange}>
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="PENDING">Pending</MenuItem>
+            <MenuItem value="INPROGRESS">In Progress</MenuItem>
+            <MenuItem value="COMPLETED">Completed</MenuItem>
+            <MenuItem value="FAILED">Failed</MenuItem>
+          </Select>
+        </Box>
+      </Box>
       {isLargeScreen ? (
         <TableContainer component={Paper}>
           <Table
@@ -190,7 +217,7 @@ const TaskTable = ({
               </TableRow>
             </TableHead>
             {/* ...Table Body */}
-            {data?.length === 0 ? (
+            {data?.allTasks.length === 0 ? (
               <Typography
                 component="h1"
                 variant="h3"
@@ -201,7 +228,7 @@ const TaskTable = ({
               </Typography>
             ) : (
               <TableBody>
-                {data?.map((task) => (
+                {data?.allTasks.map((task) => (
                   <TaskTableSingleRow
                     key={task.id}
                     task={task}
