@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
+  Divider,
   Grid,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -23,8 +27,23 @@ const TaskTable = ({
   handleCreateTask,
   handleTost,
   onUpdateTaskForDetails,
+  getAllTaskForSingleUser,
 }) => {
   const isLargeScreen = useMediaQuery("(min-width: 1024px)");
+  const [status, setStatus] = useState("");
+  const [name, setName] = useState("");
+
+  const handleStatusChange = (event) => {
+    setStatus(event.target.value);
+    user.isAdmin === true
+      ? onUpdateTaskForDetails(event.target.value, name)
+      : getAllTaskForSingleUser(user.id, event.target.value);
+  };
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+    onUpdateTaskForDetails(status, event.target.value);
+  };
 
   return (
     <>
@@ -34,14 +53,10 @@ const TaskTable = ({
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          backgroundColor: "lightgray",
-          borderRadius: 1,
-          py: 2,
-          px: 3,
-          mb: 2,
+          mb: 1,
         }}
       >
-        <Typography component="h1" variant="h3" align="left">
+        <Typography component="h5" variant="h5" align="left" fontWeight="bold">
           {user.isAdmin ? "Manage Task" : "Manage Your All Task"}
         </Typography>
         {user.isAdmin && (
@@ -54,79 +69,265 @@ const TaskTable = ({
           </Button>
         )}
       </Box>
+      <Divider />
       {isLargeScreen ? (
-        <TableContainer component={Paper}>
-          <Table
+        <>
+          <Box
             sx={{
-              minWidth: 700,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+              mt: 2,
             }}
-            aria-label="customized table"
           >
-            {/* ...Table headers */}
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="center">Title</StyledTableCell>
-                <StyledTableCell align="center">Tag</StyledTableCell>
-                <StyledTableCell align="center">Created By</StyledTableCell>
-                {user.isAdmin && (
-                  <StyledTableCell align="center">Created To</StyledTableCell>
-                )}
-                <StyledTableCell align="center">Deadline</StyledTableCell>
-                <StyledTableCell align="center">Status</StyledTableCell>
-                {user.isAdmin && (
-                  <StyledTableCell align="center">Delete Task</StyledTableCell>
-                )}
-              </TableRow>
-            </TableHead>
-            {/* ...Table Body */}
-            {data?.length === 0 ? (
-              <Typography
-                component="h1"
-                variant="h3"
-                align="left"
-                sx={{ mt: 2 }}
+            <Typography align="left">
+              Total Tasks: {data?.totalTask || 0}
+            </Typography>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              {user.isAdmin && (
+                <TextField
+                  label="Filter By Name"
+                  variant="outlined"
+                  size="small"
+                  value={name}
+                  onChange={handleNameChange}
+                />
+              )}
+              <Select
+                value={status}
+                size="small"
+                displayEmpty
+                onChange={handleStatusChange}
               >
-                No Task Available
-              </Typography>
-            ) : (
-              <TableBody>
-                {data?.map((task) => (
-                  <TaskTableSingleRow
-                    key={task.id}
-                    task={task}
-                    isAdmin={user.isAdmin}
-                    onClick={() => handleRowClick(task.id)}
-                    onTost={handleTost}
-                    onUpdateTaskForDetails={onUpdateTaskForDetails}
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="PENDING">Pending</MenuItem>
+                <MenuItem value="INPROGRESS">In Progress</MenuItem>
+                <MenuItem value="COMPLETED">Completed</MenuItem>
+                <MenuItem value="FAILED">Failed</MenuItem>
+              </Select>
+            </Box>
+          </Box>
+          <TableContainer component={Paper}>
+            <Table
+              sx={{
+                minWidth: 700,
+              }}
+              aria-label="customized table"
+            >
+              {/* ...Table headers */}
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center">Task Name</StyledTableCell>
+                  <StyledTableCell align="center">Catagory</StyledTableCell>
+                  <StyledTableCell align="center">Assigned By</StyledTableCell>
+                  {user.isAdmin && (
+                    <StyledTableCell align="center">
+                      Assigned User
+                    </StyledTableCell>
+                  )}
+                  <StyledTableCell align="center">
+                    Deadline Date
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    Deadline Time
+                  </StyledTableCell>
+                  <StyledTableCell align="center">Status</StyledTableCell>
+                  {user.isAdmin && (
+                    <StyledTableCell align="center">Delete</StyledTableCell>
+                  )}
+                </TableRow>
+              </TableHead>
+              {/* ...Table Body */}
+              {data?.allTasks.length === 0 ? (
+                <Typography
+                  component="h1"
+                  variant="h3"
+                  align="left"
+                  sx={{ mt: 2 }}
+                >
+                  No Task Available
+                </Typography>
+              ) : (
+                <TableBody>
+                  {data?.allTasks.map((task) => (
+                    <TaskTableSingleRow
+                      key={task.id}
+                      task={task}
+                      user={user}
+                      onClick={() => handleRowClick(task.id)}
+                      onTost={handleTost}
+                      onUpdateTaskForDetails={onUpdateTaskForDetails}
+                      getAllTaskForSingleUser={getAllTaskForSingleUser}
+                    />
+                  ))}
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </>
+      ) : data?.allTasks.length === 0 ? (
+        <>
+          {user.isAdmin ? (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  mb: 1,
+                  mt: 1,
+                }}
+              >
+                {user.isAdmin && (
+                  <TextField
+                    label="Filter By Name"
+                    variant="outlined"
+                    size="small"
+                    value={name}
+                    onChange={handleNameChange}
                   />
-                ))}
-              </TableBody>
-            )}
-          </Table>
-        </TableContainer>
-      ) : data?.length === 0 ? (
-        <h1
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "4rem",
-          }}
-        >
-          No Task Available
-        </h1>
+                )}
+                <Select
+                  value={status}
+                  size="small"
+                  displayEmpty
+                  onChange={handleStatusChange}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="PENDING">Pending</MenuItem>
+                  <MenuItem value="INPROGRESS">In Progress</MenuItem>
+                  <MenuItem value="COMPLETED">Completed</MenuItem>
+                  <MenuItem value="FAILED">Failed</MenuItem>
+                </Select>
+              </Box>
+              <Typography align="left" sx={{ mb: 1, fontWeight: "bold" }}>
+                Total Tasks: {data?.totalTask || 0}
+              </Typography>
+            </>
+          ) : (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 1,
+                  mt: 1,
+                }}
+              >
+                <Typography align="left" sx={{ fontWeight: "bold" }}>
+                  Total Tasks: {data?.totalTask || 0}
+                </Typography>
+
+                <Select
+                  value={status}
+                  size="small"
+                  displayEmpty
+                  onChange={handleStatusChange}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="PENDING">Pending</MenuItem>
+                  <MenuItem value="INPROGRESS">In Progress</MenuItem>
+                  <MenuItem value="COMPLETED">Completed</MenuItem>
+                  <MenuItem value="FAILED">Failed</MenuItem>
+                </Select>
+              </Box>
+            </>
+          )}
+          <h1
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "4rem",
+            }}
+          >
+            No Task Available
+          </h1>
+        </>
       ) : (
-        <Grid container spacing={2}>
-          {data?.map((task) => (
-            <TaskCardSingleContent
-              key={task.id}
-              task={task}
-              isAdmin={user.isAdmin}
-              onClick={() => handleRowClick(task.id)}
-              onTost={handleTost}
-              onUpdateTaskForDetails={onUpdateTaskForDetails}
-            />
-          ))}
-        </Grid>
+        <>
+          {user.isAdmin ? (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  mb: 1,
+                  mt: 1,
+                }}
+              >
+                {user.isAdmin && (
+                  <TextField
+                    label="Filter By Name"
+                    variant="outlined"
+                    size="small"
+                    value={name}
+                    onChange={handleNameChange}
+                  />
+                )}
+                <Select
+                  value={status}
+                  size="small"
+                  displayEmpty
+                  onChange={handleStatusChange}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="PENDING">Pending</MenuItem>
+                  <MenuItem value="INPROGRESS">In Progress</MenuItem>
+                  <MenuItem value="COMPLETED">Completed</MenuItem>
+                  <MenuItem value="FAILED">Failed</MenuItem>
+                </Select>
+              </Box>
+              <Typography align="left" sx={{ mb: 1, fontWeight: "bold" }}>
+                Total Tasks: {data?.totalTask || 0}
+              </Typography>
+            </>
+          ) : (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 1,
+                  mt: 1,
+                }}
+              >
+                <Typography align="left" sx={{ fontWeight: "bold" }}>
+                  Total Tasks: {data?.totalTask || 0}
+                </Typography>
+
+                <Select
+                  value={status}
+                  size="small"
+                  displayEmpty
+                  onChange={handleStatusChange}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="PENDING">Pending</MenuItem>
+                  <MenuItem value="INPROGRESS">In Progress</MenuItem>
+                  <MenuItem value="COMPLETED">Completed</MenuItem>
+                  <MenuItem value="FAILED">Failed</MenuItem>
+                </Select>
+              </Box>
+            </>
+          )}
+          <Grid container spacing={2}>
+            {data?.allTasks.map((task) => (
+              <TaskCardSingleContent
+                key={task.id}
+                task={task}
+                user={user}
+                onClick={() => handleRowClick(task.id)}
+                onTost={handleTost}
+                onUpdateTaskForDetails={onUpdateTaskForDetails}
+                getAllTaskForSingleUser={getAllTaskForSingleUser}
+              />
+            ))}
+          </Grid>
+        </>
       )}
     </>
   );

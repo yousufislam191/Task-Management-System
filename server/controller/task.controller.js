@@ -4,26 +4,121 @@ const Task = require("../models/task.model");
 const { successResponse } = require("./response.controller");
 const User = require("../models/user.model");
 const { findTaskWithId } = require("../helper/findTaskWithId");
+const FailedTask = require("../models/failedTask.model");
 
-// GET all task by admin
-const getTask = async (req, res, next) => {
+// GET all tasks by admin with status or not status
+const getAllTasks = async (req, res, next) => {
   try {
+    const { status, name } = req.body;
+    let whereClause = {};
+    let message;
+
+    if (status && status !== "") {
+      let setStatus;
+      if (status === "PENDING") {
+        setStatus = 0;
+      } else if (status === "INPROGRESS") {
+        setStatus = 1;
+      } else if (status === "COMPLETED") {
+        setStatus = 2;
+      } else if (status === "FAILED") {
+        setStatus = 3;
+      } else {
+        throw createError(404, "Invalid status");
+      }
+
+      whereClause = { status: setStatus };
+    }
+
     const addAttributes = [
       { model: User, as: "createdBy", attributes: ["name"] },
       { model: User, as: "createdTo", attributes: ["name"] },
     ];
 
+    if (name && name !== "") {
+      addAttributes.push({
+        model: User,
+        as: "createdTo",
+        where: { name: { [Op.like]: `%${name}%` } },
+        attributes: ["name"],
+      });
+    }
+
     const tasks = await Task.findAll({
+      where: whereClause,
       include: addAttributes,
+      order: [["createdAt", "DESC"]],
     });
 
-    if (!tasks || tasks.lenght === 0)
-      throw createError(404, "Any tasks not available");
+    const failedTasks = await FailedTask.findAll({
+      where: whereClause,
+      include: addAttributes,
+      order: [["createdAt", "DESC"]],
+    });
+
+    const allTasks = [...tasks, ...failedTasks].sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
+    if (allTasks) message = "Tasks were returned successfully";
+
+    if (!allTasks || allTasks.length === 0) message = "Task not available...";
 
     return successResponse(res, {
       statusCode: 200,
-      message: "Tasks were retured successfully",
-      payload: { tasks },
+      message: message,
+      payload: { totalTask: allTasks.length, allTasks },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET All Task For Single User by User ID with status or not status
+const getAllTaskForSingleUser = async (req, res, next) => {
+  try {
+    const { id, status } = req.body;
+    let message;
+
+    const filter = {
+      where: { createdToTask: id },
+      include: { model: User, as: "createdBy", attributes: ["name"] },
+      order: [["createdAt", "DESC"]],
+    };
+
+    // Apply status filter if provided
+    if (status && status !== "") {
+      let setStatus;
+      if (status === "PENDING") {
+        setStatus = 0;
+      } else if (status === "INPROGRESS") {
+        setStatus = 1;
+      } else if (status === "COMPLETED") {
+        setStatus = 2;
+      } else if (status === "FAILED") {
+        setStatus = 3;
+      } else {
+        throw createError(404, "Invalid status");
+      }
+      filter.where.status = setStatus;
+    }
+
+    const tasks = await Task.findAll(filter);
+    const failedTasks = await FailedTask.findAll(filter);
+
+    const allTasks = [...tasks, ...failedTasks].sort(
+      (a, b) => b.createdAt - a.createdAt
+    );
+
+    if (allTasks)
+      message =
+        "For this particular id task has been counted and it was retured successfully";
+
+    if (!allTasks || allTasks.length === 0) message = "Task not available...";
+
+    return successResponse(res, {
+      statusCode: 200,
+      message: message,
+      payload: { totalTask: allTasks.length, allTasks },
     });
   } catch (error) {
     next(error);
@@ -47,37 +142,12 @@ const getTaskById = async (req, res, next) => {
   }
 };
 
-// GET All Task For Single User by User ID
-const getAllTaskForSingleUser = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-
-    const task = await Task.findAll({
-      where: { createdToTask: id },
-      include: { model: User, as: "createdBy", attributes: ["name"] },
-    });
-    if (!task)
-      throw createError(
-        404,
-        "Something went wrong for counting task status for this user"
-      );
-
-    return successResponse(res, {
-      statusCode: 200,
-      message:
-        "For this particular id task has been counted and it was retured successfully",
-      payload: { task },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
 // for create new Task
 const createNewTask = async (req, res, next) => {
   try {
     const createdByTask = req.user.id;
-    const { title, tag, description, deadline, createdToTask } = req.body;
+    const { title, tag, description, deadline, hour, minute, createdToTask } =
+      req.body;
 
     if (createdByTask === createdToTask)
       throw createError(
@@ -93,11 +163,18 @@ const createNewTask = async (req, res, next) => {
     if (checkingExistingTask)
       throw createError(409, "Same task already assigned for this user");
 
+    const user = await User.findByPk(createdToTask, {
+      attributes: ["email"],
+    });
+
     const newTask = {
+      email: user.email,
       title,
       tag,
       description,
       deadline,
+      hour,
+      minute,
       createdByTask,
       createdToTask,
     };
@@ -118,13 +195,22 @@ const deleteTaskById = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    await findTaskWithId(id);
-    await Task.destroy({ where: { id: id } });
+    const task = await findTaskWithId(id);
 
-    return successResponse(res, {
-      statusCode: 200,
-      message: "Task was deleted successfully",
-    });
+    if (task) {
+      const deleteTaskFromTaskTable = await Task.destroy({ where: { id: id } });
+      if (!deleteTaskFromTaskTable) {
+        await FailedTask.destroy({ where: { id: id } });
+        return successResponse(res, {
+          statusCode: 200,
+          message: "Task was deleted successfully",
+        });
+      }
+      return successResponse(res, {
+        statusCode: 200,
+        message: "Task was deleted successfully",
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -224,7 +310,7 @@ const editTaskStatusById = async (req, res, next) => {
 
 module.exports = {
   createNewTask,
-  getTask,
+  getAllTasks,
   deleteTaskById,
   getTaskById,
   editTaskById,

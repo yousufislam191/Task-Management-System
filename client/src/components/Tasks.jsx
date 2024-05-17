@@ -23,12 +23,15 @@ const Tasks = () => {
 
   const notify = (status, message) => showToast(status, message);
 
-  const getAllTasks = async () => {
+  const getAllTasks = async (status = "", name = "") => {
     try {
-      const res = await axios.get(`${apiHostName}/task`);
+      const res = await axios.post(`${apiHostName}/task`, {
+        status: status,
+        name: name,
+      });
       if (res.data.success === true) {
         setLoading(true);
-        setData(res.data.payload.tasks);
+        setData(res.data.payload);
       }
     } catch (err) {
       setLoading(true);
@@ -38,14 +41,15 @@ const Tasks = () => {
     }
   };
 
-  const getAllTaskForSingleUser = async () => {
+  const getAllTaskForSingleUser = async (id, status = "") => {
     try {
-      const res = await axios.get(
-        `${apiHostName}/task/user-all-task/${user.id}`
-      );
+      const res = await axios.post(`${apiHostName}/task/user-tasks`, {
+        id: id,
+        status: status,
+      });
       if (res.data.success === true) {
         setLoading(true);
-        setData(res.data.payload.task);
+        setData(res.data.payload);
       }
     } catch (err) {
       setLoading(true);
@@ -57,7 +61,7 @@ const Tasks = () => {
 
   useEffect(() => {
     setLoading(false);
-    user.isAdmin ? getAllTasks() : getAllTaskForSingleUser();
+    user.isAdmin ? getAllTasks() : getAllTaskForSingleUser(user.id);
   }, []);
 
   const handleRowClick = (taskId) => {
@@ -114,7 +118,7 @@ const Tasks = () => {
           handleRowClick={handleRowClick}
           handleCreateTask={handleCreateTask}
           handleTost={handleTost}
-          onUpdateTaskForDetails={getAllTaskForSingleUser}
+          getAllTaskForSingleUser={getAllTaskForSingleUser}
         />
 
         {isModalOpen && selectedTaskId && (

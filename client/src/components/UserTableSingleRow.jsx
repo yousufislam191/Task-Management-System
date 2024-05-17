@@ -37,7 +37,7 @@ const UserTableSingleRow = (props) => {
         {titleCase(singleData.name)}
       </StyledTableCell>
       <StyledTableCell align="left">{singleData.email}</StyledTableCell>
-      {Array.from({ length: 3 }).map((_, index) => {
+      {Array.from({ length: 4 }).map((_, index) => {
         const statusItem = singleData.status?.find(
           (status) => status.status === index
         );

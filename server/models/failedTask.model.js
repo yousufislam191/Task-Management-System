@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 const User = require("./user.model");
 
-const Task = sequelize.define("tasks", {
+const FailedTask = sequelize.define("failedTasks", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -89,11 +89,7 @@ const Task = sequelize.define("tasks", {
   },
   status: {
     type: DataTypes.INTEGER,
-    defaultValue: 0,
-    validate: {
-      min: 0,
-      max: 2,
-    },
+    defaultValue: 3,
   },
   createdByTask: {
     type: DataTypes.UUID,
@@ -136,8 +132,7 @@ const Task = sequelize.define("tasks", {
   },
 });
 
-// Define associations between Task and User
-Task.belongsTo(User, { as: "createdBy", foreignKey: "createdByTask" });
-Task.belongsTo(User, { as: "createdTo", foreignKey: "createdToTask" });
+FailedTask.belongsTo(User, { as: "createdBy", foreignKey: "createdByTask" });
+FailedTask.belongsTo(User, { as: "createdTo", foreignKey: "createdToTask" });
 
-module.exports = Task;
+module.exports = FailedTask;

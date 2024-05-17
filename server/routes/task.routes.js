@@ -1,11 +1,11 @@
 const {
   createNewTask,
-  getTask,
   deleteTaskById,
   getTaskById,
   editTaskById,
   editTaskStatusById,
   getAllTaskForSingleUser,
+  getAllTasks,
 } = require("../controller/task.controller");
 const { validationHandler } = require("../middleware");
 const { isLoggedIn, checkIsAdmin } = require("../middleware/auth");
@@ -14,13 +14,9 @@ const { uuidRegex } = require("../secret");
 
 const taskRouter = require("express").Router();
 
-taskRouter.get("/", isLoggedIn, checkIsAdmin, getTask);
-taskRouter.get(`/:id(${uuidRegex})`, isLoggedIn, getTaskById);
-taskRouter.get(
-  `/user-all-task/:id(${uuidRegex})`,
-  isLoggedIn,
-  getAllTaskForSingleUser
-);
+taskRouter.post("/", isLoggedIn, checkIsAdmin, getAllTasks);
+taskRouter.post("/user-tasks", isLoggedIn, getAllTaskForSingleUser);
+taskRouter.get(`/single-task/:id(${uuidRegex})`, isLoggedIn, getTaskById);
 taskRouter.post(
   "/create-task",
   isLoggedIn,

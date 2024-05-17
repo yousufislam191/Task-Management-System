@@ -9,7 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import {
+  LocalizationProvider,
+  DatePicker,
+  TimePicker,
+} from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
@@ -35,6 +39,7 @@ const TaskDetailsModal = ({
   const [editedTag, setEditedTag] = useState("");
   const [editedDeadline, setEditedDeadline] = useState(null);
   const [editedDescription, setEditedDescription] = useState("");
+  const [editedTime, setEditedTime] = useState(null);
 
   const notify = (status, message) => showToast(status, message);
 
@@ -62,6 +67,7 @@ const TaskDetailsModal = ({
       taskDetails.deadline ? dayjs(taskDetails.deadline) : null
     );
     setEditedDescription(taskDetails.description || "");
+    setEditedTime(taskDetails.time ? dayjs(taskDetails.time) : null);
   };
 
   const updateTaskDetails = async () => {
@@ -87,7 +93,7 @@ const TaskDetailsModal = ({
 
   const fetchTaskDetails = async () => {
     try {
-      const res = await axios.get(`${apiHostName}/task/${taskId}`);
+      const res = await axios.get(`${apiHostName}/task/single-task/${taskId}`);
       if (res.data.success === true) {
         setLoading(true);
         setTaskDetails(res.data.payload.task);
@@ -168,8 +174,9 @@ const TaskDetailsModal = ({
               >
                 <TextField
                   fullWidth
-                  label="Title"
+                  label="Task Name"
                   variant="outlined"
+                  size="small"
                   disabled={!isEditable}
                   value={isEditable ? editedTitle : taskDetails.title || ""}
                   onChange={(e) => setEditedTitle(e.target.value)}
@@ -195,7 +202,8 @@ const TaskDetailsModal = ({
                   >
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker
-                        label="Deadline"
+                        label="Deadline Date"
+                        slotProps={{ textField: { size: "small" } }}
                         disablePast
                         disabled={!isEditable}
                         onChange={(newDate) =>
@@ -209,10 +217,35 @@ const TaskDetailsModal = ({
                       />
                     </LocalizationProvider>
                   </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: 2,
+                    }}
+                  >
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <TimePicker
+                        label="Deadline Time"
+                        ampm={false}
+                        slotProps={{ textField: { size: "small" } }}
+                        disabled={!isEditable}
+                        onChange={(newTime) => setEditedTime(newTime)}
+                        value={
+                          editedTime
+                            ? dayjs(editedTime)
+                            : dayjs()
+                                .set("hour", taskDetails.hour || 0)
+                                .set("minute", taskDetails.minute || 0)
+                        }
+                      />
+                    </LocalizationProvider>
+                  </Box>
                   <TextField
                     fullWidth
-                    label="Tag"
+                    label="Category"
                     variant="outlined"
+                    size="small"
                     disabled={!isEditable}
                     value={isEditable ? editedTag : taskDetails.tag || ""}
                     onChange={(e) => setEditedTag(e.target.value)}
@@ -231,17 +264,21 @@ const TaskDetailsModal = ({
                       label="Assigned Date"
                       value={dateFormate(taskDetails.createdAt)}
                       variant="outlined"
+                      size="small"
                       disabled
                     />
                     <TextField
                       label="Status"
+                      size="small"
                       value={
                         taskDetails.status === 0
                           ? "Assigned"
                           : taskDetails.status === 1
                           ? "In Progress"
                           : taskDetails.status === 2
-                          ? "Done"
+                          ? "Completed"
+                          : taskDetails.status === 3
+                          ? "Failed"
                           : null
                       }
                       variant="outlined"
@@ -254,6 +291,7 @@ const TaskDetailsModal = ({
                   fullWidth
                   label="Description"
                   variant="outlined"
+                  size="small"
                   disabled={!isEditable}
                   multiline
                   value={
@@ -278,7 +316,7 @@ const TaskDetailsModal = ({
                 ) : (
                   <FullWidthLoadingButton />
                 ))}
-              {user.isAdmin && !isEditable && (
+              {user.isAdmin && !isEditable && taskDetails.status !== 2 && (
                 <Button
                   variant="contained"
                   fullWidth

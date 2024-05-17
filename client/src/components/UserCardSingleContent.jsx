@@ -16,7 +16,12 @@ import apiHostName from "../../secret";
 const UserCardSingleContent = (props) => {
   const { singleData, onTost, onUpdateUsers } = props;
   const [loading, setLoading] = useState(true);
-  const statusLabels = ["Tasks Assigned", "Tasks in Progress", "Tasks Done"];
+  const statusLabels = [
+    "Pending Tasks",
+    "In Progress Tasks",
+    "Completed Tasks",
+    "Failed Task",
+  ];
 
   const deleteUser = async (id) => {
     try {
@@ -54,7 +59,7 @@ const UserCardSingleContent = (props) => {
               Email: {singleData.email}
             </Typography>
 
-            {Array.from({ length: 3 }).map((_, index) => {
+            {Array.from({ length: 4 }).map((_, index) => {
               const statusItem = singleData.status?.find(
                 (status) => status.status === index
               );

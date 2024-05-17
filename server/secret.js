@@ -5,7 +5,7 @@ const dbPort = process.env.DB_PORT || 3306;
 const dbHost = process.env.DB_HOST || "localhost";
 const dbUserName = process.env.DB_USER_NAME || "root";
 const dbPass = process.env.DB_PASS || "";
-const dbName = process.env.DB_NAME || "task_management_system";
+const dbName = process.env.DB_NAME || "task_management_system_test";
 
 const jwtActivationKey =
   process.env.USER_ACCOUNT_ACTIVATE_KEY || "jhgUYFD76^$%t654U&b_@#";
