@@ -30,6 +30,7 @@ app.use(cors({ credentials: true, origin: corsOrigin }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+app.set("trust proxy", 1);
 app.use(morgan("dev"));
 app.use(xssClean());
 // app.use(limiter);
