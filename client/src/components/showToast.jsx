@@ -6,7 +6,8 @@ const showToast = (status, message) => {
     status === 400 ||
     status === 401 ||
     status === 404 ||
-    status === 409
+    status === 409 ||
+    status === 429
   ) {
     return toast.error(message, {
       position: "top-center",

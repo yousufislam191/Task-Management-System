@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { all } from "axios";
 import {
   Box,
   FormControl,
@@ -57,10 +57,16 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
       }),
     time: Yup.string().required("Time is required"),
     createdToTask: Yup.string()
+      .required("Please select a user to specify this task")
+      .nullable()
+      .test(
+        "is-null",
+        "Won't be able to create a task since there is no user",
+        (value) => value !== null
+      )
       .matches(
         /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/
-      )
-      .required("Please select a user to specify this task"),
+      ),
   });
 
   const formik = useFormik({
@@ -320,11 +326,15 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   >
-                    {allUsers.map((user) => (
-                      <MenuItem key={user.id} value={user.id}>
-                        {user.name}
-                      </MenuItem>
-                    ))}
+                    {allUsers.length !== 0 ? (
+                      allUsers.map((user) => (
+                        <MenuItem key={user.id} value={user.id}>
+                          {user.name}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem value={null}>No User</MenuItem>
+                    )}
                   </Select>
                   {formik.touched.createdToTask &&
                   formik.errors.createdToTask ? (

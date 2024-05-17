@@ -337,6 +337,7 @@ const resetUserPassword = async (req, res, next) => {
 const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
   try {
     const currentUserId = req.user.id;
+    let message;
 
     const users = await User.findAll({
       where: {
@@ -347,9 +348,7 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
       exclude: ["password"],
     });
 
-    if (!users || users.length === 0) {
-      throw createError(404, "Users are not available");
-    }
+    if (!users || users.length === 0) message = "No user found...";
 
     // Initialize an empty array to store the final response
     const response = [];
@@ -399,9 +398,12 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
       response.push(userData);
     }
 
+    if (response && response.length > 0)
+      message = "Users with task status counts were retrieved successfully";
+
     return successResponse(res, {
       statusCode: 200,
-      message: "Users with task status counts were retrieved successfully",
+      message: message,
       payload: response,
     });
   } catch (error) {
