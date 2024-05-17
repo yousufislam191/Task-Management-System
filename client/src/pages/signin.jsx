@@ -71,7 +71,7 @@ const SignIn = () => {
         notify(res.status, res.data.message);
         setTimeout(() => {
           navigate("/dashboard");
-        }, 1500);
+        }, 1000);
       }
     },
     validationSchema: userSchema,
