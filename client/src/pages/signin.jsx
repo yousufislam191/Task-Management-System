@@ -65,9 +65,10 @@ const SignIn = () => {
       if (res.data.success === true) {
         setLoading(true);
         notify(res.status, res.data.message);
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1500);
+        navigate("/dashboard");
+        // setTimeout(() => {
+        // navigate("/dashboard");
+        // }, 1500);
       }
     },
     validationSchema: userSchema,
