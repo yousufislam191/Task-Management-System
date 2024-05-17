@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const createError = require("http-errors");
 const xssClean = require("xss-clean");
-const rateLimit = require("express-rate-limit");
 const { errorResponse } = require("./controller/response.controller");
 const seedRouter = require("./routes/seed.routes");
 const userRouter = require("./routes/user.routes");
@@ -15,25 +14,21 @@ const {
   scheduleTaskReminders,
   movedFailedTaskRemindersSchedule,
 } = require("./helper/reminderScheduler");
+const { generalLimiter } = require("./middleware/rateLimiter");
 
 const app = express();
-
 require("./config/db");
 
-const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minutes
-  max: 5, // Limit each IP to 5 requests per `window` (here, per 15 minutes)
-  message: "Too many requests from this IP. Please try again later",
-});
+// Apply the general rate limit to all requests
+app.use(generalLimiter);
 
 app.use(cors({ credentials: true, origin: corsOrigin }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.set("trust proxy", 1);
+app.set("trust proxy", 1); // Trust first proxy if you're behind a proxy (like Vercel)
 app.use(morgan("dev"));
 app.use(xssClean());
-// app.use(limiter);
 
 // cron job for failed task reminders
 scheduleTaskReminders();
