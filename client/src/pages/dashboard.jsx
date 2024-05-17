@@ -83,6 +83,7 @@ const Dashboard = () => {
       if (res.data.success === true) {
         setLoading(true);
         setUser(res.data.payload);
+        localStorage.removeItem("hasLoggedIn"); // Remove flag after use
       }
     } catch (err) {
       setLoading(true);

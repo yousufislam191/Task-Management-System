@@ -65,7 +65,8 @@ const SignIn = () => {
       if (res.data.success === true) {
         setLoading(true);
         notify(res.status, res.data.message);
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true }); // Redirect and replace previous history
+        localStorage.setItem("hasLoggedIn", true); // Set flag
         // setTimeout(() => {
         // navigate("/dashboard");
         // }, 1500);
