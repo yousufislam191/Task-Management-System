@@ -40,6 +40,11 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
     onClose();
   };
 
+  const isToday = (date) => {
+    const today = dayjs().startOf("day");
+    return date && dayjs(date).isSame(today, "day");
+  };
+
   const userSchema = Yup.object({
     title: Yup.string()
       .required("Title is required")
@@ -185,7 +190,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                 margin="normal"
                 fullWidth
                 id="tag"
-                label="Tag"
+                label="Category"
                 name="tag"
                 autoComplete="tag"
                 type="tag"
@@ -233,7 +238,7 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker
-                      label="Deadline"
+                      label="Deadline Date"
                       slotProps={{ textField: { size: "small" } }}
                       disablePast
                       value={
@@ -246,6 +251,9 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                           "deadline",
                           date.format("YYYY-MM-DD")
                         );
+                        if (date && isToday(date)) {
+                          formik.setFieldValue("time", null); // Reset time if today is selected
+                        }
                       }}
                       sx={{
                         borderColor:
@@ -272,6 +280,12 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                       label="Time"
                       ampm={false}
                       slotProps={{ textField: { size: "small" } }}
+                      disabled={!formik.values.deadline}
+                      minTime={
+                        isToday(formik.values.deadline)
+                          ? dayjs().startOf("minute")
+                          : undefined
+                      }
                       value={
                         formik.values.time ? new Date(formik.values.time) : null
                       }
@@ -304,10 +318,6 @@ const TaskCreateModal = ({ onClose, onUpdateTask }) => {
                   ) : null}
                 </Box>
 
-                {/* <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-helper-label">
-                    Assign To
-                  </InputLabel> */}
                 <FormControl size="small" fullWidth>
                   <InputLabel id="createdToTask-label">
                     Assign a User

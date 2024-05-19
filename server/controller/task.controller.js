@@ -225,11 +225,47 @@ const editTaskById = async (req, res, next) => {
     }
 
     let updates = {};
+    const now = new Date();
 
     // === this field take value from request.body using loop, after that updated value will keep in the updates objects ===
-    const allowedFields = ["title", "tag", "description", "deadline"];
+    const allowedFields = [
+      "title",
+      "tag",
+      "description",
+      "deadline",
+      "hour",
+      "minute",
+    ];
     for (const key in req.body) {
       if (allowedFields.includes(key)) {
+        if (key === "deadline") {
+          const deadline = new Date(req.body[key]);
+          if (deadline < now) {
+            throw createError(400, "Deadline cannot be in the past");
+          } else if (deadline.toDateString() === now.toDateString()) {
+            const hour = parseInt(req.body.hour);
+            const minute = parseInt(req.body.minute);
+
+            if (hour < now.getHours()) {
+              throw createError(400, "Hour cannot be in the past");
+            } else if (hour === now.getHours() && minute <= now.getMinutes()) {
+              throw createError(400, "Must be upcoming time to set deadline");
+            }
+          }
+        } else if ((key === "hour" || key === "minute") && req.body.deadline) {
+          const hour = parseInt(req.body.hour);
+          const minute = parseInt(req.body.minute);
+          if (
+            isNaN(hour) ||
+            hour < 0 ||
+            hour > 23 ||
+            isNaN(minute) ||
+            minute < 0 ||
+            minute > 59
+          ) {
+            throw createError(400, "Invalid time");
+          }
+        }
         updates[key] = req.body[key];
       } else if (key === "status") {
         throw createError(
