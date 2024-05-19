@@ -316,16 +316,19 @@ const TaskDetailsModal = ({
                 ) : (
                   <FullWidthLoadingButton />
                 ))}
-              {user.isAdmin && !isEditable && taskDetails.status !== 2 && (
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={handleEdit}
-                  sx={{ textTransform: "capitalize", alignItems: "left" }}
-                >
-                  Edit Details
-                </Button>
-              )}
+              {user.isAdmin &&
+                !isEditable &&
+                taskDetails.status !== 2 &&
+                taskDetails.status !== 3 && (
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={handleEdit}
+                    sx={{ textTransform: "capitalize", alignItems: "left" }}
+                  >
+                    Edit Details
+                  </Button>
+                )}
             </>
           ) : (
             <Loading />
