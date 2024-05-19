@@ -114,7 +114,7 @@ const TaskTableSingleRow = (props) => {
         <StyledTableCell align="center">
           {status === 0 ? (
             user.isAdmin ? (
-              <p style={{ color: "#1976D2" }}>Assigned</p>
+              <p style={{ color: "#1976D2" }}>Pending</p>
             ) : loading ? (
               <MenuButton
                 name={"Assigned"}

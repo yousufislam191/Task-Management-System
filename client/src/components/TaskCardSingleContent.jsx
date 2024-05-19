@@ -152,7 +152,7 @@ const TaskCardSingleContent = (props) => {
               {status === 0 ? (
                 user.isAdmin ? (
                   <Typography sx={{ color: "#1976D2", fontSize: 14 }}>
-                    Assigned
+                    Pending
                   </Typography>
                 ) : loading ? (
                   <MenuButton
