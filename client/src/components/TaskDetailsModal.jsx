@@ -40,6 +40,8 @@ const TaskDetailsModal = ({
   const [editedDeadline, setEditedDeadline] = useState(null);
   const [editedDescription, setEditedDescription] = useState("");
   const [editedTime, setEditedTime] = useState(null);
+  const [editedHour, setEditedHour] = useState(null);
+  const [editedMinute, setEditedMinute] = useState(null);
 
   const notify = (status, message) => showToast(status, message);
 
@@ -76,7 +78,11 @@ const TaskDetailsModal = ({
         title: editedTitle,
         tag: editedTag,
         description: editedDescription,
-        deadline: editedDeadline,
+        deadline: editedDeadline
+          ? editedDeadline.format("YYYY-MM-DD")
+          : taskDetails.deadline,
+        hour: editedTime ? editedHour : taskDetails.hour,
+        minute: editedTime ? editedMinute : taskDetails.minute,
       });
       if (res.data.success) {
         setUpdateLoading(true);
@@ -89,6 +95,10 @@ const TaskDetailsModal = ({
       setOpen(false);
       notify(err.response.status, err.response.data.message);
     }
+  };
+  const isToday = (date) => {
+    const today = dayjs().startOf("day");
+    return date && dayjs(date).isSame(today, "day");
   };
 
   const fetchTaskDetails = async () => {
@@ -206,9 +216,7 @@ const TaskDetailsModal = ({
                         slotProps={{ textField: { size: "small" } }}
                         disablePast
                         disabled={!isEditable}
-                        onChange={(newDate) =>
-                          setEditedDeadline(newDate.toISOString())
-                        }
+                        onChange={(newDate) => setEditedDeadline(newDate)}
                         value={
                           isEditable
                             ? dayjs(editedDeadline)
@@ -230,7 +238,11 @@ const TaskDetailsModal = ({
                         ampm={false}
                         slotProps={{ textField: { size: "small" } }}
                         disabled={!isEditable}
-                        onChange={(newTime) => setEditedTime(newTime)}
+                        minTime={
+                          isToday(editedDeadline)
+                            ? dayjs().startOf("minute")
+                            : undefined
+                        }
                         value={
                           editedTime
                             ? dayjs(editedTime)
@@ -238,6 +250,14 @@ const TaskDetailsModal = ({
                                 .set("hour", taskDetails.hour || 0)
                                 .set("minute", taskDetails.minute || 0)
                         }
+                        onChange={(newTime) => {
+                          if (newTime) {
+                            const selectedTime = new Date(newTime);
+                            setEditedTime(selectedTime);
+                            setEditedHour(selectedTime.getHours());
+                            setEditedMinute(selectedTime.getMinutes());
+                          }
+                        }}
                       />
                     </LocalizationProvider>
                   </Box>
