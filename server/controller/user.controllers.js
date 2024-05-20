@@ -339,38 +339,65 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
     const currentUserId = req.user.id;
     let message;
 
+    // Fetch all users except the current user in one query
     const users = await User.findAll({
       where: {
         id: {
           [Op.not]: currentUserId,
         },
       },
-      exclude: ["password"],
+      attributes: { exclude: ["password"] },
     });
 
-    if (!users || users.length === 0) message = "No user found...";
+    if (!users || users.length === 0) {
+      message = "No user found...";
+      return successResponse(res, {
+        statusCode: 200,
+        message: message,
+        payload: [],
+      });
+    }
+
+    // Fetch tasks and failed tasks for all users in one batch query
+    const userIds = users.map((user) => user.id);
+
+    const tasks = await Task.findAll({
+      where: {
+        createdToTask: {
+          [Op.in]: userIds,
+        },
+      },
+      attributes: ["createdToTask", "status"],
+    });
+
+    const failedTasks = await FailedTask.findAll({
+      where: {
+        createdToTask: {
+          [Op.in]: userIds,
+        },
+      },
+      attributes: ["createdToTask", "status"],
+    });
+
+    // Combine tasks and failedTasks into one array
+    const allTasks = [...tasks, ...failedTasks];
 
     // Initialize an empty array to store the final response
     const response = [];
-    // Loop through each user to retrieve their associated tasks and status counts
-    for (const user of users) {
-      // Perform a JOIN operation between User and Task tables on 'createdByTask' and 'createdToTask'
-      const tasks = await Task.findAll({
-        where: { createdToTask: user.id },
-        attributes: ["status"],
-      });
 
-      // Perform a JOIN operation between User and failedTask tables on 'createdByTask' and 'createdToTask'
-      const failedTasks = await FailedTask.findAll({
-        where: { createdToTask: user.id },
-        attributes: ["status"],
-      });
+    // Aggregate tasks and failedTasks by user
+    const tasksByUser = {};
+    allTasks.forEach((task) => {
+      if (!tasksByUser[task.createdToTask]) {
+        tasksByUser[task.createdToTask] = [];
+      }
+      tasksByUser[task.createdToTask].push(task);
+    });
 
-      // Combine tasks and failedTasks into one array
-      const allTasks = [...tasks, ...failedTasks];
-
-      // Aggregate status counts
-      const statusCounts = allTasks.reduce((acc, task) => {
+    // Prepare response data
+    users.forEach((user) => {
+      const userTasks = tasksByUser[user.id] || [];
+      const statusCounts = userTasks.reduce((acc, task) => {
         const status = task.status;
         if (!acc[status]) {
           acc[status] = 1;
@@ -380,7 +407,6 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
         return acc;
       }, {});
 
-      // Prepare user data with status counts
       const userData = {
         id: user.id,
         name: user.name,
@@ -394,12 +420,10 @@ const getAllUsersWithTaskStatusCounts = async (req, res, next) => {
         })),
       };
 
-      // Add the user data to the response array
       response.push(userData);
-    }
+    });
 
-    if (response && response.length > 0)
-      message = "Users with task status counts were retrieved successfully";
+    message = "Users with task status counts were retrieved successfully";
 
     return successResponse(res, {
       statusCode: 200,
