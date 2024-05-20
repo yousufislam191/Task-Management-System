@@ -10,6 +10,7 @@ import {
   useMediaQuery,
   Grid,
   Box,
+  Divider,
 } from "@mui/material";
 import UserTableSingleRow from "./UserTableSingleRow";
 import { StyledTableCell } from "../layout/tableTheme";
@@ -32,10 +33,17 @@ const UsersTable = ({ notAvailableMessage, onUpdateUsers, loading }) => {
   return isLargeScreen ? (
     <>
       <ToastContainer />
-      <Typography component="h1" variant="h3" align="left" sx={{ mb: 4 }}>
+      <Typography
+        component="h5"
+        variant="h5"
+        align="left"
+        fontWeight="bold"
+        sx={{ mb: 1 }}
+      >
         Manage Users
       </Typography>
-      <TableContainer component={Paper}>
+      <Divider />
+      <TableContainer sx={{ mt: 3 }} component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -55,15 +63,14 @@ const UsersTable = ({ notAvailableMessage, onUpdateUsers, loading }) => {
             !notAvailableMessage ? (
               <TableBody>
                 {allUsers?.length === 0 ? (
-                  <h1
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      marginTop: "4rem",
-                    }}
+                  <Typography
+                    component="h4"
+                    variant="h4"
+                    align="center"
+                    sx={{ mt: 4 }}
                   >
                     No Users Available
-                  </h1>
+                  </Typography>
                 ) : (
                   allUsers?.map((singleData) => (
                     <UserTableSingleRow
@@ -94,30 +101,38 @@ const UsersTable = ({ notAvailableMessage, onUpdateUsers, loading }) => {
   ) : (
     <>
       <ToastContainer />
-      <Box
-        sx={{
-          backgroundColor: "lightgray",
-          borderRadius: 1,
-          py: 2,
-          px: 3,
-          mb: 2,
-        }}
+      <Typography
+        component="h5"
+        variant="h5"
+        align="left"
+        fontWeight="bold"
+        sx={{ mb: 1 }}
       >
-        <Typography component="h1" variant="h3" align="left">
-          Manage Users
-        </Typography>
-      </Box>
+        Manage Users
+      </Typography>
+      <Divider />
       {loading ? (
         !notAvailableMessage ? (
-          <Grid container spacing={2}>
-            {allUsers?.map((singleData) => (
-              <UserCardSingleContent
-                key={singleData.id}
-                singleData={singleData}
-                onTost={handleTost}
-                onUpdateUsers={onUpdateUsers}
-              />
-            ))}
+          <Grid container spacing={2} sx={{ mt: 2 }}>
+            {allUsers?.length === 0 ? (
+              <Typography
+                component="h6"
+                variant="h6"
+                align="center"
+                sx={{ mt: 4 }}
+              >
+                No Users Available
+              </Typography>
+            ) : (
+              allUsers?.map((singleData) => (
+                <UserCardSingleContent
+                  key={singleData.id}
+                  singleData={singleData}
+                  onTost={handleTost}
+                  onUpdateUsers={onUpdateUsers}
+                />
+              ))
+            )}
           </Grid>
         ) : (
           <Typography component="h1" variant="h3" align="left" sx={{ mt: 2 }}>

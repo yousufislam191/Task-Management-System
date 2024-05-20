@@ -14,9 +14,15 @@
 - Role-based authorization
 - Account activated through token email verification
 - Reset password through token email verification
-- Update profile
+- Update user profile
 - Manage users by admin
 - Task management
+- Task status management
+- Search and filter tasks
+- Delete tasks
+- Update tasks
+- Automatically send reminder emails to users 15 minutes before the deadline for an assigned task
+- Automatically move failed task data to the failed task table from the main table in the database
 <h3>Technology that have been used</h3>
 
 [React.js](https://react.dev/learn),
@@ -125,9 +131,9 @@ Here are all the API endpoints for this project. And you can also [**visit**][10
 
 <h2 align="left">Task API</h2>
 
-- `GET /api/task` : Get all tasks. _[for admin only]_
-- `GET /api/task/:id` : Get task by id.
-- `GET /api/task/user-all-task/:id` : Get all task for a particular user.
+- `POST /api/task` : Get all tasks. _[for admin only]_
+- `GET /api/task/single-task/:id` : Get task by id.
+- `POST /api/task/user-tasks` : Get all task for a particular user.
 - `POST /api/task/create-task` : Create new task. _[for admin only]_
 - `PUT /api/task/:id` : Update task by id. _[for admin only]_
 - `PUT /api/task/status/:id` : Update task status. _[for user only]_
@@ -156,5 +162,5 @@ Seed API has been used for enhancing development purposes. For the production gr
 [6]: https://twitter.com/yousufislam_191
 [7]: https://github.com/yousufislam191
 [8]: https://kaggle.com/yousufislam191
-[9]: https://yousufislam191.github.io/resume/
+[9]: https://yousufislam191.github.io
 [10]: https://documenter.getpostman.com/view/27853638/2s9YCBsoy2
