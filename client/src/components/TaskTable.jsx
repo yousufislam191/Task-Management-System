@@ -141,10 +141,10 @@ const TaskTable = ({
               {/* ...Table Body */}
               {data?.allTasks.length === 0 ? (
                 <Typography
-                  component="h1"
-                  variant="h3"
-                  align="left"
-                  sx={{ mt: 2 }}
+                  component="h4"
+                  variant="h4"
+                  align="center"
+                  sx={{ mt: 4 }}
                 >
                   No Task Available
                 </Typography>
@@ -235,15 +235,9 @@ const TaskTable = ({
               </Box>
             </>
           )}
-          <h1
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "4rem",
-            }}
-          >
+          <Typography component="h6" variant="h6" align="center" sx={{ mt: 4 }}>
             No Task Available
-          </h1>
+          </Typography>
         </>
       ) : (
         <>

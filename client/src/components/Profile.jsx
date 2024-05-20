@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   Fade,
   Modal,
   TextField,
@@ -143,25 +144,22 @@ const Profile = ({ onUpdateProfile }) => {
     <>
       <ToastContainer />
       <div style={{ width: "100%" }}>
-        <Box
-          sx={{
-            backgroundColor: "lightgray",
-            borderRadius: 1,
-            py: 2,
-            px: 3,
-            mb: 3,
-          }}
+        <Typography
+          component="h5"
+          variant="h5"
+          align="left"
+          fontWeight="bold"
+          sx={{ mb: 1 }}
         >
-          <Typography component="h1" variant="h3" align="left">
-            Edit Profile
-          </Typography>
-        </Box>
-
+          Edit Profile
+        </Typography>
+        <Divider />
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             gap: "2rem",
+            mt: 3,
             "@media (min-width: 600px)": {
               flexDirection: "row",
             },
@@ -190,6 +188,7 @@ const Profile = ({ onUpdateProfile }) => {
                 label="Name"
                 value={isEditable ? editedDetails.name || "" : user.name || ""}
                 variant="outlined"
+                size="small"
                 disabled={!isEditable}
                 onChange={(e) =>
                   setEditedDetails({ ...user, name: e.target.value })
@@ -262,6 +261,7 @@ const Profile = ({ onUpdateProfile }) => {
               label="Email"
               value={user.email}
               variant="outlined"
+              size="small"
               disabled
             />
 
