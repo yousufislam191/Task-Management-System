@@ -187,7 +187,7 @@ const TaskCardSingleContent = (props) => {
                 )
               ) : status === 2 ? (
                 <Typography sx={{ color: "green", fontSize: 14 }}>
-                  Done
+                  Completed
                 </Typography>
               ) : status === 3 ? (
                 <Typography
